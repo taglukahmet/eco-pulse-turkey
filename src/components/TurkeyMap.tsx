@@ -5,12 +5,14 @@ interface Province {
   id: string;
   name: string;
   path: string;
+  coordinates: { x: number; y: number };
   mainTopic: string;
   sentiment: {
     positive: number;
     neutral: number;
     negative: number;
   };
+  inclination: string;
 }
 
 interface TurkeyMapProps {
@@ -20,63 +22,97 @@ interface TurkeyMapProps {
   selectedProvinces: string[];
 }
 
-// Simplified SVG paths for major Turkish provinces
+// City coordinates for pinpointing on the Turkey map image
 const PROVINCES_DATA: Province[] = [
   {
     id: 'istanbul',
     name: 'İstanbul',
-    path: 'M180,120 L220,115 L225,140 L200,145 L175,135 Z',
+    path: '', // Not needed anymore
+    coordinates: { x: 28.8, y: 40.2 }, // Longitude, Latitude converted to percentage
     mainTopic: '#SıfırAtık',
-    sentiment: { positive: 65, neutral: 25, negative: 10 }
+    sentiment: { positive: 65, neutral: 25, negative: 10 },
+    inclination: 'Çok Olumlu'
   },
   {
     id: 'ankara',
     name: 'Ankara',
-    path: 'M240,180 L280,175 L285,205 L250,210 L235,195 Z',
+    path: '',
+    coordinates: { x: 39.5, y: 41.5 },
     mainTopic: '#YeşilŞehir',
-    sentiment: { positive: 72, neutral: 20, negative: 8 }
+    sentiment: { positive: 72, neutral: 20, negative: 8 },
+    inclination: 'Çok Olumlu'
   },
   {
     id: 'izmir',
     name: 'İzmir',
-    path: 'M120,200 L160,195 L165,225 L130,230 L115,215 Z',
+    path: '',
+    coordinates: { x: 16.5, y: 50.8 },
     mainTopic: '#TemizHava',
-    sentiment: { positive: 58, neutral: 30, negative: 12 }
+    sentiment: { positive: 58, neutral: 30, negative: 12 },
+    inclination: 'Olumlu'
   },
   {
     id: 'antalya',
     name: 'Antalya',
-    path: 'M200,250 L240,245 L245,275 L210,280 L195,265 Z',
+    path: '',
+    coordinates: { x: 38.2, y: 72.5 },
     mainTopic: '#SürdürülebilirTurizm',
-    sentiment: { positive: 68, neutral: 22, negative: 10 }
+    sentiment: { positive: 68, neutral: 22, negative: 10 },
+    inclination: 'Çok Olumlu'
   },
   {
     id: 'bursa',
     name: 'Bursa',
-    path: 'M160,150 L200,145 L205,175 L170,180 L155,165 Z',
+    path: '',
+    coordinates: { x: 32.8, y: 45.2 },
     mainTopic: '#YeşilSanayi',
-    sentiment: { positive: 70, neutral: 20, negative: 10 }
+    sentiment: { positive: 70, neutral: 20, negative: 10 },
+    inclination: 'Çok Olumlu'
   },
   {
     id: 'adana',
     name: 'Adana',
-    path: 'M280,220 L320,215 L325,245 L290,250 L275,235 Z',
+    path: '',
+    coordinates: { x: 48.5, y: 68.2 },
     mainTopic: '#TarımselSürdürülebilirlik',
-    sentiment: { positive: 60, neutral: 28, negative: 12 }
+    sentiment: { positive: 60, neutral: 28, negative: 12 },
+    inclination: 'Olumlu'
   },
   {
     id: 'gaziantep',
     name: 'Gaziantep',
-    path: 'M320,200 L360,195 L365,225 L330,230 L315,215 Z',
+    path: '',
+    coordinates: { x: 52.8, y: 65.5 },
     mainTopic: '#EnerjiVerimliliği',
-    sentiment: { positive: 55, neutral: 32, negative: 13 }
+    sentiment: { positive: 55, neutral: 32, negative: 13 },
+    inclination: 'Nötr'
   },
   {
     id: 'konya',
     name: 'Konya',
-    path: 'M220,220 L260,215 L265,245 L230,250 L215,235 Z',
+    path: '',
+    coordinates: { x: 44.2, y: 58.8 },
     mainTopic: '#SularınKorunması',
-    sentiment: { positive: 63, neutral: 25, negative: 12 }
+    sentiment: { positive: 63, neutral: 25, negative: 12 },
+    inclination: 'Olumlu'
+  },
+  {
+    id: 'trabzon',
+    name: 'Trabzon',
+    path: '',
+    coordinates: { x: 52.5, y: 30.2 },
+    mainTopic: '#KaradenizEkolojisi',
+    sentiment: { positive: 58, neutral: 30, negative: 12 },
+    inclination: 'Olumlu'
+  },
+  {
+    id: 'van',
+    name: 'Van',
+    path: '',
+    coordinates: { x: 68.2, y: 52.8 },
+    mainTopic: '#GölEkosistemleri',
+    sentiment: { positive: 52, neutral: 35, negative: 13 },
+    inclination: 'Nötr'
   }
 ];
 
@@ -104,94 +140,74 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <svg
-        viewBox="0 0 500 350"
-        className="w-full h-full max-w-4xl"
-        style={{ filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.3))' }}
-      >
-        {/* Background shape representing Turkey's outline */}
-        <path
-          d="M50,150 Q100,80 200,90 Q300,85 450,120 Q480,140 470,200 Q460,250 400,280 Q300,300 200,290 Q100,280 70,220 Q40,180 50,150 Z"
-          fill="hsl(var(--card))"
-          stroke="hsl(var(--border))"
-          strokeWidth="2"
-          className="opacity-60"
+      {/* Turkey Map Background */}
+      <div className="relative w-full h-full max-w-6xl">
+        <img 
+          src="/lovable-uploads/53f0d7e9-bcad-40c0-8f17-6df68993047e.png" 
+          alt="Turkey Map"
+          className="w-full h-full object-contain"
+          style={{ filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.3))' }}
         />
         
-        {/* Province paths */}
-        {PROVINCES_DATA.map((province) => (
-          <g key={province.id}>
-            <path
-              d={province.path}
-              fill={getProvinceFill(province.id)}
-              stroke="hsl(var(--border))"
-              strokeWidth="1.5"
-              className={cn(
-                "map-province transition-all duration-300",
-                {
-                  "selected": selectedProvince === province.id || selectedProvinces.includes(province.id),
-                  "opacity-70 hover:opacity-100": !selectedProvince && !selectedProvinces.includes(province.id),
-                }
+        {/* City Pinpoints */}
+        {PROVINCES_DATA.map((province) => {
+          const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
+          const isHovered = hoveredProvince === province.id;
+          
+          return (
+            <div key={province.id}>
+              {/* City Pin */}
+              <div
+                className={cn(
+                  "absolute w-4 h-4 rounded-full cursor-pointer transition-all duration-300 transform -translate-x-1/2 -translate-y-1/2",
+                  "border-2 border-white shadow-lg hover:scale-125",
+                  {
+                    "bg-primary scale-110": isSelected,
+                    "bg-primary/70": !isSelected && selectedProvinces.includes(province.id),
+                    "bg-muted-foreground": !isSelected && !selectedProvinces.includes(province.id),
+                    "animate-pulse": isSelected
+                  }
+                )}
+                style={{
+                  left: `${province.coordinates.x}%`,
+                  top: `${province.coordinates.y}%`
+                }}
+                onMouseEnter={() => setHoveredProvince(province.id)}
+                onMouseLeave={() => setHoveredProvince(null)}
+                onClick={() => handleProvinceClick(province)}
+              />
+              
+              {/* Hover Tooltip */}
+              {isHovered && (
+                <div
+                  className="absolute z-50 bg-popover border border-border rounded-lg p-3 shadow-xl pointer-events-none min-w-[200px]"
+                  style={{
+                    left: `${province.coordinates.x}%`,
+                    top: `${Math.max(0, province.coordinates.y - 15)}%`,
+                    transform: 'translateX(-50%)'
+                  }}
+                >
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-foreground">{province.name}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Eğilim: <span className={cn(
+                        "font-medium",
+                        province.inclination === 'Çok Olumlu' ? 'text-sentiment-positive' :
+                        province.inclination === 'Olumlu' ? 'text-sentiment-positive' :
+                        province.inclination === 'Nötr' ? 'text-sentiment-neutral' :
+                        'text-sentiment-negative'
+                      )}>{province.inclination}</span>
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Popüler: <span className="text-primary font-medium">{province.mainTopic}</span>
+                    </p>
+                  </div>
+                </div>
               )}
-              onMouseEnter={() => setHoveredProvince(province.id)}
-              onMouseLeave={() => setHoveredProvince(null)}
-              onClick={() => handleProvinceClick(province)}
-            />
-            
-            {/* Province labels */}
-            <text
-              x={parseFloat(province.path.split(' ')[1].split(',')[0]) + 30}
-              y={parseFloat(province.path.split(' ')[1].split(',')[1]) + 20}
-              className="text-xs font-medium fill-current pointer-events-none"
-              textAnchor="middle"
-            >
-              {province.name}
-            </text>
-          </g>
-        ))}
-        
-        {/* Tooltip for hovered province */}
-        {hoveredProvince && (
-          <g>
-            {(() => {
-              const province = PROVINCES_DATA.find(p => p.id === hoveredProvince);
-              if (!province) return null;
-              
-              const x = parseFloat(province.path.split(' ')[1].split(',')[0]) + 40;
-              const y = parseFloat(province.path.split(' ')[1].split(',')[1]) - 10;
-              
-              return (
-                <g className="pointer-events-none">
-                  <rect
-                    x={x}
-                    y={y - 25}
-                    width="140"
-                    height="35"
-                    rx="6"
-                    fill="hsl(var(--popover))"
-                    stroke="hsl(var(--border))"
-                    className="drop-shadow-lg"
-                  />
-                  <text
-                    x={x + 10}
-                    y={y - 12}
-                    className="text-sm font-semibold fill-current"
-                  >
-                    {province.name}
-                  </text>
-                  <text
-                    x={x + 10}
-                    y={y - 2}
-                    className="text-xs fill-current opacity-80"
-                  >
-                    {province.mainTopic}
-                  </text>
-                </g>
-              );
-            })()}
-          </g>
-        )}
-      </svg>
+            </div>
+          );
+        })}
+      </div>
       
       {comparisonMode && (
         <div className="absolute top-4 left-4 glass-panel rounded-lg px-4 py-2">

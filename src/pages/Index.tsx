@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import Header from '@/components/Header';
 import TurkeyMap from '@/components/TurkeyMap';
 import CityDetailPanel from '@/components/CityDetailPanel';
@@ -145,7 +146,9 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="pt-16 h-screen">
-        <div className="h-full relative">
+        <div className={cn("h-full relative transition-all duration-300", {
+          "blur-sm": selectedCityData && !comparisonMode
+        })}>
           {/* Turkey Map */}
           <div className="h-full p-8">
             <TurkeyMap

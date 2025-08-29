@@ -1,8 +1,9 @@
 import React from 'react';
-import { X, TrendingUp, Globe, Hash } from 'lucide-react';
+import { X, TrendingUp, Globe, Hash, Users, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Tooltip } from 'recharts';
+import { cn } from '@/lib/utils';
 
 interface NationalData {
   sentiment: {
@@ -40,9 +41,20 @@ const nationalData: NationalData = {
     '#İklimDeğişikliği', 
     '#YenilenebilirEnerji', 
     '#GeriDönüşüm', 
-    '#YeşilTekno loji'
+    '#YeşilTeknoloji'
   ]
 };
+
+// Weekly trend data
+const weeklyData = [
+  { day: 'Pzt', volume: 3200 },
+  { day: 'Sal', volume: 4100 },
+  { day: 'Çar', volume: 5500 },
+  { day: 'Per', volume: 4800 },
+  { day: 'Cum', volume: 6200 },
+  { day: 'Cmt', volume: 3800 },
+  { day: 'Paz', volume: 2900 }
+];
 
 export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
   isVisible,
@@ -73,6 +85,24 @@ export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
           >
             <X className="h-5 w-5" />
           </Button>
+        </div>
+
+        {/* Key Metrics Overview */}
+        <div className="grid grid-cols-2 gap-3">
+          <Card className="bg-primary/10 border-primary/20">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-primary">2.8M</div>
+              <div className="text-xs text-muted-foreground">Aktif Kullanıcı</div>
+              <div className="text-xs text-sentiment-positive mt-1">↗ %12 artış</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-accent/10 border-accent/20">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-accent">127M+</div>
+              <div className="text-xs text-muted-foreground">Toplam Etkileşim</div>
+              <div className="text-xs text-sentiment-positive mt-1">↗ %18 artış</div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* National Sentiment */}
@@ -181,20 +211,97 @@ export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
           </CardContent>
         </Card>
 
-        {/* Quick Stats */}
+        {/* Weekly Trend Chart */}
         <Card className="bg-card/50">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Hızlı İstatistikler</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <BarChart3 className="h-5 w-5 text-primary" />
+              Haftalık Trend Analizi
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">81</div>
-                <div className="text-xs text-muted-foreground">Analiz Edilen İl</div>
+            <div className="h-40 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={weeklyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    dataKey="day" 
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <YAxis 
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={12}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--popover))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="volume" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Regional Insights */}
+        <Card className="bg-card/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Users className="h-5 w-5 text-primary" />
+              Bölgesel Performans
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {[
+                { region: 'Marmara', percentage: 35, trend: '+5%' },
+                { region: 'Akdeniz', percentage: 18, trend: '+12%' },
+                { region: 'İç Anadolu', percentage: 15, trend: '+3%' },
+                { region: 'Ege', percentage: 12, trend: '+8%' },
+              ].map((item, index) => (
+                <div key={index} className="flex justify-between items-center p-2 hover:bg-background/50 rounded transition-colors">
+                  <div className="font-medium text-foreground">{item.region}</div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-16 bg-background rounded-full h-2">
+                      <div className="bg-primary h-2 rounded-full" style={{ width: `${item.percentage}%` }}></div>
+                    </div>
+                    <div className="text-sm font-medium text-foreground w-8">{item.percentage}%</div>
+                    <div className="text-xs font-medium text-sentiment-positive w-8">{item.trend}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Key Insights */}
+        <Card className="bg-card/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Önemli Bulgular</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="p-3 bg-sentiment-positive/10 rounded-lg border-l-4 border-sentiment-positive">
+                <div className="font-medium text-foreground mb-1">En Yüksek Katılım</div>
+                <div className="text-sm text-muted-foreground">Sıfır Atık projesi %78 olumlu tepki ile en çok destek gören çevre politikası.</div>
               </div>
-              <div className="text-center p-3 bg-accent/10 rounded-lg">
-                <div className="text-2xl font-bold text-accent">42.8K</div>
-                <div className="text-xs text-muted-foreground">Toplam Tweet</div>
+              <div className="p-3 bg-primary/10 rounded-lg border-l-4 border-primary">
+                <div className="font-medium text-foreground mb-1">Hızlı Büyüme</div>
+                <div className="text-sm text-muted-foreground">İklim değişikliği konusu %29 büyüme ile en hızlı yükselen konu başlığı.</div>
+              </div>
+              <div className="p-3 bg-accent/10 rounded-lg border-l-4 border-accent">
+                <div className="font-medium text-foreground mb-1">Bölgesel Lider</div>
+                <div className="text-sm text-muted-foreground">Marmara Bölgesi %35 pay ile çevre politikalarında en aktif bölge.</div>
               </div>
             </div>
           </CardContent>
