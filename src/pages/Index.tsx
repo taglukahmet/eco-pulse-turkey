@@ -38,13 +38,15 @@ const generateCityData = (province: Province): CityData => ({
   name: province.name,
   sentiment: province.sentiment,
   topics: [
-    { text: province.mainTopic, value: 85 },
-    { text: '#ÇevreKoruması', value: 72 },
-    { text: '#YeşilTeknoloji', value: 65 },
-    { text: '#SürdürülebilirKalkınma', value: 58 },
-    { text: '#İklimDeğişikliği', value: 45 },
-    { text: '#GeriDönüşüm', value: 38 },
-    { text: '#YenilenebilirEnerji', value: 32 }
+    { text: 'çevre koruma', value: 85 },
+    { text: 'sürdürülebilir gelişim', value: 72 },
+    { text: 'yeşil teknoloji', value: 65 },
+    { text: 'temiz enerji', value: 58 },
+    { text: 'iklim değişikliği', value: 45 },
+    { text: 'geri dönüşüm', value: 38 },
+    { text: 'doğa dostu', value: 32 },
+    { text: 'karbon ayak izi', value: 28 },
+    { text: 'yeşil şehir', value: 25 }
   ],
   hashtags: [
     province.mainTopic,
