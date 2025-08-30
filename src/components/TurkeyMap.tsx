@@ -20,6 +20,11 @@ interface TurkeyMapProps {
   selectedProvince?: string | null;
   comparisonMode: boolean;
   selectedProvinces: string[];
+  activeFilters?: {
+    hashtags: string[];
+    sentiment: string[];
+    regions: string[];
+  };
 }
 
 // City coordinates for pinpointing on the Turkey map image
@@ -120,7 +125,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   onProvinceClick,
   selectedProvince,
   comparisonMode,
-  selectedProvinces
+  selectedProvinces,
+  activeFilters
 }) => {
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
 
@@ -128,7 +134,62 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     onProvinceClick(province);
   }, [onProvinceClick]);
 
+  // Function to check if a province matches the filter criteria
+  const getFilterMatchIntensity = (province: Province): number => {
+    if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0)) {
+      return 0;
+    }
+
+    let matchScore = 0;
+    let totalCriteria = 0;
+
+    // Check hashtag matches (simulated - in real app this would come from backend)
+    if (activeFilters.hashtags.length > 0) {
+      totalCriteria += activeFilters.hashtags.length;
+      // Simulate hashtag matching - check if province's main topic matches or if random chance
+      activeFilters.hashtags.forEach(hashtag => {
+        if (province.mainTopic === hashtag || Math.random() > 0.6) {
+          matchScore += 1;
+        }
+      });
+    }
+
+    // Check sentiment matches
+    if (activeFilters.sentiment.length > 0) {
+      totalCriteria += 1;
+      const dominantSentiment = province.sentiment.positive > province.sentiment.negative ? 
+        (province.sentiment.positive > province.sentiment.neutral ? 'positive' : 'neutral') :
+        (province.sentiment.negative > province.sentiment.neutral ? 'negative' : 'neutral');
+      
+      if (activeFilters.sentiment.includes(dominantSentiment)) {
+        matchScore += 1;
+      }
+    }
+
+    return totalCriteria > 0 ? matchScore / totalCriteria : 0;
+  };
+
   const getProvinceFill = (provinceId: string) => {
+    const province = PROVINCES_DATA.find(p => p.id === provinceId);
+    if (!province) return 'hsl(var(--muted))';
+
+    // Filter highlighting takes precedence
+    if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0)) {
+      const intensity = getFilterMatchIntensity(province);
+      if (intensity > 0) {
+        // Color coding based on match intensity
+        const alpha = 0.3 + (intensity * 0.7); // 0.3 to 1.0 alpha
+        if (intensity >= 0.8) {
+          return `hsl(var(--sentiment-positive) / ${alpha})`;
+        } else if (intensity >= 0.5) {
+          return `hsl(var(--sentiment-neutral) / ${alpha})`;
+        } else {
+          return `hsl(var(--primary) / ${alpha})`;
+        }
+      }
+      return 'hsl(var(--muted) / 0.3)'; // Faded for non-matching provinces
+    }
+
     if (selectedProvinces.includes(provinceId)) {
       return 'hsl(var(--primary))';
     }
@@ -153,6 +214,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         {PROVINCES_DATA.map((province) => {
           const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
           const isHovered = hoveredProvince === province.id;
+          const filterIntensity = getFilterMatchIntensity(province);
+          const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0);
           
           return (
             <div key={province.id}>
@@ -164,13 +227,19 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                   {
                     "bg-primary scale-110": isSelected,
                     "bg-primary/70": !isSelected && selectedProvinces.includes(province.id),
-                    "bg-muted-foreground": !isSelected && !selectedProvinces.includes(province.id),
-                    "animate-pulse": isSelected
+                    "bg-muted-foreground": !isSelected && !selectedProvinces.includes(province.id) && !hasActiveFilters,
+                    "animate-pulse": isSelected,
+                    // Filter-based styling
+                    "bg-sentiment-positive scale-110 animate-pulse": hasActiveFilters && filterIntensity >= 0.8,
+                    "bg-sentiment-neutral scale-105": hasActiveFilters && filterIntensity >= 0.5 && filterIntensity < 0.8,
+                    "bg-primary/60": hasActiveFilters && filterIntensity > 0 && filterIntensity < 0.5,
+                    "bg-muted-foreground/30": hasActiveFilters && filterIntensity === 0
                   }
                 )}
                 style={{
                   left: `${province.coordinates.x}%`,
-                  top: `${province.coordinates.y}%`
+                  top: `${province.coordinates.y}%`,
+                  backgroundColor: !hasActiveFilters ? getProvinceFill(province.id) : undefined
                 }}
                 onMouseEnter={() => setHoveredProvince(province.id)}
                 onMouseLeave={() => setHoveredProvince(null)}

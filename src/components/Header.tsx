@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Globe, BarChart3, Info, Moon, Sun } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Globe, BarChart3, Info, Moon, Sun, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -9,6 +10,7 @@ interface HeaderProps {
   comparisonMode: boolean;
   onComparisonToggle: () => void;
   showNationalPanel: boolean;
+  onFilterToggle: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,7 +18,8 @@ export const Header: React.FC<HeaderProps> = ({
   onAboutClick,
   comparisonMode,
   onComparisonToggle,
-  showNationalPanel
+  showNationalPanel,
+  onFilterToggle
 }) => {
   const [isDark, setIsDark] = useState(true);
 
@@ -59,14 +62,26 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          {/* Theme Switch */}
+          <div className="flex items-center gap-2">
+            <Sun className="h-4 w-4 text-muted-foreground" />
+            <Switch
+              checked={isDark}
+              onCheckedChange={toggleTheme}
+              className="data-[state=checked]:bg-primary"
+            />
+            <Moon className="h-4 w-4 text-muted-foreground" />
+          </div>
+
           <Button
             variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            className="text-foreground hover:text-primary"
+            size="sm"
+            onClick={onFilterToggle}
+            className="transition-all duration-300"
           >
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            <Search className="w-4 h-4 mr-2" />
+            Filtrele
           </Button>
           
           <Button

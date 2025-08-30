@@ -6,6 +6,7 @@ import TurkeyMap from '@/components/TurkeyMap';
 import CityDetailPanel from '@/components/CityDetailPanel';
 import NationalAgendaPanel from '@/components/NationalAgendaPanel';
 import ComparisonView from '@/components/ComparisonView';
+import FilterInterface, { FilterCriteria } from '@/components/FilterInterface';
 
 interface Province {
   id: string;
@@ -74,6 +75,8 @@ const Index = () => {
   const [comparisonMode, setComparisonMode] = useState(false);
   const [selectedCitiesForComparison, setSelectedCitiesForComparison] = useState<CityData[]>([]);
   const [showComparisonView, setShowComparisonView] = useState(false);
+  const [showFilterInterface, setShowFilterInterface] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<FilterCriteria>({ hashtags: [], sentiment: [], regions: [] });
 
   const handleProvinceClick = useCallback((province: Province) => {
     if (comparisonMode) {
@@ -135,6 +138,19 @@ const Index = () => {
     setSelectedCitiesForComparison([]);
   }, []);
 
+  const handleFilterToggle = useCallback(() => {
+    setShowFilterInterface(!showFilterInterface);
+  }, [showFilterInterface]);
+
+  const handleFilterApply = useCallback((criteria: FilterCriteria) => {
+    setActiveFilters(criteria);
+    setShowFilterInterface(false);
+    // Close other panels to focus on filtered results
+    setSelectedProvince(null);
+    setSelectedCityData(null);
+    setShowNationalPanel(false);
+  }, []);
+
   return (
     <div className="min-h-screen dashboard-gradient relative overflow-hidden">
       {/* Header */}
@@ -144,12 +160,13 @@ const Index = () => {
         comparisonMode={comparisonMode}
         onComparisonToggle={handleComparisonToggle}
         showNationalPanel={showNationalPanel}
+        onFilterToggle={handleFilterToggle}
       />
 
       {/* Main Content */}
       <main className="pt-16 h-screen">
         <div className={cn("h-full relative transition-all duration-300", {
-          "blur-sm": selectedCityData && !comparisonMode
+          "blur-sm": (selectedCityData && !comparisonMode) || showNationalPanel
         })}>
           {/* Turkey Map */}
           <div className="h-full p-8">
@@ -158,6 +175,7 @@ const Index = () => {
               selectedProvince={selectedProvince}
               comparisonMode={comparisonMode}
               selectedProvinces={selectedCitiesForComparison.map(city => city.id)}
+              activeFilters={activeFilters}
             />
           </div>
 
@@ -200,6 +218,12 @@ const Index = () => {
         selectedCities={selectedCitiesForComparison}
         onClose={handleCloseComparison}
         isVisible={showComparisonView}
+      />
+
+      <FilterInterface
+        isVisible={showFilterInterface}
+        onClose={() => setShowFilterInterface(false)}
+        onFilterApply={handleFilterApply}
       />
     </div>
   );
