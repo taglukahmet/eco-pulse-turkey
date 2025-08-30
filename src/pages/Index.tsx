@@ -151,6 +151,28 @@ const Index = () => {
     setShowNationalPanel(false);
   }, []);
 
+  // Click outside handler
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    const target = event.target as Element;
+    
+    // Check if click is outside panels
+    const isClickInsidePanel = target.closest('[data-panel]') || target.closest('[data-filter]');
+    
+    if (!isClickInsidePanel) {
+      setSelectedProvince(null);
+      setSelectedCityData(null);
+      setShowNationalPanel(false);
+      setShowFilterInterface(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
   return (
     <div className="min-h-screen dashboard-gradient relative overflow-hidden">
       {/* Header */}
@@ -201,30 +223,34 @@ const Index = () => {
       </main>
 
       {/* Panels */}
-      {selectedCityData && !comparisonMode && (
-        <CityDetailPanel
-          cityData={selectedCityData}
-          onClose={handleCloseDetailPanel}
-          isVisible={!!selectedCityData}
+      <div data-panel="true">
+        {selectedCityData && !comparisonMode && (
+          <CityDetailPanel
+            cityData={selectedCityData}
+            onClose={handleCloseDetailPanel}
+            isVisible={!!selectedCityData}
+          />
+        )}
+
+        <NationalAgendaPanel
+          isVisible={showNationalPanel}
+          onClose={() => setShowNationalPanel(false)}
         />
-      )}
 
-      <NationalAgendaPanel
-        isVisible={showNationalPanel}
-        onClose={() => setShowNationalPanel(false)}
-      />
+        <ComparisonView
+          selectedCities={selectedCitiesForComparison}
+          onClose={handleCloseComparison}
+          isVisible={showComparisonView}
+        />
+      </div>
 
-      <ComparisonView
-        selectedCities={selectedCitiesForComparison}
-        onClose={handleCloseComparison}
-        isVisible={showComparisonView}
-      />
-
-      <FilterInterface
-        isVisible={showFilterInterface}
-        onClose={() => setShowFilterInterface(false)}
-        onFilterApply={handleFilterApply}
-      />
+      <div data-filter="true">
+        <FilterInterface
+          isVisible={showFilterInterface}
+          onClose={() => setShowFilterInterface(false)}
+          onFilterApply={handleFilterApply}
+        />
+      </div>
     </div>
   );
 };

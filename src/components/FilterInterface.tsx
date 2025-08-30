@@ -122,6 +122,12 @@ const FilterInterface: React.FC<FilterInterfaceProps> = ({
     setSelectedHashtags([]);
     setSelectedSentiments([]);
     setSelectedRegions([]);
+    // Auto-apply after clearing
+    onFilterApply({
+      hashtags: [],
+      sentiment: [],
+      regions: []
+    });
   };
 
   if (!isVisible) return null;

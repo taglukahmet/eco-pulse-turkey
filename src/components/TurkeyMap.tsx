@@ -157,23 +157,39 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   }, [onProvinceClick]);
 
   // Function to check if a province matches the filter criteria
-  const getFilterMatchIntensity = (province: Province): number => {
+  const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
     if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
-      return 0;
+      return { score: 0, type: 'none' };
     }
 
     let matchScore = 0;
     let totalCriteria = 0;
+    let hasExistingHashtag = false;
 
-    // Check hashtag matches - count exact matches in province's hashtag list
+    // Check hashtag matches
     if (activeFilters.hashtags.length > 0) {
       totalCriteria += 1;
-      const hashtagMatches = activeFilters.hashtags.filter(hashtag => 
+      const topHashtagMatches = activeFilters.hashtags.filter(hashtag => 
         province.hashtags.includes(hashtag)
       ).length;
-      // Score based on percentage of searched hashtags found in province
-      const hashtagScore = hashtagMatches / activeFilters.hashtags.length;
-      matchScore += hashtagScore;
+      
+      // Check if hashtag exists in expanded list (not just top 5)
+      const expandedHashtags = [
+        ...province.hashtags,
+        '#EkolojikDenge', '#TemizHava', '#GeriDönüşüm', '#ÇevreBilinci', 
+        '#DoğaDostu', '#SürdürülebilirŞehir', '#KarbonAyakİzi', '#İklimDeğişikliği'
+      ];
+      
+      const existsButNotTop = activeFilters.hashtags.some(hashtag => 
+        expandedHashtags.includes(hashtag) && !province.hashtags.includes(hashtag)
+      );
+      
+      if (topHashtagMatches > 0) {
+        const hashtagScore = topHashtagMatches / activeFilters.hashtags.length;
+        matchScore += hashtagScore;
+      } else if (existsButNotTop) {
+        hasExistingHashtag = true;
+      }
     }
 
     // Check sentiment matches
@@ -196,7 +212,15 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       }
     }
 
-    return totalCriteria > 0 ? matchScore / totalCriteria : 0;
+    const finalScore = totalCriteria > 0 ? matchScore / totalCriteria : 0;
+    
+    // Return type based on match quality
+    if (finalScore >= 0.8) return { score: finalScore, type: 'high' };
+    if (finalScore >= 0.5) return { score: finalScore, type: 'medium' };
+    if (finalScore > 0) return { score: finalScore, type: 'low' };
+    if (hasExistingHashtag) return { score: 0.2, type: 'exists' };
+    
+    return { score: 0, type: 'none' };
   };
 
   const getProvinceFill = (provinceId: string) => {
@@ -204,20 +228,25 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     if (!province) return 'hsl(var(--muted))';
 
     // Filter highlighting takes precedence
-    if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0)) {
-      const intensity = getFilterMatchIntensity(province);
-      if (intensity > 0) {
-        // Color coding based on match intensity
-        const alpha = 0.3 + (intensity * 0.7); // 0.3 to 1.0 alpha
-        if (intensity >= 0.8) {
-          return `hsl(var(--sentiment-positive) / ${alpha})`;
-        } else if (intensity >= 0.5) {
-          return `hsl(var(--sentiment-neutral) / ${alpha})`;
-        } else {
-          return `hsl(var(--primary) / ${alpha})`;
+    if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
+      const matchResult = getFilterMatchIntensity(province);
+      if (matchResult.type !== 'none') {
+        // Color coding based on match type
+        const alpha = 0.4 + (matchResult.score * 0.6); // 0.4 to 1.0 alpha
+        switch (matchResult.type) {
+          case 'high':
+            return `hsl(var(--sentiment-positive) / ${alpha})`;
+          case 'medium':
+            return `hsl(var(--sentiment-neutral) / ${alpha})`;
+          case 'low':
+            return `hsl(var(--primary) / ${alpha})`;
+          case 'exists':
+            return `hsl(220 91% 58% / 0.6)`; // Blue for existing hashtags
+          default:
+            return 'hsl(var(--muted) / 0.3)';
         }
       }
-      return 'hsl(var(--muted) / 0.3)'; // Faded for non-matching provinces
+      return 'hsl(var(--muted) / 0.2)'; // More faded for non-matching provinces
     }
 
     if (selectedProvinces.includes(provinceId)) {
@@ -244,8 +273,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         {PROVINCES_DATA.map((province) => {
           const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
           const isHovered = hoveredProvince === province.id;
-          const filterIntensity = getFilterMatchIntensity(province);
-          const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0);
+          const matchResult = getFilterMatchIntensity(province);
+          const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0);
           
           return (
             <div key={province.id}>
@@ -259,17 +288,19 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                     "bg-primary/70": !isSelected && selectedProvinces.includes(province.id),
                     "bg-muted-foreground": !isSelected && !selectedProvinces.includes(province.id) && !hasActiveFilters,
                     "animate-pulse": isSelected,
-                    // Filter-based styling
-                    "bg-sentiment-positive scale-110 animate-pulse": hasActiveFilters && filterIntensity >= 0.8,
-                    "bg-sentiment-neutral scale-105": hasActiveFilters && filterIntensity >= 0.5 && filterIntensity < 0.8,
-                    "bg-primary/60": hasActiveFilters && filterIntensity > 0 && filterIntensity < 0.5,
-                    "bg-muted-foreground/30": hasActiveFilters && filterIntensity === 0
+                    // Filter-based styling with twitching effects
+                    "bg-sentiment-positive scale-110 animate-pulse": hasActiveFilters && matchResult.type === 'high',
+                    "bg-sentiment-neutral scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'medium',
+                    "bg-primary/60 scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'low',
+                    "scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'exists',
+                    "bg-muted-foreground/30": hasActiveFilters && matchResult.type === 'none'
                   }
                 )}
                 style={{
                   left: `${province.coordinates.x}%`,
                   top: `${province.coordinates.y}%`,
-                  backgroundColor: !hasActiveFilters ? getProvinceFill(province.id) : undefined
+                  backgroundColor: hasActiveFilters && matchResult.type === 'exists' ? 'hsl(220 91% 58% / 0.7)' : 
+                                 !hasActiveFilters ? getProvinceFill(province.id) : undefined
                 }}
                 onMouseEnter={() => setHoveredProvince(province.id)}
                 onMouseLeave={() => setHoveredProvince(null)}
