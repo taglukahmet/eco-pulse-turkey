@@ -19,6 +19,14 @@ interface FilterInterfaceProps {
   onFilterApply: (criteria: FilterCriteria) => void;
 }
 
+// All available hashtags from provinces - used for validation and suggestions
+const ALL_AVAILABLE_HASHTAGS = [
+  '#SıfırAtık', '#ÇevreKoruması', '#YeşilŞehir', '#GeriDönüşüm', '#SürdürülebilirŞehir',
+  '#YeşilSanayi', '#TemizEnerji', '#İklimDeğişikliği', '#ÇevreBilinci', '#DoğaDostu',
+  '#YeşilTeknoloji', '#EkolojikDenge', '#KarbonAyakİzi', '#TemizHava', '#SürdürülebilirTurizm',
+  '#TarımselSürdürülebilirlik', '#EnerjiVerimliliği', '#SularınKorunması', '#KaradenizEkolojisi', '#GölEkosistemleri'
+];
+
 const PREDEFINED_HASHTAGS = [
   '#ÇevreKoruması', '#YeşilŞehir', '#TemizEnerji', '#SürdürülebilirŞehir',
   '#SıfırAtık', '#İklimDeğişikliği', '#GeriDönüşüm', '#DoğaDostu',
@@ -46,6 +54,7 @@ const FilterInterface: React.FC<FilterInterfaceProps> = ({
   const [selectedSentiments, setSelectedSentiments] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [customHashtag, setCustomHashtag] = useState('');
+  const [hashtagSuggestions, setHashtagSuggestions] = useState<string[]>([]);
 
   const handleHashtagAdd = (hashtag: string) => {
     if (selectedHashtags.length < 3 && !selectedHashtags.includes(hashtag)) {
@@ -60,10 +69,28 @@ const FilterInterface: React.FC<FilterInterfaceProps> = ({
   const handleCustomHashtagAdd = () => {
     if (customHashtag.trim() && selectedHashtags.length < 3) {
       const formattedHashtag = customHashtag.startsWith('#') ? customHashtag : `#${customHashtag}`;
-      if (!selectedHashtags.includes(formattedHashtag)) {
+      
+      // Only allow hashtags that exist in the system
+      if (ALL_AVAILABLE_HASHTAGS.includes(formattedHashtag) && !selectedHashtags.includes(formattedHashtag)) {
         setSelectedHashtags([...selectedHashtags, formattedHashtag]);
         setCustomHashtag('');
+        setHashtagSuggestions([]);
       }
+    }
+  };
+
+  const handleHashtagInputChange = (value: string) => {
+    setCustomHashtag(value);
+    
+    if (value.trim()) {
+      const formatted = value.startsWith('#') ? value : `#${value}`;
+      const suggestions = ALL_AVAILABLE_HASHTAGS.filter(hashtag => 
+        hashtag.toLowerCase().includes(formatted.toLowerCase()) && 
+        !selectedHashtags.includes(hashtag)
+      ).slice(0, 5);
+      setHashtagSuggestions(suggestions);
+    } else {
+      setHashtagSuggestions([]);
     }
   };
 
@@ -122,16 +149,34 @@ const FilterInterface: React.FC<FilterInterfaceProps> = ({
           
           {/* Custom Hashtag Input */}
           <div className="flex gap-2 mb-3">
-            <Input
-              placeholder="Özel hashtag ekle..."
-              value={customHashtag}
-              onChange={(e) => setCustomHashtag(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCustomHashtagAdd()}
-              disabled={selectedHashtags.length >= 3}
-            />
+            <div className="relative">
+              <Input
+                placeholder="Sadece mevcut hashtagları arayın..."
+                value={customHashtag}
+                onChange={(e) => handleHashtagInputChange(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleCustomHashtagAdd()}
+                disabled={selectedHashtags.length >= 3}
+              />
+              {hashtagSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 z-10 bg-popover border border-border rounded-md mt-1 max-h-32 overflow-y-auto">
+                  {hashtagSuggestions.map((suggestion) => (
+                    <div
+                      key={suggestion}
+                      className="px-3 py-2 hover:bg-accent cursor-pointer text-sm"
+                      onClick={() => {
+                        setCustomHashtag(suggestion);
+                        setHashtagSuggestions([]);
+                      }}
+                    >
+                      {suggestion}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <Button 
               onClick={handleCustomHashtagAdd}
-              disabled={!customHashtag.trim() || selectedHashtags.length >= 3}
+              disabled={!customHashtag.trim() || selectedHashtags.length >= 3 || !ALL_AVAILABLE_HASHTAGS.includes(customHashtag.startsWith('#') ? customHashtag : `#${customHashtag}`)}
             >
               Ekle
             </Button>

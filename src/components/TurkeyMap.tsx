@@ -13,6 +13,8 @@ interface Province {
     negative: number;
   };
   inclination: string;
+  hashtags: string[];
+  region: string;
 }
 
 interface TurkeyMapProps {
@@ -27,7 +29,7 @@ interface TurkeyMapProps {
   };
 }
 
-// City coordinates for pinpointing on the Turkey map image
+// Enhanced province data with comprehensive hashtag lists
 const PROVINCES_DATA: Province[] = [
   {
     id: 'istanbul',
@@ -36,7 +38,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 28.8, y: 40.2 }, // Longitude, Latitude converted to percentage
     mainTopic: '#SıfırAtık',
     sentiment: { positive: 65, neutral: 25, negative: 10 },
-    inclination: 'Çok Olumlu'
+    inclination: 'Çok Olumlu',
+    hashtags: ['#SıfırAtık', '#ÇevreKoruması', '#YeşilŞehir', '#GeriDönüşüm', '#SürdürülebilirŞehir'],
+    region: 'Marmara Bölgesi'
   },
   {
     id: 'ankara',
@@ -45,7 +49,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 39.5, y: 41.5 },
     mainTopic: '#YeşilŞehir',
     sentiment: { positive: 72, neutral: 20, negative: 8 },
-    inclination: 'Çok Olumlu'
+    inclination: 'Çok Olumlu',
+    hashtags: ['#YeşilŞehir', '#TemizEnerji', '#İklimDeğişikliği', '#ÇevreBilinci', '#DoğaDostu'],
+    region: 'İç Anadolu Bölgesi'
   },
   {
     id: 'izmir',
@@ -54,7 +60,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 16.5, y: 50.8 },
     mainTopic: '#TemizHava',
     sentiment: { positive: 58, neutral: 30, negative: 12 },
-    inclination: 'Olumlu'
+    inclination: 'Olumlu',
+    hashtags: ['#TemizHava', '#ÇevreKoruması', '#YeşilTeknoloji', '#EkolojikDenge', '#KarbonAyakİzi'],
+    region: 'Ege Bölgesi'
   },
   {
     id: 'antalya',
@@ -63,7 +71,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 38.2, y: 72.5 },
     mainTopic: '#SürdürülebilirTurizm',
     sentiment: { positive: 68, neutral: 22, negative: 10 },
-    inclination: 'Çok Olumlu'
+    inclination: 'Çok Olumlu',
+    hashtags: ['#SürdürülebilirTurizm', '#DoğaDostu', '#TemizEnerji', '#ÇevreBilinci', '#YeşilŞehir'],
+    region: 'Akdeniz Bölgesi'
   },
   {
     id: 'bursa',
@@ -72,7 +82,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 32.8, y: 45.2 },
     mainTopic: '#YeşilSanayi',
     sentiment: { positive: 70, neutral: 20, negative: 10 },
-    inclination: 'Çok Olumlu'
+    inclination: 'Çok Olumlu',
+    hashtags: ['#YeşilSanayi', '#SürdürülebilirŞehir', '#YeşilTeknoloji', '#TemizEnerji', '#GeriDönüşüm'],
+    region: 'Marmara Bölgesi'
   },
   {
     id: 'adana',
@@ -81,7 +93,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 48.5, y: 68.2 },
     mainTopic: '#TarımselSürdürülebilirlik',
     sentiment: { positive: 60, neutral: 28, negative: 12 },
-    inclination: 'Olumlu'
+    inclination: 'Olumlu',
+    hashtags: ['#TarımselSürdürülebilirlik', '#ÇevreKoruması', '#DoğaDostu', '#EkolojikDenge', '#TemizEnerji'],
+    region: 'Akdeniz Bölgesi'
   },
   {
     id: 'gaziantep',
@@ -90,7 +104,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 52.8, y: 65.5 },
     mainTopic: '#EnerjiVerimliliği',
     sentiment: { positive: 55, neutral: 32, negative: 13 },
-    inclination: 'Nötr'
+    inclination: 'Nötr',
+    hashtags: ['#EnerjiVerimliliği', '#YeşilTeknoloji', '#ÇevreBilinci', '#SürdürülebilirŞehir', '#KarbonAyakİzi'],
+    region: 'Güneydoğu Anadolu Bölgesi'
   },
   {
     id: 'konya',
@@ -99,7 +115,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 44.2, y: 58.8 },
     mainTopic: '#SularınKorunması',
     sentiment: { positive: 63, neutral: 25, negative: 12 },
-    inclination: 'Olumlu'
+    inclination: 'Olumlu',
+    hashtags: ['#SularınKorunması', '#ÇevreKoruması', '#DoğaDostu', '#EkolojikDenge', '#İklimDeğişikliği'],
+    region: 'İç Anadolu Bölgesi'
   },
   {
     id: 'trabzon',
@@ -108,7 +126,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 52.5, y: 30.2 },
     mainTopic: '#KaradenizEkolojisi',
     sentiment: { positive: 58, neutral: 30, negative: 12 },
-    inclination: 'Olumlu'
+    inclination: 'Olumlu',
+    hashtags: ['#KaradenizEkolojisi', '#ÇevreKoruması', '#EkolojikDenge', '#DoğaDostu', '#TemizHava'],
+    region: 'Karadeniz Bölgesi'
   },
   {
     id: 'van',
@@ -117,7 +137,9 @@ const PROVINCES_DATA: Province[] = [
     coordinates: { x: 68.2, y: 52.8 },
     mainTopic: '#GölEkosistemleri',
     sentiment: { positive: 52, neutral: 35, negative: 13 },
-    inclination: 'Nötr'
+    inclination: 'Nötr',
+    hashtags: ['#GölEkosistemleri', '#ÇevreKoruması', '#SularınKorunması', '#EkolojikDenge', '#DoğaDostu'],
+    region: 'Doğu Anadolu Bölgesi'
   }
 ];
 
@@ -136,22 +158,22 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
   // Function to check if a province matches the filter criteria
   const getFilterMatchIntensity = (province: Province): number => {
-    if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0)) {
+    if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
       return 0;
     }
 
     let matchScore = 0;
     let totalCriteria = 0;
 
-    // Check hashtag matches (simulated - in real app this would come from backend)
+    // Check hashtag matches - count exact matches in province's hashtag list
     if (activeFilters.hashtags.length > 0) {
-      totalCriteria += activeFilters.hashtags.length;
-      // Simulate hashtag matching - check if province's main topic matches or if random chance
-      activeFilters.hashtags.forEach(hashtag => {
-        if (province.mainTopic === hashtag || Math.random() > 0.6) {
-          matchScore += 1;
-        }
-      });
+      totalCriteria += 1;
+      const hashtagMatches = activeFilters.hashtags.filter(hashtag => 
+        province.hashtags.includes(hashtag)
+      ).length;
+      // Score based on percentage of searched hashtags found in province
+      const hashtagScore = hashtagMatches / activeFilters.hashtags.length;
+      matchScore += hashtagScore;
     }
 
     // Check sentiment matches
@@ -162,6 +184,14 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         (province.sentiment.negative > province.sentiment.neutral ? 'negative' : 'neutral');
       
       if (activeFilters.sentiment.includes(dominantSentiment)) {
+        matchScore += 1;
+      }
+    }
+
+    // Check region matches
+    if (activeFilters.regions.length > 0) {
+      totalCriteria += 1;
+      if (activeFilters.regions.includes(province.region)) {
         matchScore += 1;
       }
     }
