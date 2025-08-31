@@ -222,11 +222,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           className="fixed z-50 bg-popover border border-border rounded-lg p-3 shadow-xl min-w-[200px] pointer-events-none"
           style={{
             left: mousePosition.x,
-            top: mousePosition.y - 80, // 80px above cursor
+            top: mousePosition.y - 130, // 130px above cursor
             transform: 'translateX(-50%)',
           }}
         >
-          <div className="space-y-10">
+          <div className="space-y-1">
             {(() => {
               const province = PROVINCES_DATA.find(p => p.id === hoveredProvince);
               if (!province) return null;
