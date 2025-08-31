@@ -38,10 +38,24 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   activeFilters
 }) => {
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
+  const [animationKey, setAnimationKey] = useState<number>(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const handleProvinceClick = useCallback((province: Province) => {
     onProvinceClick(province);
   }, [onProvinceClick]);
+
+  // Reset animation when filters change
+  React.useEffect(() => {
+    if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
+      setAnimationKey(prev => prev + 1);
+    }
+  }, [activeFilters]);
+
+  // Track mouse position for tooltip
+  const handleMouseMove = useCallback((event: React.MouseEvent) => {
+    setMousePosition({ x: event.clientX, y: event.clientY });
+  }, []);
 
   // Function to check if a province matches the filter criteria
   const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
@@ -146,7 +160,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center min-h-[400px]">
+    <div className="relative w-full h-full flex items-center justify-center min-h-[400px]" onMouseMove={handleMouseMove}>
       {/* Turkey Map Background */}
       <div className="relative w-full h-full flex items-center justify-center">
         <svg 
@@ -154,7 +168,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           xmlns="http://www.w3.org/2000/svg" 
           version="1.1" 
           viewBox="0 0 800 350" 
-          className="w-full h-auto max-w-4xl max-h-[500px]"
+          className="w-full h-auto max-w-5xl max-h-[600px]"
         >
           <g>
             {PROVINCES_DATA.map((province) => {
@@ -167,10 +181,10 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                 <g key={province.id}>
                   <path 
                     className={cn(
-                      "cursor-pointer transition-all duration-300 stroke-border stroke-[0.5]",
+                      "cursor-pointer transition-all duration-500 stroke-border stroke-[1]",
                       {
-                        "drop-shadow-sm": isHovered,
-                        "animate-pulse": hasActiveFilters && (
+                        "drop-shadow-lg scale-[1.02] brightness-110": isHovered,
+                        "animate-[pulse_3s_ease-in-out_infinite]": hasActiveFilters && (
                           matchResult.type === 'high' || 
                           matchResult.type === 'medium' || 
                           matchResult.type === 'low' || 
@@ -180,8 +194,10 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                     )}
                     style={{
                       fill: getProvinceFill(province.id),
-                      transform: isHovered ? 'translateY(-1px)' : 'translateY(0)',
+                      transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+                      animationDelay: hasActiveFilters ? `${Math.random() * 0.5}s` : '0s',
                     }}
+                    key={`${province.id}-${animationKey}`}
                     onMouseEnter={() => setHoveredProvince(province.id)}
                     onMouseLeave={() => setHoveredProvince(null)}
                     onClick={() => handleProvinceClick(province)}
@@ -197,47 +213,45 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                 </g>
               )})}
           </g>
-          
-          {/* Tooltip */}
-          {hoveredProvince && (
-            <foreignObject x="0" y="0" width="100%" height="100%" className="pointer-events-none">
-              <div className="relative w-full h-full">
-                {(() => {
-                  const province = PROVINCES_DATA.find(p => p.id === hoveredProvince);
-                  if (!province) return null;
-                  
-                  return (
-                    <div
-                      className="absolute z-50 bg-popover border border-border rounded-lg p-3 shadow-xl min-w-[200px]"
-                      style={{
-                        left: `${province.coordinates.x}%`,
-                        top: `${province.coordinates.y}%`,
-                        transform: 'translate(-50%, -100%)',
-                      }}
-                    >
-                      <div className="space-y-1">
-                        <h4 className="font-semibold text-foreground">{province.name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Eğilim: <span className={cn(
-                            "font-medium",
-                            province.inclination === 'Çok Olumlu' ? 'text-sentiment-positive' :
-                            province.inclination === 'Olumlu' ? 'text-sentiment-positive' :
-                            province.inclination === 'Nötr' ? 'text-sentiment-neutral' :
-                            'text-sentiment-negative'
-                          )}>{province.inclination}</span>
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Popüler: <span className="text-primary font-medium">{province.mainTopic}</span>
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-            </foreignObject>
-          )}
         </svg>
       </div>
+      
+      {/* Tooltip */}
+      {hoveredProvince && (
+        <div
+          className="fixed z-50 bg-popover border border-border rounded-lg p-3 shadow-xl min-w-[200px] pointer-events-none"
+          style={{
+            left: mousePosition.x,
+            top: mousePosition.y - 80, // 80px above cursor
+            transform: 'translateX(-50%)',
+          }}
+        >
+          <div className="space-y-1">
+            {(() => {
+              const province = PROVINCES_DATA.find(p => p.id === hoveredProvince);
+              if (!province) return null;
+              
+              return (
+                <>
+                  <h4 className="font-semibold text-foreground">{province.name}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Eğilim: <span className={cn(
+                      "font-medium",
+                      province.inclination === 'Çok Olumlu' ? 'text-sentiment-positive' :
+                      province.inclination === 'Olumlu' ? 'text-sentiment-positive' :
+                      province.inclination === 'Nötr' ? 'text-sentiment-neutral' :
+                      'text-sentiment-negative'
+                    )}>{province.inclination}</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Popüler: <span className="text-primary font-medium">{province.mainTopic}</span>
+                  </p>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      )}
       
       {comparisonMode && (
         <div className="absolute top-4 left-4 glass-panel rounded-lg px-4 py-2">
