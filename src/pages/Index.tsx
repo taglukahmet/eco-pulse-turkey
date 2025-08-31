@@ -6,38 +6,18 @@ import TurkeyMap from '@/components/TurkeyMap';
 import CityDetailPanel from '@/components/CityDetailPanel';
 import NationalAgendaPanel from '@/components/NationalAgendaPanel';
 import ComparisonView from '@/components/ComparisonView';
-import FilterInterface, { FilterCriteria } from '@/components/FilterInterface';
+import FilterInterface from '@/components/FilterInterface';
+import { Province, CityData, FilterCriteria } from '@/types';
 
-interface Province {
-  id: string;
-  name: string;
-  coordinates: { x: number; y: number };
-  mainTopic: string;
-  sentiment: {
-    positive: number;
-    neutral: number;
-    negative: number;
-  };
-  inclination: string;
-  hashtags: string[];
-  region: string;
-  d: string;
-}
+// TODO: Backend Integration - This component will need several API connections:
+// 1. Real-time province data updates: GET /api/provinces
+// 2. User authentication for personalized filters: POST /api/auth/login  
+// 3. Analytics tracking for user interactions: POST /api/analytics/track
+// 4. Save user preferences: POST /api/user/preferences
 
-interface CityData {
-  id: string;
-  name: string;
-  sentiment: {
-    positive: number;
-    neutral: number;
-    negative: number;
-  };
-  topics: Array<{ text: string; value: number }>;
-  hashtags: string[];
-  weeklyTrend: Array<{ day: string; volume: number }>;
-}
-
-// Mock data generator for cities
+// TODO: Backend Integration - Replace with API call to generate real city data
+// This should fetch data from: GET /api/cities/{provinceId}/analytics
+// Include real-time sentiment analysis and trending topics from social media
 const generateCityData = (province: Province): CityData => ({
   id: province.id,
   name: province.name,

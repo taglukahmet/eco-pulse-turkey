@@ -6,6 +6,12 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { cn } from '@/lib/utils';
 import NationalSocialMediaComparison from './NationalSocialMediaComparison';
 
+// TODO: Backend Integration - National agenda and trends
+// API Endpoints needed:
+// 1. GET /api/national/agenda - Top trending topics nationwide
+// 2. GET /api/national/sentiment - Country-wide sentiment analysis
+// 3. WebSocket /ws/national - Real-time national trend updates
+
 interface NationalData {
   sentiment: {
     positive: number;

@@ -6,6 +6,12 @@ import { Progress } from '@/components/ui/progress';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import SocialMediaComparison from './SocialMediaComparison';
 
+// TODO: Backend Integration - City detail analytics
+// API Endpoints needed:
+// 1. GET /api/cities/{cityId}/analytics - Detailed sentiment and topic analysis
+// 2. GET /api/cities/{cityId}/social-media - Platform-specific metrics  
+// 3. GET /api/cities/{cityId}/trends - Weekly/monthly trend data
+
 interface CityData {
   id: string;
   name: string;

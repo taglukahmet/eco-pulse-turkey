@@ -1,22 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { PROVINCES_DATA } from '@/frontend_data/Provinces';
+import { Province } from '@/types';
 
-interface Province {
-  id: string;
-  name: string;
-  coordinates: { x: number; y: number };
-  mainTopic: string;
-  sentiment: {
-    positive: number;
-    neutral: number;
-    negative: number;
-  };
-  inclination: string;
-  hashtags: string[];
-  region: string;
-  d: string;
-}
+// TODO: Backend Integration - Replace with API call to fetch provinces data from backend
+// Example: const response = await fetch('/api/provinces');
+// This will allow real-time updates of province sentiment and topics
 
 interface TurkeyMapProps {
   onProvinceClick: (province: Province) => void;

@@ -3,6 +3,10 @@ import { X, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CityDetailPanel from './CityDetailPanel';
 
+// TODO: Backend Integration - Multi-city comparison data
+// API Endpoint: POST /api/cities/compare
+// Send array of city IDs and receive comparative analytics
+
 interface CityData {
   id: string;
   name: string;

@@ -3,6 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Twitter, Instagram, Globe2 } from 'lucide-react';
 
+// TODO: Backend Integration - Social media comparison data
+// API Endpoint: GET /api/cities/{cityId}/social-media
+// Real-time social media metrics from multiple platforms
+
 interface SocialMediaData {
   platform: string;
   icon: React.ReactNode;

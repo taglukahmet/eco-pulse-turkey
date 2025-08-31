@@ -7,6 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { X, Hash, Heart, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+// TODO: Backend Integration - Dynamic filter options
+// API Endpoint: GET /api/filters/options
+// Should return available hashtags, sentiment options, and regions dynamically
+
 export interface FilterCriteria {
   hashtags: string[];
   sentiment: string[];

@@ -1,20 +1,10 @@
 
+import { Province } from '@/types';
 
-interface Province {
-    id: string;
-    name: string;
-    coordinates: { x: number; y: number };
-    mainTopic: string;
-    sentiment: {
-      positive: number;
-      neutral: number;
-      negative: number;
-    };
-    inclination: string;
-    hashtags: string[];
-    region: string;
-    d: string;
-  }
+// TODO: Backend Integration - Replace this static data with API endpoint
+// This data should come from your backend database with real-time updates
+// Example API structure: GET /api/provinces
+// Consider caching strategy for better performance
   
 
 
