@@ -226,7 +226,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             transform: 'translateX(-50%)',
           }}
         >
-          <div className="space-y-1">
+          <div className="space-y-10">
             {(() => {
               const province = PROVINCES_DATA.find(p => p.id === hoveredProvince);
               if (!province) return null;
