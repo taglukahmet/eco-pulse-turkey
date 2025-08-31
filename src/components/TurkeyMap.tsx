@@ -52,22 +52,40 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     }
   }, [activeFilters]);
 
-  // Track mouse position for tooltip
+  // Track mouse position for tooltip (only when hovering a province)
   const handleMouseMove = useCallback((event: React.MouseEvent) => {
-    setMousePosition({ x: event.clientX, y: event.clientY });
-  }, []);
+    if (hoveredProvince) {
+      setMousePosition({ x: event.clientX, y: event.clientY });
+    }
+  }, [hoveredProvince]);
 
-  // Function to check if a province matches the filter criteria
+  // Function to check if a province matches the filter criteria with strict matching
   const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
     if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
       return { score: 0, type: 'none' };
+    }
+
+    // Strict region filtering - if region filter is active, province MUST match
+    if (activeFilters.regions.length > 0 && !activeFilters.regions.includes(province.region)) {
+      return { score: 0, type: 'none' };
+    }
+
+    // Strict sentiment filtering - if sentiment filter is active, province MUST match
+    if (activeFilters.sentiment.length > 0) {
+      const dominantSentiment = province.sentiment.positive > province.sentiment.negative ? 
+        (province.sentiment.positive > province.sentiment.neutral ? 'positive' : 'neutral') :
+        (province.sentiment.negative > province.sentiment.neutral ? 'negative' : 'neutral');
+      
+      if (!activeFilters.sentiment.includes(dominantSentiment)) {
+        return { score: 0, type: 'none' };
+      }
     }
 
     let matchScore = 0;
     let totalCriteria = 0;
     let hasExistingHashtag = false;
 
-    // Check hashtag matches
+    // Check hashtag matches (only if hashtag filter is active)
     if (activeFilters.hashtags.length > 0) {
       totalCriteria += 1;
       const topHashtagMatches = activeFilters.hashtags.filter(hashtag => 
@@ -90,27 +108,22 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         matchScore += hashtagScore;
       } else if (existsButNotTop) {
         hasExistingHashtag = true;
+      } else {
+        // No hashtag match found - return none for strict hashtag filtering
+        return { score: 0, type: 'none' };
       }
     }
 
-    // Check sentiment matches
+    // Add points for sentiment match (already verified above if filter is active)
     if (activeFilters.sentiment.length > 0) {
       totalCriteria += 1;
-      const dominantSentiment = province.sentiment.positive > province.sentiment.negative ? 
-        (province.sentiment.positive > province.sentiment.neutral ? 'positive' : 'neutral') :
-        (province.sentiment.negative > province.sentiment.neutral ? 'negative' : 'neutral');
-      
-      if (activeFilters.sentiment.includes(dominantSentiment)) {
-        matchScore += 1;
-      }
+      matchScore += 1;
     }
 
-    // Check region matches
+    // Add points for region match (already verified above if filter is active)
     if (activeFilters.regions.length > 0) {
       totalCriteria += 1;
-      if (activeFilters.regions.includes(province.region)) {
-        matchScore += 1;
-      }
+      matchScore += 1;
     }
 
     const finalScore = totalCriteria > 0 ? matchScore / totalCriteria : 0;
@@ -160,7 +173,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center min-h-[400px]" onMouseMove={handleMouseMove}>
+    <div className="relative w-full h-full flex items-center justify-center min-h-[500px]" onMouseMove={handleMouseMove}>
       {/* Turkey Map Background */}
       <div className="relative w-full h-full flex items-center justify-center">
         <svg 
@@ -168,7 +181,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           xmlns="http://www.w3.org/2000/svg" 
           version="1.1" 
           viewBox="0 0 800 350" 
-          className="w-full h-auto max-w-5xl max-h-[600px]"
+          className="w-full h-auto max-w-6xl max-h-[700px]"
         >
           <g>
             {PROVINCES_DATA.map((province) => {
@@ -181,10 +194,10 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                 <g key={province.id}>
                   <path 
                     className={cn(
-                      "cursor-pointer transition-all duration-500 stroke-border stroke-[1]",
+                      "cursor-pointer transition-all duration-300 stroke-border stroke-[1.5] hover:stroke-[2]",
                       {
-                        "drop-shadow-lg scale-[1.02] brightness-110": isHovered,
-                        "animate-[pulse_3s_ease-in-out_infinite]": hasActiveFilters && (
+                        "drop-shadow-lg brightness-110": isHovered,
+                        "animate-[pulse_4s_ease-in-out_infinite]": hasActiveFilters && (
                           matchResult.type === 'high' || 
                           matchResult.type === 'medium' || 
                           matchResult.type === 'low' || 
@@ -194,8 +207,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                     )}
                     style={{
                       fill: getProvinceFill(province.id),
-                      transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-                      animationDelay: hasActiveFilters ? `${Math.random() * 0.5}s` : '0s',
+                      transform: isHovered ? 'translateY(-3px) scale(1.01)' : 'translateY(0) scale(1)',
+                      animationDelay: hasActiveFilters ? `${(province.id.charCodeAt(0) % 10) * 0.2}s` : '0s',
                     }}
                     key={`${province.id}-${animationKey}`}
                     onMouseEnter={() => setHoveredProvince(province.id)}
@@ -222,7 +235,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           className="fixed z-50 bg-popover border border-border rounded-lg p-3 shadow-xl min-w-[200px] pointer-events-none"
           style={{
             left: mousePosition.x,
-            top: mousePosition.y - 130, // 130px above cursor
+            top: mousePosition.y - 120,
             transform: 'translateX(-50%)',
           }}
         >
