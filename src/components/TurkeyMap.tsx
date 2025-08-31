@@ -15,6 +15,7 @@ interface Province {
   inclination: string;
   hashtags: string[];
   region: string;
+  d: string;
 }
 
 interface TurkeyMapProps {
@@ -145,10 +146,16 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full h-full flex items-center justify-center min-h-[400px]">
       {/* Turkey Map Background */}
-      <div className="relative w-full h-full max-w-6xl">
-        <svg id="svg-turkey-map" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 350" className="w-full h-auto stroke-white stroke-[0.5]">
+      <div className="relative w-full h-full flex items-center justify-center">
+        <svg 
+          id="svg-turkey-map" 
+          xmlns="http://www.w3.org/2000/svg" 
+          version="1.1" 
+          viewBox="0 0 800 350" 
+          className="w-full h-auto max-w-4xl max-h-[500px]"
+        >
           <g>
             {PROVINCES_DATA.map((province) => {
               const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
@@ -158,43 +165,54 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             
               return(
                 <g key={province.id}>
-                <path 
-                  className={cn(
-                    "absolute w-4 h-4 rounded-full cursor-pointer transition-all duration-300 transform -translate-x-1/2 -translate-y-1/2",
-                    "border-2 border-white shadow-lg hover:scale-125",
-                    {
-                      "bg-primary scale-110": isSelected,
-                      "bg-primary/70": !isSelected && selectedProvinces.includes(province.id),
-                      "bg-muted-foreground": !isSelected && !selectedProvinces.includes(province.id) && !hasActiveFilters,
-                      "animate-pulse": isSelected,
-                      // Filter-based styling with twitching effects
-                      "bg-sentiment-positive scale-110 animate-pulse": hasActiveFilters && matchResult.type === 'high',
-                      "bg-sentiment-neutral scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'medium',
-                      "bg-primary/60 scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'low',
-                      "scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'exists',
-                      "bg-muted-foreground/30": hasActiveFilters && matchResult.type === 'none'
-                    }
-                  )}
-                  style={{
-                    backgroundColor: hasActiveFilters && matchResult.type === 'exists' ? 'hsl(220 91% 58% / 0.7)' : !hasActiveFilters ? getProvinceFill(province.id) : undefined
-                  }}
-                  onMouseEnter={() => setHoveredProvince(province.id)}
-                  onMouseLeave={() => setHoveredProvince(null)}
-                  onClick={() => handleProvinceClick(province)}
-                  id = {province.id} 
-                  data-name = {province.name} 
-                  data-coordinates = {province.coordinates}
-                  data-sentiment = {province.sentiment}
-                  data-inclination = {province.inclination}
-                  data-hashtags = {province.hashtags}
-                  data-region = {province.region}
-                  d = {province.d}  />
-
-                  {isHovered && (
+                  <path 
+                    className={cn(
+                      "cursor-pointer transition-all duration-300 stroke-border stroke-[0.5]",
+                      {
+                        "drop-shadow-sm": isHovered,
+                        "animate-pulse": hasActiveFilters && (
+                          matchResult.type === 'high' || 
+                          matchResult.type === 'medium' || 
+                          matchResult.type === 'low' || 
+                          matchResult.type === 'exists'
+                        ),
+                      }
+                    )}
+                    style={{
+                      fill: getProvinceFill(province.id),
+                      transform: isHovered ? 'translateY(-1px)' : 'translateY(0)',
+                    }}
+                    onMouseEnter={() => setHoveredProvince(province.id)}
+                    onMouseLeave={() => setHoveredProvince(null)}
+                    onClick={() => handleProvinceClick(province)}
+                    id={province.id} 
+                    data-name={province.name} 
+                    data-coordinates={province.coordinates}
+                    data-sentiment={province.sentiment}
+                    data-inclination={province.inclination}
+                    data-hashtags={province.hashtags}
+                    data-region={province.region}
+                    d={province.d}  
+                  />
+                </g>
+              )})}
+          </g>
+          
+          {/* Tooltip */}
+          {hoveredProvince && (
+            <foreignObject x="0" y="0" width="100%" height="100%" className="pointer-events-none">
+              <div className="relative w-full h-full">
+                {(() => {
+                  const province = PROVINCES_DATA.find(p => p.id === hoveredProvince);
+                  if (!province) return null;
+                  
+                  return (
                     <div
-                      className="absolute z-50 bg-popover border border-border rounded-lg p-3 shadow-xl pointer-events-none min-w-[200px]"
+                      className="absolute z-50 bg-popover border border-border rounded-lg p-3 shadow-xl min-w-[200px]"
                       style={{
-                        transform: 'translateX(-50%)'
+                        left: `${province.coordinates.x}%`,
+                        top: `${province.coordinates.y}%`,
+                        transform: 'translate(-50%, -100%)',
                       }}
                     >
                       <div className="space-y-1">
@@ -213,10 +231,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                         </p>
                       </div>
                     </div>
-                  )}
-                </g>
-            )})}
-          </g>
+                  );
+                })()}
+              </div>
+            </foreignObject>
+          )}
         </svg>
       </div>
       

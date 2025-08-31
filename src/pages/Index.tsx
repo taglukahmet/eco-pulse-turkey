@@ -11,13 +11,17 @@ import FilterInterface, { FilterCriteria } from '@/components/FilterInterface';
 interface Province {
   id: string;
   name: string;
-  path: string;
+  coordinates: { x: number; y: number };
   mainTopic: string;
   sentiment: {
     positive: number;
     neutral: number;
     negative: number;
   };
+  inclination: string;
+  hashtags: string[];
+  region: string;
+  d: string;
 }
 
 interface CityData {
