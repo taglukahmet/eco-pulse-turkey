@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 
 interface Province {
   id: string;
   name: string;
-  path: string;
   coordinates: { x: number; y: number };
   mainTopic: string;
   sentiment: {
@@ -28,120 +28,6 @@ interface TurkeyMapProps {
     regions: string[];
   };
 }
-
-// Enhanced province data with comprehensive hashtag lists
-const PROVINCES_DATA: Province[] = [
-  {
-    id: 'istanbul',
-    name: 'İstanbul',
-    path: '', // Not needed anymore
-    coordinates: { x: 28.8, y: 40.2 }, // Longitude, Latitude converted to percentage
-    mainTopic: '#SıfırAtık',
-    sentiment: { positive: 65, neutral: 25, negative: 10 },
-    inclination: 'Çok Olumlu',
-    hashtags: ['#SıfırAtık', '#ÇevreKoruması', '#YeşilŞehir', '#GeriDönüşüm', '#SürdürülebilirŞehir'],
-    region: 'Marmara Bölgesi'
-  },
-  {
-    id: 'ankara',
-    name: 'Ankara',
-    path: '',
-    coordinates: { x: 39.5, y: 41.5 },
-    mainTopic: '#YeşilŞehir',
-    sentiment: { positive: 72, neutral: 20, negative: 8 },
-    inclination: 'Çok Olumlu',
-    hashtags: ['#YeşilŞehir', '#TemizEnerji', '#İklimDeğişikliği', '#ÇevreBilinci', '#DoğaDostu'],
-    region: 'İç Anadolu Bölgesi'
-  },
-  {
-    id: 'izmir',
-    name: 'İzmir',
-    path: '',
-    coordinates: { x: 16.5, y: 50.8 },
-    mainTopic: '#TemizHava',
-    sentiment: { positive: 58, neutral: 30, negative: 12 },
-    inclination: 'Olumlu',
-    hashtags: ['#TemizHava', '#ÇevreKoruması', '#YeşilTeknoloji', '#EkolojikDenge', '#KarbonAyakİzi'],
-    region: 'Ege Bölgesi'
-  },
-  {
-    id: 'antalya',
-    name: 'Antalya',
-    path: '',
-    coordinates: { x: 38.2, y: 72.5 },
-    mainTopic: '#SürdürülebilirTurizm',
-    sentiment: { positive: 68, neutral: 22, negative: 10 },
-    inclination: 'Çok Olumlu',
-    hashtags: ['#SürdürülebilirTurizm', '#DoğaDostu', '#TemizEnerji', '#ÇevreBilinci', '#YeşilŞehir'],
-    region: 'Akdeniz Bölgesi'
-  },
-  {
-    id: 'bursa',
-    name: 'Bursa',
-    path: '',
-    coordinates: { x: 32.8, y: 45.2 },
-    mainTopic: '#YeşilSanayi',
-    sentiment: { positive: 70, neutral: 20, negative: 10 },
-    inclination: 'Çok Olumlu',
-    hashtags: ['#YeşilSanayi', '#SürdürülebilirŞehir', '#YeşilTeknoloji', '#TemizEnerji', '#GeriDönüşüm'],
-    region: 'Marmara Bölgesi'
-  },
-  {
-    id: 'adana',
-    name: 'Adana',
-    path: '',
-    coordinates: { x: 48.5, y: 68.2 },
-    mainTopic: '#TarımselSürdürülebilirlik',
-    sentiment: { positive: 60, neutral: 28, negative: 12 },
-    inclination: 'Olumlu',
-    hashtags: ['#TarımselSürdürülebilirlik', '#ÇevreKoruması', '#DoğaDostu', '#EkolojikDenge', '#TemizEnerji'],
-    region: 'Akdeniz Bölgesi'
-  },
-  {
-    id: 'gaziantep',
-    name: 'Gaziantep',
-    path: '',
-    coordinates: { x: 52.8, y: 65.5 },
-    mainTopic: '#EnerjiVerimliliği',
-    sentiment: { positive: 55, neutral: 32, negative: 13 },
-    inclination: 'Nötr',
-    hashtags: ['#EnerjiVerimliliği', '#YeşilTeknoloji', '#ÇevreBilinci', '#SürdürülebilirŞehir', '#KarbonAyakİzi'],
-    region: 'Güneydoğu Anadolu Bölgesi'
-  },
-  {
-    id: 'konya',
-    name: 'Konya',
-    path: '',
-    coordinates: { x: 44.2, y: 58.8 },
-    mainTopic: '#SularınKorunması',
-    sentiment: { positive: 63, neutral: 25, negative: 12 },
-    inclination: 'Olumlu',
-    hashtags: ['#SularınKorunması', '#ÇevreKoruması', '#DoğaDostu', '#EkolojikDenge', '#İklimDeğişikliği'],
-    region: 'İç Anadolu Bölgesi'
-  },
-  {
-    id: 'trabzon',
-    name: 'Trabzon',
-    path: '',
-    coordinates: { x: 52.5, y: 30.2 },
-    mainTopic: '#KaradenizEkolojisi',
-    sentiment: { positive: 58, neutral: 30, negative: 12 },
-    inclination: 'Olumlu',
-    hashtags: ['#KaradenizEkolojisi', '#ÇevreKoruması', '#EkolojikDenge', '#DoğaDostu', '#TemizHava'],
-    region: 'Karadeniz Bölgesi'
-  },
-  {
-    id: 'van',
-    name: 'Van',
-    path: '',
-    coordinates: { x: 68.2, y: 52.8 },
-    mainTopic: '#GölEkosistemleri',
-    sentiment: { positive: 52, neutral: 35, negative: 13 },
-    inclination: 'Nötr',
-    hashtags: ['#GölEkosistemleri', '#ÇevreKoruması', '#SularınKorunması', '#EkolojikDenge', '#DoğaDostu'],
-    region: 'Doğu Anadolu Bölgesi'
-  }
-];
 
 export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   onProvinceClick,
@@ -262,81 +148,76 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     <div className="relative w-full h-full flex items-center justify-center">
       {/* Turkey Map Background */}
       <div className="relative w-full h-full max-w-6xl">
-        <img 
-          src="/lovable-uploads/53f0d7e9-bcad-40c0-8f17-6df68993047e.png" 
-          alt="Turkey Map"
-          className="w-full h-full object-contain"
-          style={{ filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.3))' }}
-        />
-        
-        {/* City Pinpoints */}
-        {PROVINCES_DATA.map((province) => {
-          const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
-          const isHovered = hoveredProvince === province.id;
-          const matchResult = getFilterMatchIntensity(province);
-          const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0);
-          
-          return (
-            <div key={province.id}>
-              {/* City Pin */}
-              <div
-                className={cn(
-                  "absolute w-4 h-4 rounded-full cursor-pointer transition-all duration-300 transform -translate-x-1/2 -translate-y-1/2",
-                  "border-2 border-white shadow-lg hover:scale-125",
-                  {
-                    "bg-primary scale-110": isSelected,
-                    "bg-primary/70": !isSelected && selectedProvinces.includes(province.id),
-                    "bg-muted-foreground": !isSelected && !selectedProvinces.includes(province.id) && !hasActiveFilters,
-                    "animate-pulse": isSelected,
-                    // Filter-based styling with twitching effects
-                    "bg-sentiment-positive scale-110 animate-pulse": hasActiveFilters && matchResult.type === 'high',
-                    "bg-sentiment-neutral scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'medium',
-                    "bg-primary/60 scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'low',
-                    "scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'exists',
-                    "bg-muted-foreground/30": hasActiveFilters && matchResult.type === 'none'
-                  }
-                )}
-                style={{
-                  left: `${province.coordinates.x}%`,
-                  top: `${province.coordinates.y}%`,
-                  backgroundColor: hasActiveFilters && matchResult.type === 'exists' ? 'hsl(220 91% 58% / 0.7)' : 
-                                 !hasActiveFilters ? getProvinceFill(province.id) : undefined
-                }}
-                onMouseEnter={() => setHoveredProvince(province.id)}
-                onMouseLeave={() => setHoveredProvince(null)}
-                onClick={() => handleProvinceClick(province)}
-              />
-              
-              {/* Hover Tooltip */}
-              {isHovered && (
-                <div
-                  className="absolute z-50 bg-popover border border-border rounded-lg p-3 shadow-xl pointer-events-none min-w-[200px]"
+        <svg id="svg-turkey-map" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 350" className="w-full h-auto stroke-white stroke-[0.5]">
+          <g>
+            {PROVINCES_DATA.map((province) => {
+              const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
+              const isHovered = hoveredProvince === province.id;
+              const matchResult = getFilterMatchIntensity(province);
+              const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0);
+            
+              return(
+                <g key={province.id}>
+                <path 
+                  className={cn(
+                    "absolute w-4 h-4 rounded-full cursor-pointer transition-all duration-300 transform -translate-x-1/2 -translate-y-1/2",
+                    "border-2 border-white shadow-lg hover:scale-125",
+                    {
+                      "bg-primary scale-110": isSelected,
+                      "bg-primary/70": !isSelected && selectedProvinces.includes(province.id),
+                      "bg-muted-foreground": !isSelected && !selectedProvinces.includes(province.id) && !hasActiveFilters,
+                      "animate-pulse": isSelected,
+                      // Filter-based styling with twitching effects
+                      "bg-sentiment-positive scale-110 animate-pulse": hasActiveFilters && matchResult.type === 'high',
+                      "bg-sentiment-neutral scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'medium',
+                      "bg-primary/60 scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'low',
+                      "scale-105 animate-pulse": hasActiveFilters && matchResult.type === 'exists',
+                      "bg-muted-foreground/30": hasActiveFilters && matchResult.type === 'none'
+                    }
+                  )}
                   style={{
-                    left: `${province.coordinates.x}%`,
-                    top: `${Math.max(0, province.coordinates.y - 15)}%`,
-                    transform: 'translateX(-50%)'
+                    backgroundColor: hasActiveFilters && matchResult.type === 'exists' ? 'hsl(220 91% 58% / 0.7)' : !hasActiveFilters ? getProvinceFill(province.id) : undefined
                   }}
-                >
-                  <div className="space-y-1">
-                    <h4 className="font-semibold text-foreground">{province.name}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Eğilim: <span className={cn(
-                        "font-medium",
-                        province.inclination === 'Çok Olumlu' ? 'text-sentiment-positive' :
-                        province.inclination === 'Olumlu' ? 'text-sentiment-positive' :
-                        province.inclination === 'Nötr' ? 'text-sentiment-neutral' :
-                        'text-sentiment-negative'
-                      )}>{province.inclination}</span>
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Popüler: <span className="text-primary font-medium">{province.mainTopic}</span>
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                  onMouseEnter={() => setHoveredProvince(province.id)}
+                  onMouseLeave={() => setHoveredProvince(null)}
+                  onClick={() => handleProvinceClick(province)}
+                  id = {province.id} 
+                  data-name = {province.name} 
+                  data-coordinates = {province.coordinates}
+                  data-sentiment = {province.sentiment}
+                  data-inclination = {province.inclination}
+                  data-hashtags = {province.hashtags}
+                  data-region = {province.region}
+                  d = {province.d}  />
+
+                  {isHovered && (
+                    <div
+                      className="absolute z-50 bg-popover border border-border rounded-lg p-3 shadow-xl pointer-events-none min-w-[200px]"
+                      style={{
+                        transform: 'translateX(-50%)'
+                      }}
+                    >
+                      <div className="space-y-1">
+                        <h4 className="font-semibold text-foreground">{province.name}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Eğilim: <span className={cn(
+                            "font-medium",
+                            province.inclination === 'Çok Olumlu' ? 'text-sentiment-positive' :
+                            province.inclination === 'Olumlu' ? 'text-sentiment-positive' :
+                            province.inclination === 'Nötr' ? 'text-sentiment-neutral' :
+                            'text-sentiment-negative'
+                          )}>{province.inclination}</span>
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Popüler: <span className="text-primary font-medium">{province.mainTopic}</span>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </g>
+            )})}
+          </g>
+        </svg>
       </div>
       
       {comparisonMode && (
