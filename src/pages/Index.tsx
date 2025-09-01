@@ -63,6 +63,7 @@ const Index = () => {
   const [showFilterInterface, setShowFilterInterface] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterCriteria>({ hashtags: [], sentiment: [], regions: [] });
 
+  // TODO: Backend integration - React Query hooks for data fetching
   const { data: backendProvinces, isLoading: provincesLoading, error: provincesError } = useProvinces();
   const { data: backendCityData, isLoading: cityDataLoading } = useProvinceData(selectedProvince || null);
   const { data: comparativeData } = useComparativeData(selectedCitiesForComparison.map(city => city.id));
@@ -89,7 +90,7 @@ const Index = () => {
       setSelectedProvince(province.id);
       setSelectedCityData(cityData);
     }
-  }, [comparisonMode, selectedCitiesForComparison]);
+  }, [comparisonMode, selectedCitiesForComparison, backendCityData]);
 
   const handleCloseDetailPanel = useCallback(() => {
     setSelectedProvince(null);
