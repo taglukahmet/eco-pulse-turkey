@@ -1,164 +1,129 @@
 # Turkey Social Media Sentiment Analysis Platform
 
-## Project Overview
+A React-based social media sentiment analysis platform for Turkish provinces, featuring interactive maps, real-time analytics, and comprehensive comparison tools.
 
-A React-based web application that visualizes social media sentiment across Turkish provinces with interactive filtering and comparison features. Built for Teknofest competition.
+## Features
 
-**URL**: https://lovable.dev/projects/7b6f4a76-0d38-46f2-947e-7a80271a7122
+- **Interactive Turkey Map**: Click on provinces to view detailed analytics
+- **Real-time Sentiment Analysis**: Live tracking of social media sentiment
+- **City Comparison**: Compare up to 3 cities side-by-side
+- **National Agenda Tracking**: Monitor nationwide trends and topics
+- **Advanced Filtering**: Filter by hashtags, sentiment, and regions
+- **Multi-platform Analytics**: Support for X (Twitter), Instagram, and Next Sosyal
 
-## Backend Integration Requirements
+## Backend Integration
 
-This frontend application will require backend integration for the following functionalities:
+### API Endpoints Required
 
-### Files Requiring Backend Connection:
+The frontend is configured to work with the following backend API structure:
 
-#### 1. `src/pages/Index.tsx`
-- **Purpose**: Main dashboard component
-- **Backend Needs**:
-  - GET `/api/provinces` - Real-time province data with sentiment analysis
-  - POST `/api/auth/login` - User authentication for personalized filters
-  - POST `/api/analytics/track` - User interaction tracking
-  - POST `/api/user/preferences` - Save/load user filter preferences
-- **Data Flow**: Province data, user sessions, analytics events
-
-#### 2. `src/components/TurkeyMap.tsx`
-- **Purpose**: Interactive map component
-- **Backend Needs**:
-  - GET `/api/provinces` - Province data with SVG paths and sentiment
-  - WebSocket `/ws/provinces` - Real-time sentiment updates
-- **Data Flow**: Live province sentiment updates, map interaction events
-
-#### 3. `src/frontend_data/Provinces.ts`
-- **Purpose**: Province data storage (currently static)
-- **Backend Needs**:
-  - GET `/api/provinces` - Dynamic province data
-  - Caching strategy for performance optimization
-- **Data Flow**: Replace static data with API calls
-
-#### 4. `src/components/CityDetailPanel.tsx`
-- **Purpose**: Detailed city analytics
-- **Backend Needs**:
-  - GET `/api/cities/{id}/analytics` - Detailed city sentiment analysis
-  - GET `/api/cities/{id}/social-media` - Social media platform breakdown
-  - GET `/api/cities/{id}/trends` - Weekly trend data
-- **Data Flow**: Real-time city analytics, social media metrics
-
-#### 5. `src/components/FilterInterface.tsx`
-- **Purpose**: Advanced filtering system
-- **Backend Needs**:
-  - GET `/api/filters/options` - Available filter options
-  - POST `/api/search` - Filtered search results
-- **Data Flow**: Filter options, search queries, results
-
-#### 6. `src/components/ComparisonView.tsx`
-- **Purpose**: Multi-city comparison
-- **Backend Needs**:
-  - POST `/api/compare` - Comparison data for multiple cities
-  - GET `/api/cities/batch` - Batch city data retrieval
-- **Data Flow**: Comparative analytics data
-
-#### 7. `src/components/NationalAgendaPanel.tsx`
-- **Purpose**: National trends display  
-- **Backend Needs**:
-  - GET `/api/national/agenda` - National trending topics
-  - GET `/api/national/sentiment` - Country-wide sentiment analysis
-- **Data Flow**: National-level aggregated data
-
-### Recommended Backend Architecture:
-
+#### Province Data
 ```
-/api
-├── /auth
-│   ├── POST /login
-│   ├── POST /logout  
-│   └── GET /profile
-├── /provinces
-│   ├── GET / (all provinces)
-│   └── GET /{id} (single province)
-├── /cities
-│   ├── GET /{id}/analytics
-│   ├── GET /{id}/social-media
-│   ├── GET /{id}/trends
-│   └── POST /batch (multiple cities)
-├── /national
-│   ├── GET /agenda
-│   └── GET /sentiment
-├── /filters
-│   └── GET /options
-├── /search
-│   └── POST / (filtered search)
-├── /analytics
-│   └── POST /track (user events)
-└── /user
-    ├── GET /preferences
-    └── POST /preferences
+GET /api/provinces                    - Get all provinces with current data
+GET /api/provinces/{id}/data          - Get detailed data for specific province
+POST /api/provinces/filter            - Filter provinces by criteria
+POST /api/provinces/compare           - Get comparative data for multiple provinces
+GET /api/provinces/{id}/realtime      - Real-time updates for province
 ```
 
-### WebSocket Connections:
-- `/ws/provinces` - Real-time province sentiment updates
-- `/ws/national` - National trend updates
+#### Social Media Analytics
+```
+GET /api/social-media/city/{cityName}     - Social media data for specific city
+GET /api/social-media/national            - National social media comparison
+GET /api/social-media/platform/{platform} - Platform-specific analytics
+GET /api/social-media/trending            - Trending topics and hashtags
+```
 
-## Local Backend Development
+#### National Agenda
+```
+GET /api/national-agenda                      - National sentiment and trending data
+GET /api/national-agenda/weekly-trends        - Weekly national trends
+GET /api/national-agenda/regional-performance - Regional performance data
+GET /api/national-agenda/insights             - National insights and findings
+GET /api/national-agenda/platform-comparison  - National platform comparison
+```
 
-When connecting this frontend to your local backend:
+#### Filter Options
+```
+GET /api/filters/options              - Available filter options (hashtags, regions, etc.)
+```
 
-1. **CORS Configuration**: Ensure your backend allows requests from `http://localhost:5173`
-2. **API Base URL**: Update API endpoints to point to your local backend (e.g., `http://localhost:3000/api`)
-3. **Environment Variables**: Configure API endpoints in your development environment
-4. **Data Format**: Ensure your backend returns data in the expected format (see TODO comments in code)
+### Backend Integration Files
 
-### No Major Issues Expected
+The following files contain backend integration code with axios and React Query:
 
-Connecting to a local backend should work seamlessly. You'll only experience:
-- **Data Visualization**: Mock data will be replaced with real backend data
-- **Real-time Updates**: Static content will become dynamic
-- **User Features**: Authentication and personalization will be enabled
+#### API Service Files
+- `src/services/api.ts` - Main axios configuration with interceptors
+- `src/services/provinceService.ts` - Province-related API calls
+- `src/services/socialMediaService.ts` - Social media analytics API calls  
+- `src/services/nationalAgendaService.ts` - National agenda API calls
 
-The frontend is designed to be backend-agnostic and should work with any REST API that follows the expected data contracts.
+#### Custom Hooks
+- `src/hooks/useBackendData.ts` - React Query hooks for data fetching with caching
 
-## Technologies Used
+#### Component Integration Points
+- `src/pages/Index.tsx` - Main dashboard with province data fetching
+- `src/components/TurkeyMap.tsx` - Real-time province data updates
+- `src/components/CityDetailPanel.tsx` - City analytics and real-time updates
+- `src/components/FilterInterface.tsx` - Dynamic filter options from backend
+- `src/components/ComparisonView.tsx` - Multi-city comparison data
+- `src/components/NationalAgendaPanel.tsx` - National trends and insights
+- `src/components/SocialMediaComparison.tsx` - Platform-specific analytics
+
+### Configuration
+
+Update the API base URL in `src/services/api.ts`:
+```typescript
+const API_BASE_URL = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:3001/api'  // Your local backend URL
+  : 'https://your-backend-domain.com/api';  // Production URL
+```
+
+### Real-time Updates
+
+WebSocket connections can be implemented for real-time updates:
+- Provincial sentiment changes
+- National trending topics
+- Live engagement metrics
+
+## Local Development
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Update API endpoints in `src/services/api.ts`
+4. Start development server: `npm run dev`
+5. Start your backend server on port 3001 (or update the port in api.ts)
+
+## Technologies
 
 - **Frontend**: Vite, TypeScript, React, shadcn-ui, Tailwind CSS
-- **Charting**: Recharts
-- **Styling**: Tailwind CSS with custom design system
+- **Charts**: Recharts for data visualization
+- **HTTP Client**: Axios with React Query for API calls
 - **Routing**: React Router DOM
+- **State Management**: React hooks with React Query caching
 
-## Development Setup
+## Project Structure
 
-```sh
-# Clone the repository
-git clone <YOUR_GIT_URL>
-
-# Navigate to project directory
-cd <YOUR_PROJECT_NAME>
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+```
+src/
+├── components/           # UI components
+├── services/            # Backend API services (NEW)
+├── hooks/               # Custom React Query hooks (NEW)
+├── types/               # TypeScript interfaces
+├── frontend_data/       # Mock data (to be replaced by backend)
+└── pages/              # Route components
 ```
 
 ## Deployment
 
-Deploy via Lovable platform:
-1. Open [Lovable Project](https://lovable.dev/projects/7b6f4a76-0d38-46f2-947e-7a80271a7122)
-2. Click Share → Publish
+The app can be deployed to any static hosting service. For backend integration, ensure:
+1. CORS is properly configured on your backend
+2. API endpoints match the expected structure
+3. Environment variables are set correctly
 
-## Custom Domain
+## Contributing
 
-Connect your domain via Project > Settings > Domains in Lovable (requires paid plan).
-
-More info: [Custom Domain Setup](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
-
-## For Teknofest Judges
-
-This project demonstrates:
-- **Interactive Data Visualization** with real-time sentiment analysis
-- **Advanced Filtering System** with multiple criteria
-- **Responsive Design** optimized for all devices  
-- **Modern React Architecture** with TypeScript
-- **Performance Optimization** with efficient re-rendering
-- **User Experience Focus** with intuitive interactions
-
-The codebase is production-ready and designed for easy backend integration.
+1. Follow the TODO comments in the codebase for backend integration points
+2. All API calls use React Query for caching and error handling
+3. Maintain TypeScript interfaces for API responses
+4. Test with both mock data and real backend responses

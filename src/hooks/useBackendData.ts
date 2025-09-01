@@ -1,0 +1,76 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { provinceService } from '@/services/provinceService';
+import { socialMediaService } from '@/services/socialMediaService';
+import { nationalAgendaService } from '@/services/nationalAgendaService';
+import { FilterCriteria } from '@/types';
+
+// TODO: Custom hooks for backend data fetching
+
+// Hook for fetching all provinces
+export const useProvinces = () => {
+  return useQuery({
+    queryKey: ['provinces'],
+    queryFn: provinceService.getAllProvinces,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Hook for fetching specific province data
+export const useProvinceData = (provinceId: string | null) => {
+  return useQuery({
+    queryKey: ['provinceData', provinceId],
+    queryFn: () => provinceService.getProvinceData(provinceId!),
+    enabled: !!provinceId,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+// Hook for filtering provinces
+export const useFilterProvinces = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (criteria: FilterCriteria) => provinceService.getFilteredProvinces(criteria),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['filteredProvinces'], data);
+    },
+  });
+};
+
+// Hook for comparative data
+export const useComparativeData = (provinceIds: string[]) => {
+  return useQuery({
+    queryKey: ['comparativeData', provinceIds],
+    queryFn: () => provinceService.getComparativeData(provinceIds),
+    enabled: provinceIds.length > 0,
+    staleTime: 3 * 60 * 1000, // 3 minutes
+  });
+};
+
+// Hook for social media data
+export const useSocialMediaData = (cityName: string | null) => {
+  return useQuery({
+    queryKey: ['socialMediaData', cityName],
+    queryFn: () => socialMediaService.getCitySocialMediaData(cityName!),
+    enabled: !!cityName,
+    staleTime: 1 * 60 * 1000, // 1 minute
+  });
+};
+
+// Hook for national agenda data
+export const useNationalData = () => {
+  return useQuery({
+    queryKey: ['nationalData'],
+    queryFn: nationalAgendaService.getNationalData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Hook for national platform comparison
+export const useNationalPlatformComparison = () => {
+  return useQuery({
+    queryKey: ['nationalPlatformComparison'],
+    queryFn: nationalAgendaService.getNationalPlatformComparison,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};

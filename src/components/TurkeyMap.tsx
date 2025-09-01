@@ -2,6 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 import { Province } from '@/types';
+import { useProvinces } from '@/hooks/useBackendData';
+// TODO: Backend integration - Real-time updates via WebSocket can be added here
 
 // TODO: Backend Integration - Replace with API call to fetch provinces data from backend
 // Example: const response = await fetch('/api/provinces');
@@ -26,6 +28,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   selectedProvinces,
   activeFilters
 }) => {
+  // TODO: Backend integration - Real-time updates can be implemented with WebSocket
+  const { data: backendProvinces, isLoading } = useProvinces();
+  
+  // Use backend data if available, fallback to local data
+  const displayProvinces = backendProvinces || PROVINCES_DATA;
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [animationKey, setAnimationKey] = useState<number>(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -127,7 +134,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   };
 
   const getProvinceFill = (provinceId: string) => {
-    const province = PROVINCES_DATA.find(p => p.id === provinceId);
+    const province = displayProvinces.find(p => p.id === provinceId);
     if (!province) return 'hsl(var(--muted))';
 
     // Filter highlighting takes precedence
@@ -173,7 +180,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           className="w-full h-auto max-w-6xl max-h-[700px]"
         >
           <g>
-            {PROVINCES_DATA.map((province) => {
+            {displayProvinces.map((province) => {
               const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
               const isHovered = hoveredProvince === province.id;
               const matchResult = getFilterMatchIntensity(province);
@@ -230,7 +237,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         >
           <div className="space-y-1">
             {(() => {
-              const province = PROVINCES_DATA.find(p => p.id === hoveredProvince);
+              const province = displayProvinces.find(p => p.id === hoveredProvince);
               if (!province) return null;
               
               return (

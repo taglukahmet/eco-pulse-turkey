@@ -32,6 +32,9 @@ const SENTIMENT_COLORS = {
 };
 
 export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ cityName }) => {
+  // TODO: Backend integration - Fetch real social media data for the city
+  // const { data: backendSocialData, isLoading } = useSocialMediaData(cityName || null);
+  
   const socialMediaData: SocialMediaData[] = [
     {
       platform: 'X (Twitter)',
@@ -62,7 +65,11 @@ export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ ci
     }
   ];
 
-  const impactData = socialMediaData.map(item => ({
+  // Use backend data if available, fallback to mock data
+  // const displaySocialData = backendSocialData || socialMediaData;
+  const displaySocialData = socialMediaData;
+
+  const impactData = displaySocialData.map(item => ({
     platform: item.platform.split(' ')[0],
     impact: item.impact
   }));
@@ -100,7 +107,7 @@ export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ ci
 
         {/* Platform Details */}
         <div className="space-y-3">
-          {socialMediaData.map((platform, index) => (
+          {displaySocialData.map((platform, index) => (
             <Card key={index} className="bg-card/30">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2 mb-2">

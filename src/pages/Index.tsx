@@ -8,6 +8,7 @@ import NationalAgendaPanel from '@/components/NationalAgendaPanel';
 import ComparisonView from '@/components/ComparisonView';
 import FilterInterface from '@/components/FilterInterface';
 import { Province, CityData, FilterCriteria } from '@/types';
+import { useProvinces, useProvinceData, useFilterProvinces, useComparativeData } from '@/hooks/useBackendData';
 
 // TODO: Backend Integration - This component will need several API connections:
 // 1. Real-time province data updates: GET /api/provinces
@@ -62,9 +63,15 @@ const Index = () => {
   const [showFilterInterface, setShowFilterInterface] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterCriteria>({ hashtags: [], sentiment: [], regions: [] });
 
+  const { data: backendProvinces, isLoading: provincesLoading, error: provincesError } = useProvinces();
+  const { data: backendCityData, isLoading: cityDataLoading } = useProvinceData(selectedProvince || null);
+  const { data: comparativeData } = useComparativeData(selectedCitiesForComparison.map(city => city.id));
+  const filterMutation = useFilterProvinces();
+
   const handleProvinceClick = useCallback((province: Province) => {
     if (comparisonMode) {
-      const cityData = generateCityData(province);
+      // TODO: Backend integration - This will use backendCityData from useProvinceData hook
+      const cityData = backendCityData || generateCityData(province);
       
       if (selectedCitiesForComparison.find(city => city.id === province.id)) {
         // Remove from comparison if already selected
@@ -77,7 +84,8 @@ const Index = () => {
       }
     } else {
       // Normal mode - show city detail panel
-      const cityData = generateCityData(province);
+      // TODO: Backend integration - This will use backendCityData from useProvinceData hook  
+      const cityData = backendCityData || generateCityData(province);
       setSelectedProvince(province.id);
       setSelectedCityData(cityData);
     }
@@ -149,6 +157,21 @@ const Index = () => {
       setShowFilterInterface(false);
     }
   }, []);
+
+  // TODO: Backend integration - Update filteredProvinces when backend data is available
+  React.useEffect(() => {
+    if (backendProvinces && !provincesError) {
+      // Use backend data if available, fallback to local data
+      console.log('Using backend provinces data');
+    }
+  }, [backendProvinces, provincesError]);
+
+  // TODO: Backend integration - Update cityData when backend data is available
+  React.useEffect(() => {
+    if (backendCityData) {
+      setSelectedCityData(backendCityData);
+    }
+  }, [backendCityData]);
 
   React.useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
