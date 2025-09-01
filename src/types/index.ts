@@ -11,7 +11,7 @@ export interface Province {
   inclination: string;
   hashtags: string[];
   region: string;
-  d: string;
+  d: string; // SVG path data for map visualization
 }
 
 export interface CityData {
