@@ -10,811 +10,801 @@ export const PROVINCES_DATA: Province[] = [
   {
     id: 'adana',
     name: 'Adana',
-    mainHashtag: '#adana',
+    mainHashtag: '#Adana',
     sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#adana', '#çukurova', '#mersin'],
+    inclination: 'Olumlu',
+    hashtags: ['#Adana', '#Çukurova', '#Mersin'],
     region: 'Akdeniz',
     d: 'M600,380 L620,390 L610,410 L580,400 Z'
   },
   {
     id: 'adiyaman',
     name: 'Adıyaman',
-    mainHashtag: '#adıyaman',
+    mainHashtag: '#Adıyaman',
     sentiment: { positive: 40, neutral: 35, negative: 25 },
     inclination: 'Nötr',
-    hashtags: ['#adıyaman', '#güneydoğu', '#fırat'],
+    hashtags: ['#Adıyaman', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
     d: 'M550,320 L570,330 L560,350 L530,340 Z'
   },
   {
-    id: 'afyon',
+    id: 'afyonkarahisar',
     name: 'Afyon',
-    mainHashtag: '#afyon',
+    mainHashtag: '#Afyon',
     sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#afyon', '#termal', '#karahisar'],
+    inclination: 'Olumlu',
+    hashtags: ['#Afyon', '#Termal'],
     region: 'Ege',
     d: 'M350,250 L370,260 L360,280 L330,270 Z'
   },
   {
     id: 'agri',
     name: 'Ağrı',
-    mainHashtag: '#ağrı',
+    mainHashtag: '#Ağrı',
     sentiment: { positive: 35, neutral: 40, negative: 25 },
     inclination: 'Nötr',
-    hashtags: ['#ağrı', '#ararat', '#doğu'],
+    hashtags: ['#Ağrı', '#Ararat'],
     region: 'Doğu Anadolu',
     d: 'M680,280 L700,290 L690,310 L660,300 Z'
   },
   {
     id: 'aksaray',
     name: 'Aksaray',
-    mainHashtag: '#aksaray',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#aksaray', '#kapadokya', '#ihlara'],
+    mainHashtag: '#Aksaray',
+    sentiment: { positive: 42, neutral: 38, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Aksaray', '#İç Anadolu'],
     region: 'İç Anadolu',
-    d: 'M480,290 L500,300 L490,320 L460,310 Z'
+    d: 'M480,320 L500,330 L490,350 L460,340 Z'
   },
   {
     id: 'amasya',
     name: 'Amasya',
-    mainHashtag: '#amasya',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#amasya', '#yeşilırmak', '#tarihi'],
+    mainHashtag: '#Amasya',
+    sentiment: { positive: 48, neutral: 32, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Amasya', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M480,180 L500,190 L490,210 L460,200 Z'
+    d: 'M450,180 L470,190 L460,210 L430,200 Z'
   },
   {
     id: 'ankara',
     name: 'Ankara',
-    mainHashtag: '#EnerjiVerimliliği',
-    sentiment: { positive: 55, neutral: 32, negative: 13 },
-    inclination: 'Nötr',
-    hashtags: ['#EnerjiVerimliliği', '#YeşilTeknoloji', '#ÇevreBilinci'],
+    mainHashtag: '#Ankara',
+    sentiment: { positive: 55, neutral: 28, negative: 17 },
+    inclination: 'Olumlu',
+    hashtags: ['#Ankara', '#Başkent', '#Metro'],
     region: 'İç Anadolu',
-    d: 'M420,220 L450,230 L440,260 L400,250 Z'
+    d: 'M400,250 L420,260 L410,280 L380,270 Z'
   },
   {
     id: 'antalya',
     name: 'Antalya',
-    mainHashtag: '#antalya',
-    sentiment: { positive: 60, neutral: 25, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#antalya', '#turizm', '#akdeniz'],
+    mainHashtag: '#Antalya',
+    sentiment: { positive: 65, neutral: 25, negative: 10 },
+    inclination: 'Çok Olumlu',
+    hashtags: ['#Antalya', '#Turizm', '#Akdeniz'],
     region: 'Akdeniz',
-    d: 'M380,350 L420,360 L410,390 L370,380 Z'
-  },
-  {
-    id: 'ardahan',
-    name: 'Ardahan',
-    mainHashtag: '#ardahan',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
-    inclination: 'Nötr',
-    hashtags: ['#ardahan', '#doğu', '#kars'],
-    region: 'Doğu Anadolu',
-    d: 'M640,150 L660,160 L650,180 L620,170 Z'
+    d: 'M420,380 L440,390 L430,410 L400,400 Z'
   },
   {
     id: 'artvin',
     name: 'Artvin',
-    mainHashtag: '#artvin',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#artvin', '#karadeniz', '#çoruh'],
+    mainHashtag: '#Artvin',
+    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    inclination: 'Nötr',
+    hashtags: ['#Artvin', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M600,120 L620,130 L610,150 L580,140 Z'
+    d: 'M580,120 L600,130 L590,150 L560,140 Z'
   },
   {
     id: 'aydin',
     name: 'Aydın',
-    mainHashtag: '#aydın',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#aydın', '#ege', '#menderes'],
+    mainHashtag: '#Aydın',
+    sentiment: { positive: 52, neutral: 30, negative: 18 },
+    inclination: 'Olumlu',
+    hashtags: ['#Aydın', '#Ege'],
     region: 'Ege',
-    d: 'M280,320 L300,330 L290,350 L260,340 Z'
+    d: 'M250,320 L270,330 L260,350 L230,340 Z'
   },
   {
     id: 'balikesir',
     name: 'Balıkesir',
-    mainHashtag: '#balıkesir',
-    sentiment: { positive: 50, neutral: 35, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#balıkesir', '#marmara', '#bandırma'],
+    mainHashtag: '#Balıkesir',
+    sentiment: { positive: 47, neutral: 33, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Balıkesir', '#Marmara'],
     region: 'Marmara',
-    d: 'M280,180 L320,190 L310,220 L270,210 Z'
+    d: 'M280,200 L300,210 L290,230 L260,220 Z'
   },
   {
     id: 'bartin',
     name: 'Bartın',
-    mainHashtag: '#bartın',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#bartın', '#karadeniz', '#amasra'],
+    mainHashtag: '#Bartın',
+    sentiment: { positive: 43, neutral: 37, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Bartın', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M360,120 L380,130 L370,150 L340,140 Z'
+    d: 'M380,150 L400,160 L390,180 L360,170 Z'
   },
   {
     id: 'batman',
     name: 'Batman',
-    mainHashtag: '#batman',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Batman',
+    sentiment: { positive: 38, neutral: 40, negative: 22 },
     inclination: 'Nötr',
-    hashtags: ['#batman', '#güneydoğu', '#dicle'],
+    hashtags: ['#Batman', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M580,300 L600,310 L590,330 L560,320 Z'
+    d: 'M590,300 L610,310 L600,330 L570,320 Z'
   },
   {
     id: 'bayburt',
     name: 'Bayburt',
-    mainHashtag: '#bayburt',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#bayburt', '#doğu', '#karadeniz'],
+    mainHashtag: '#Bayburt',
+    sentiment: { positive: 41, neutral: 39, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Bayburt', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M580,160 L600,170 L590,190 L560,180 Z'
+    d: 'M550,160 L570,170 L560,190 L530,180 Z'
   },
   {
     id: 'bilecik',
     name: 'Bilecik',
-    mainHashtag: '#bilecik',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#bilecik', '#marmara', '#sakarya'],
+    mainHashtag: '#Bilecik',
+    sentiment: { positive: 45, neutral: 35, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Bilecik', '#Marmara'],
     region: 'Marmara',
-    d: 'M340,200 L360,210 L350,230 L320,220 Z'
+    d: 'M340,220 L360,230 L350,250 L320,240 Z'
   },
   {
     id: 'bingol',
     name: 'Bingöl',
-    mainHashtag: '#bingöl',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Bingöl',
+    sentiment: { positive: 37, neutral: 41, negative: 22 },
     inclination: 'Nötr',
-    hashtags: ['#bingöl', '#doğu', '#murat'],
+    hashtags: ['#Bingöl', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
     d: 'M620,260 L640,270 L630,290 L600,280 Z'
   },
   {
     id: 'bitlis',
     name: 'Bitlis',
-    mainHashtag: '#bitlis',
-    sentiment: { positive: 35, neutral: 40, negative: 25 },
+    mainHashtag: '#Bitlis',
+    sentiment: { positive: 36, neutral: 42, negative: 22 },
     inclination: 'Nötr',
-    hashtags: ['#bitlis', '#doğu', '#van'],
+    hashtags: ['#Bitlis', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M640,300 L660,310 L650,330 L620,320 Z'
+    d: 'M650,300 L670,310 L660,330 L630,320 Z'
   },
   {
     id: 'bolu',
     name: 'Bolu',
-    mainHashtag: '#bolu',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#bolu', '#karadeniz', '#abant'],
+    mainHashtag: '#Bolu',
+    sentiment: { positive: 49, neutral: 31, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Bolu', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M380,160 L410,170 L400,200 L370,190 Z'
+    d: 'M360,180 L380,190 L370,210 L340,200 Z'
   },
   {
     id: 'burdur',
     name: 'Burdur',
-    mainHashtag: '#burdur',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#burdur', '#göller', '#salda'],
+    mainHashtag: '#Burdur',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Burdur', '#Göller'],
     region: 'Akdeniz',
-    d: 'M350,320 L370,330 L360,350 L330,340 Z'
+    d: 'M380,350 L400,360 L390,380 L360,370 Z'
   },
   {
     id: 'bursa',
     name: 'Bursa',
-    mainHashtag: '#bursa',
-    sentiment: { positive: 60, neutral: 25, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#bursa', '#uludağ', '#marmara'],
+    mainHashtag: '#Bursa',
+    sentiment: { positive: 58, neutral: 27, negative: 15 },
+    inclination: 'Olumlu',
+    hashtags: ['#Bursa', '#Sanayi', '#Marmara'],
     region: 'Marmara',
-    d: 'M320,200 L350,210 L340,240 L310,230 Z'
+    d: 'M320,240 L340,250 L330,270 L300,260 Z'
   },
   {
     id: 'canakkale',
     name: 'Çanakkale',
-    mainHashtag: '#çanakkale',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#çanakkale', '#gelibolu', '#truva'],
+    mainHashtag: '#Çanakkale',
+    sentiment: { positive: 51, neutral: 30, negative: 19 },
+    inclination: 'Olumlu',
+    hashtags: ['#Çanakkale', '#Gelibolu', '#Marmara'],
     region: 'Marmara',
-    d: 'M220,200 L260,210 L250,240 L210,230 Z'
+    d: 'M220,240 L240,250 L230,270 L200,260 Z'
   },
   {
     id: 'cankiri',
     name: 'Çankırı',
-    mainHashtag: '#çankırı',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#çankırı', '#iç anadolu', '#kızılırmak'],
+    mainHashtag: '#Çankırı',
+    sentiment: { positive: 43, neutral: 37, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Çankırı', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M420,180 L450,190 L440,220 L410,210 Z'
+    d: 'M420,220 L440,230 L430,250 L400,240 Z'
   },
   {
     id: 'corum',
     name: 'Çorum',
-    mainHashtag: '#çorum',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#çorum', '#hitit', '#karadeniz'],
+    mainHashtag: '#Çorum',
+    sentiment: { positive: 46, neutral: 34, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Çorum', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M460,180 L490,190 L480,220 L450,210 Z'
+    d: 'M460,200 L480,210 L470,230 L440,220 Z'
   },
   {
     id: 'denizli',
     name: 'Denizli',
-    mainHashtag: '#denizli',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#denizli', '#pamukkale', '#ege'],
+    mainHashtag: '#Denizli',
+    sentiment: { positive: 53, neutral: 29, negative: 18 },
+    inclination: 'Olumlu',
+    hashtags: ['#Denizli', '#Pamukkale', '#Ege'],
     region: 'Ege',
-    d: 'M320,300 L350,310 L340,340 L310,330 Z'
+    d: 'M320,340 L340,350 L330,370 L300,360 Z'
   },
   {
     id: 'diyarbakir',
     name: 'Diyarbakır',
-    mainHashtag: '#diyarbakır',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Diyarbakır',
+    sentiment: { positive: 40, neutral: 38, negative: 22 },
     inclination: 'Nötr',
-    hashtags: ['#diyarbakır', '#güneydoğu', '#dicle'],
+    hashtags: ['#Diyarbakır', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M580,320 L610,330 L600,360 L570,350 Z'
+    d: 'M580,320 L600,330 L590,350 L560,340 Z'
   },
   {
     id: 'duzce',
     name: 'Düzce',
-    mainHashtag: '#düzce',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#düzce', '#karadeniz', '#bolu'],
+    mainHashtag: '#Düzce',
+    sentiment: { positive: 47, neutral: 33, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Düzce', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M380,140 L410,150 L400,180 L370,170 Z'
+    d: 'M340,200 L360,210 L350,230 L320,220 Z'
   },
   {
     id: 'edirne',
     name: 'Edirne',
-    mainHashtag: '#edirne',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#edirne', '#trakya', '#meriç'],
+    mainHashtag: '#Edirne',
+    sentiment: { positive: 49, neutral: 31, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Edirne', '#Marmara'],
     region: 'Marmara',
-    d: 'M200,140 L230,150 L220,180 L190,170 Z'
+    d: 'M180,180 L200,190 L190,210 L160,200 Z'
   },
   {
     id: 'elazig',
     name: 'Elazığ',
-    mainHashtag: '#elazığ',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#elazığ', '#fırat', '#doğu'],
+    mainHashtag: '#Elazığ',
+    sentiment: { positive: 42, neutral: 38, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Elazığ', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M580,280 L610,290 L600,320 L570,310 Z'
+    d: 'M570,280 L590,290 L580,310 L550,300 Z'
   },
   {
     id: 'erzincan',
     name: 'Erzincan',
-    mainHashtag: '#erzincan',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#erzincan', '#doğu', '#fırat'],
+    mainHashtag: '#Erzincan',
+    sentiment: { positive: 41, neutral: 39, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Erzincan', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M580,240 L610,250 L600,280 L570,270 Z'
+    d: 'M590,240 L610,250 L600,270 L570,260 Z'
   },
   {
     id: 'erzurum',
     name: 'Erzurum',
-    mainHashtag: '#erzurum',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#erzurum', '#doğu', '#palandöken'],
+    mainHashtag: '#Erzurum',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Erzurum', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M620,200 L660,210 L650,250 L610,240 Z'
+    d: 'M630,240 L650,250 L640,270 L610,260 Z'
   },
   {
     id: 'eskisehir',
     name: 'Eskişehir',
-    mainHashtag: '#eskişehir',
-    sentiment: { positive: 60, neutral: 25, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#eskişehir', '#porselen', '#iç anadolu'],
+    mainHashtag: '#Eskişehir',
+    sentiment: { positive: 54, neutral: 28, negative: 18 },
+    inclination: 'Olumlu',
+    hashtags: ['#Eskişehir', '#Tramvay', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M380,240 L410,250 L400,280 L370,270 Z'
+    d: 'M380,270 L400,280 L390,300 L360,290 Z'
   },
   {
     id: 'gaziantep',
     name: 'Gaziantep',
-    mainHashtag: '#gaziantep',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#gaziantep', '#baklava', '#güneydoğu'],
+    mainHashtag: '#Gaziantep',
+    sentiment: { positive: 50, neutral: 30, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Gaziantep', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M520,340 L550,350 L540,380 L510,370 Z'
+    d: 'M520,340 L540,350 L530,370 L500,360 Z'
   },
   {
     id: 'giresun',
     name: 'Giresun',
-    mainHashtag: '#giresun',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#giresun', '#karadeniz', '#fındık'],
+    mainHashtag: '#Giresun',
+    sentiment: { positive: 45, neutral: 35, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Giresun', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M520,120 L550,130 L540,160 L510,150 Z'
+    d: 'M520,140 L540,150 L530,170 L500,160 Z'
   },
   {
     id: 'gumushane',
     name: 'Gümüşhane',
-    mainHashtag: '#gümüşhane',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#gümüşhane', '#karadeniz', '#doğu'],
+    mainHashtag: '#Gümüşhane',
+    sentiment: { positive: 42, neutral: 38, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Gümüşhane', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M560,160 L590,170 L580,200 L550,190 Z'
+    d: 'U540,160 L560,170 L550,190 L520,180 Z'
   },
   {
     id: 'hakkari',
     name: 'Hakkari',
-    mainHashtag: '#hakkari',
-    sentiment: { positive: 35, neutral: 40, negative: 25 },
+    mainHashtag: '#Hakkari',
+    sentiment: { positive: 34, neutral: 44, negative: 22 },
     inclination: 'Nötr',
-    hashtags: ['#hakkari', '#doğu', '#cilo'],
+    hashtags: ['#Hakkari', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M680,320 L710,330 L700,360 L670,350 Z'
+    d: 'M700,320 L720,330 L710,350 L680,340 Z'
   },
   {
     id: 'hatay',
     name: 'Hatay',
-    mainHashtag: '#hatay',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#hatay', '#antakya', '#asi'],
+    mainHashtag: '#Hatay',
+    sentiment: { positive: 46, neutral: 34, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Hatay', '#Akdeniz'],
     region: 'Akdeniz',
-    d: 'M520,380 L550,390 L540,420 L510,410 Z'
+    d: 'M480,380 L500,390 L490,410 L460,400 Z'
   },
   {
     id: 'igdir',
     name: 'Iğdır',
-    mainHashtag: '#ığdır',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Iğdır',
+    sentiment: { positive: 38, neutral: 42, negative: 20 },
     inclination: 'Nötr',
-    hashtags: ['#ığdır', '#doğu', '#ararat'],
+    hashtags: ['#Iğdır', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M680,200 L710,210 L700,240 L670,230 Z'
+    d: 'M720,260 L740,270 L730,290 L700,280 Z'
   },
   {
     id: 'isparta',
     name: 'Isparta',
-    mainHashtag: '#isparta',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#isparta', '#gül', '#eğirdir'],
+    mainHashtag: '#Isparta',
+    sentiment: { positive: 48, neutral: 32, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Isparta', '#Göller'],
     region: 'Akdeniz',
-    d: 'M350,300 L380,310 L370,340 L340,330 Z'
+    d: 'M400,340 L420,350 L410,370 L380,360 Z'
   },
   {
     id: 'istanbul',
     name: 'İstanbul',
-    mainHashtag: '#istanbul',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#istanbul', '#boğaz', '#sultanahmet'],
+    mainHashtag: '#İstanbul',
+    sentiment: { positive: 60, neutral: 25, negative: 15 },
+    inclination: 'Olumlu',
+    hashtags: ['#İstanbul', '#Metro', '#Boğaz'],
     region: 'Marmara',
-    d: 'M280,160 L320,170 L310,200 L270,190 Z'
+    d: 'M280,180 L300,190 L290,210 L260,200 Z'
   },
   {
     id: 'izmir',
     name: 'İzmir',
-    mainHashtag: '#TemizHava',
-    sentiment: { positive: 58, neutral: 30, negative: 12 },
+    mainHashtag: '#İzmir',
+    sentiment: { positive: 57, neutral: 28, negative: 15 },
     inclination: 'Olumlu',
-    hashtags: ['#TemizHava', '#ÇevreKoruması', '#YeşilTeknoloji'],
+    hashtags: ['#İzmir', '#Ege', '#Metro'],
     region: 'Ege',
-    d: 'M240,280 L280,290 L270,320 L230,310 Z'
-  },
-  {
-    id: 'kahramanmaras',
-    name: 'Kahramanmaraş',
-    mainHashtag: '#kahramanmaraş',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#kahramanmaraş', '#dondurma', '#akdeniz'],
-    region: 'Akdeniz',
-    d: 'M520,320 L550,330 L540,360 L510,350 Z'
+    d: 'M220,320 L240,330 L230,350 L200,340 Z'
   },
   {
     id: 'karabuk',
     name: 'Karabük',
-    mainHashtag: '#karabük',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#karabük', '#safranbolu', '#karadeniz'],
+    mainHashtag: '#Karabük',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Karabük', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M400,140 L430,150 L420,180 L390,170 Z'
+    d: 'M400,160 L420,170 L410,190 L380,180 Z'
   },
   {
     id: 'karaman',
     name: 'Karaman',
-    mainHashtag: '#karaman',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#karaman', '#iç anadolu', '#ermenek'],
+    mainHashtag: '#Karaman',
+    sentiment: { positive: 43, neutral: 37, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Karaman', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M480,320 L510,330 L500,360 L470,350 Z'
+    d: 'M460,340 L480,350 L470,370 L440,360 Z'
   },
   {
     id: 'kars',
     name: 'Kars',
-    mainHashtag: '#kars',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Kars',
+    sentiment: { positive: 39, neutral: 41, negative: 20 },
     inclination: 'Nötr',
-    hashtags: ['#kars', '#ani', '#doğu'],
+    hashtags: ['#Kars', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M640,180 L680,190 L670,220 L630,210 Z'
+    d: 'M680,220 L700,230 L690,250 L660,240 Z'
   },
   {
     id: 'kastamonu',
     name: 'Kastamonu',
-    mainHashtag: '#kastamonu',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#kastamonu', '#karadeniz', '#ilgaz'],
+    mainHashtag: '#Kastamonu',
+    sentiment: { positive: 45, neutral: 35, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kastamonu', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M420,140 L460,150 L450,190 L410,180 Z'
+    d: 'M420,180 L440,190 L430,210 L400,200 Z'
   },
   {
     id: 'kayseri',
     name: 'Kayseri',
-    mainHashtag: '#kayseri',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#kayseri', '#erciyes', '#kapadokya'],
+    mainHashtag: '#Kayseri',
+    sentiment: { positive: 52, neutral: 30, negative: 18 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kayseri', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M520,260 L550,270 L540,300 L510,290 Z'
+    d: 'M500,280 L520,290 L510,310 L480,300 Z'
   },
   {
     id: 'kilis',
     name: 'Kilis',
-    mainHashtag: '#kilis',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#kilis', '#güneydoğu', '#suriye'],
+    mainHashtag: '#Kilis',
+    sentiment: { positive: 41, neutral: 39, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kilis', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M520,360 L540,370 L530,390 L510,380 Z'
+    d: 'M500,360 L520,370 L510,390 L480,380 Z'
   },
   {
     id: 'kirikkale',
     name: 'Kırıkkale',
-    mainHashtag: '#kırıkkale',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#kırıkkale', '#iç anadolu', '#kızılırmak'],
+    mainHashtag: '#Kırıkkale',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kırıkkale', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M460,220 L490,230 L480,260 L450,250 Z'
+    d: 'M440,240 L460,250 L450,270 L420,260 Z'
   },
   {
     id: 'kirklareli',
     name: 'Kırklareli',
-    mainHashtag: '#kırklareli',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#kırklareli', '#trakya', '#marmara'],
+    mainHashtag: '#Kırklareli',
+    sentiment: { positive: 47, neutral: 33, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kırklareli', '#Marmara'],
     region: 'Marmara',
-    d: 'M220,140 L250,150 L240,180 L210,170 Z'
+    d: 'M200,160 L220,170 L210,190 L180,180 Z'
   },
   {
     id: 'kirsehir',
     name: 'Kırşehir',
-    mainHashtag: '#kırşehir',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#kırşehir', '#iç anadolu', '#kızılırmak'],
+    mainHashtag: '#Kırşehir',
+    sentiment: { positive: 43, neutral: 37, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kırşehir', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M480,260 L510,270 L500,300 L470,290 Z'
+    d: 'M460,260 L480,270 L470,290 L440,280 Z'
   },
   {
     id: 'kocaeli',
     name: 'Kocaeli',
-    mainHashtag: '#kocaeli',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#kocaeli', '#izmit', '#marmara'],
+    mainHashtag: '#Kocaeli',
+    sentiment: { positive: 55, neutral: 28, negative: 17 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kocaeli', '#Sanayi', '#Marmara'],
     region: 'Marmara',
-    d: 'M340,160 L370,170 L360,200 L330,190 Z'
+    d: 'M300,200 L320,210 L310,230 L280,220 Z'
   },
   {
     id: 'konya',
     name: 'Konya',
-    mainHashtag: '#konya',
+    mainHashtag: '#Konya',
     sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#konya', '#mevlana', '#selçuklu'],
+    inclination: 'Olumlu',
+    hashtags: ['#Konya', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M420,280 L480,290 L470,340 L410,330 Z'
+    d: 'M440,320 L460,330 L450,350 L420,340 Z'
   },
   {
     id: 'kutahya',
     name: 'Kütahya',
-    mainHashtag: '#kütahya',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#kütahya', '#çini', '#ege'],
+    mainHashtag: '#Kütahya',
+    sentiment: { positive: 46, neutral: 34, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Kütahya', '#Ege'],
     region: 'Ege',
-    d: 'M320,240 L360,250 L350,280 L310,270 Z'
+    d: 'M320,280 L340,290 L330,310 L300,300 Z'
   },
   {
     id: 'malatya',
     name: 'Malatya',
-    mainHashtag: '#malatya',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#malatya', '#kayısı', '#fırat'],
+    mainHashtag: '#Malatya',
+    sentiment: { positive: 45, neutral: 35, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Malatya', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M560,280 L590,290 L580,320 L550,310 Z'
+    d: 'M540,300 L560,310 L550,330 L520,320 Z'
   },
   {
     id: 'manisa',
     name: 'Manisa',
-    mainHashtag: '#manisa',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#manisa', '#gediz', '#ege'],
+    mainHashtag: '#Manisa',
+    sentiment: { positive: 49, neutral: 31, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Manisa', '#Ege'],
     region: 'Ege',
-    d: 'M280,260 L320,270 L310,300 L270,290 Z'
+    d: 'M270,300 L290,310 L280,330 L250,320 Z'
   },
   {
     id: 'mardin',
     name: 'Mardin',
-    mainHashtag: '#mardin',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#mardin', '#midyat', '#güneydoğu'],
+    mainHashtag: '#Mardin',
+    sentiment: { positive: 42, neutral: 38, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Mardin', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M600,340 L630,350 L620,380 L590,370 Z'
+    d: 'M610,340 L630,350 L620,370 L590,360 Z'
   },
   {
     id: 'mersin',
     name: 'Mersin',
-    mainHashtag: '#mersin',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#mersin', '#çukurova', '#akdeniz'],
+    mainHashtag: '#Mersin',
+    sentiment: { positive: 51, neutral: 30, negative: 19 },
+    inclination: 'Olumlu',
+    hashtags: ['#Mersin', '#Akdeniz'],
     region: 'Akdeniz',
-    d: 'M520,380 L560,390 L550,420 L510,410 Z'
+    d: 'M520,380 L540,390 L530,410 L500,400 Z'
   },
   {
     id: 'mugla',
     name: 'Muğla',
-    mainHashtag: '#muğla',
-    sentiment: { positive: 60, neutral: 25, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#muğla', '#bodrum', '#marmaris'],
+    mainHashtag: '#Muğla',
+    sentiment: { positive: 58, neutral: 27, negative: 15 },
+    inclination: 'Olumlu',
+    hashtags: ['#Muğla', '#Turizm', '#Ege'],
     region: 'Ege',
-    d: 'M280,340 L330,350 L320,390 L270,380 Z'
+    d: 'M280,360 L300,370 L290,390 L260,380 Z'
   },
   {
     id: 'mus',
     name: 'Muş',
-    mainHashtag: '#muş',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Muş',
+    sentiment: { positive: 37, neutral: 43, negative: 20 },
     inclination: 'Nötr',
-    hashtags: ['#muş', '#doğu', '#murat'],
+    hashtags: ['#Muş', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M620,280 L650,290 L640,320 L610,310 Z'
+    d: 'M610,280 L630,290 L620,310 L590,300 Z'
   },
   {
     id: 'nevsehir',
     name: 'Nevşehir',
-    mainHashtag: '#nevşehir',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#nevşehir', '#kapadokya', '#göreme'],
+    mainHashtag: '#Nevşehir',
+    sentiment: { positive: 54, neutral: 28, negative: 18 },
+    inclination: 'Olumlu',
+    hashtags: ['#Nevşehir', '#Kapadokya'],
     region: 'İç Anadolu',
-    d: 'M500,280 L530,290 L520,320 L490,310 Z'
+    d: 'M480,300 L500,310 L490,330 L460,320 Z'
   },
   {
     id: 'nigde',
     name: 'Niğde',
-    mainHashtag: '#niğde',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#niğde', '#iç anadolu', '#aladağlar'],
+    mainHashtag: '#Niğde',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Niğde', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M500,300 L530,310 L520,340 L490,330 Z'
+    d: 'M500,320 L520,330 L510,350 L480,340 Z'
   },
   {
     id: 'ordu',
     name: 'Ordu',
-    mainHashtag: '#ordu',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#ordu', '#karadeniz', '#fındık'],
+    mainHashtag: '#Ordu',
+    sentiment: { positive: 47, neutral: 33, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Ordu', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M500,120 L540,130 L530,160 L490,150 Z'
+    d: 'M490,160 L510,170 L500,190 L470,180 Z'
   },
   {
     id: 'osmaniye',
     name: 'Osmaniye',
-    mainHashtag: '#osmaniye',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#osmaniye', '#akdeniz', '#düziçi'],
+    mainHashtag: '#Osmaniye',
+    sentiment: { positive: 43, neutral: 37, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Osmaniye', '#Akdeniz'],
     region: 'Akdeniz',
-    d: 'M540,360 L570,370 L560,400 L530,390 Z'
+    d: 'M540,370 L560,380 L550,400 L520,390 Z'
   },
   {
     id: 'rize',
     name: 'Rize',
-    mainHashtag: '#rize',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#rize', '#çay', '#karadeniz'],
+    mainHashtag: '#Rize',
+    sentiment: { positive: 48, neutral: 32, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Rize', '#Çay', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M560,120 L590,130 L580,160 L550,150 Z'
+    d: 'M560,140 L580,150 L570,170 L540,160 Z'
   },
   {
     id: 'sakarya',
     name: 'Sakarya',
-    mainHashtag: '#sakarya',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#sakarya', '#adapazarı', '#marmara'],
+    mainHashtag: '#Sakarya',
+    sentiment: { positive: 50, neutral: 30, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Sakarya', '#Marmara'],
     region: 'Marmara',
-    d: 'M360,160 L400,170 L390,200 L350,190 Z'
+    d: 'M340,200 L360,210 L350,230 L320,220 Z'
   },
   {
     id: 'samsun',
     name: 'Samsun',
-    mainHashtag: '#samsun',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#samsun', '#karadeniz', '#ondokuz'],
+    mainHashtag: '#Samsun',
+    sentiment: { positive: 51, neutral: 30, negative: 19 },
+    inclination: 'Olumlu',
+    hashtags: ['#Samsun', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M480,140 L520,150 L510,180 L470,170 Z'
+    d: 'M470,160 L490,170 L480,190 L450,180 Z'
   },
   {
     id: 'sanliurfa',
     name: 'Şanlıurfa',
-    mainHashtag: '#şanlıurfa',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#şanlıurfa', '#abraham', '#güneydoğu'],
+    mainHashtag: '#Şanlıurfa',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Şanlıurfa', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M560,340 L600,350 L590,390 L550,380 Z'
+    d: 'M560,340 L580,350 L570,370 L540,360 Z'
   },
   {
     id: 'siirt',
     name: 'Siirt',
-    mainHashtag: '#siirt',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Siirt',
+    sentiment: { positive: 39, neutral: 41, negative: 20 },
     inclination: 'Nötr',
-    hashtags: ['#siirt', '#güneydoğu', '#dicle'],
+    hashtags: ['#Siirt', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M620,320 L650,330 L640,360 L610,350 Z'
+    d: 'M630,320 L650,330 L640,350 L610,340 Z'
   },
   {
     id: 'sinop',
     name: 'Sinop',
-    mainHashtag: '#sinop',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#sinop', '#karadeniz', '#erfelek'],
+    mainHashtag: '#Sinop',
+    sentiment: { positive: 46, neutral: 34, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Sinop', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M440,100 L480,110 L470,140 L430,130 Z'
+    d: 'M440,140 L460,150 L450,170 L420,160 Z'
   },
   {
     id: 'sirnak',
     name: 'Şırnak',
-    mainHashtag: '#şırnak',
-    sentiment: { positive: 35, neutral: 40, negative: 25 },
+    mainHashtag: '#Şırnak',
+    sentiment: { positive: 36, neutral: 44, negative: 20 },
     inclination: 'Nötr',
-    hashtags: ['#şırnak', '#güneydoğu', '#cizre'],
+    hashtags: ['#Şırnak', '#GüneydoğuAnadolu'],
     region: 'Güneydoğu Anadolu',
-    d: 'M640,340 L680,350 L670,390 L630,380 Z'
+    d: 'M650,340 L670,350 L660,370 L630,360 Z'
   },
   {
     id: 'sivas',
     name: 'Sivas',
-    mainHashtag: '#sivas',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#sivas', '#kangal', '#iç anadolu'],
+    mainHashtag: '#Sivas',
+    sentiment: { positive: 45, neutral: 35, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Sivas', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M520,220 L570,230 L560,270 L510,260 Z'
+    d: 'M520,240 L540,250 L530,270 L500,260 Z'
   },
   {
     id: 'tekirdag',
     name: 'Tekirdağ',
-    mainHashtag: '#tekirdağ',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#tekirdağ', '#marmara', '#çorlu'],
+    mainHashtag: '#Tekirdağ',
+    sentiment: { positive: 50, neutral: 30, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Tekirdağ', '#Marmara'],
     region: 'Marmara',
-    d: 'M240,160 L280,170 L270,200 L230,190 Z'
+    d: 'M240,200 L260,210 L250,230 L220,220 Z'
   },
   {
     id: 'tokat',
     name: 'Tokat',
-    mainHashtag: '#tokat',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#tokat', '#niksar', '#karadeniz'],
+    mainHashtag: '#Tokat',
+    sentiment: { positive: 45, neutral: 35, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Tokat', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M500,180 L540,190 L530,220 L490,210 Z'
+    d: 'M490,200 L510,210 L500,230 L470,220 Z'
   },
   {
     id: 'trabzon',
     name: 'Trabzon',
-    mainHashtag: '#trabzon',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#trabzon', '#sumela', '#karadeniz'],
+    mainHashtag: '#Trabzon',
+    sentiment: { positive: 52, neutral: 30, negative: 18 },
+    inclination: 'Olumlu',
+    hashtags: ['#Trabzon', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M580,120 L620,130 L610,160 L570,150 Z'
+    d: 'M540,140 L560,150 L550,170 L520,160 Z'
   },
   {
     id: 'tunceli',
     name: 'Tunceli',
-    mainHashtag: '#tunceli',
-    sentiment: { positive: 40, neutral: 35, negative: 25 },
+    mainHashtag: '#Tunceli',
+    sentiment: { positive: 40, neutral: 40, negative: 20 },
     inclination: 'Nötr',
-    hashtags: ['#tunceli', '#munzur', '#doğu'],
+    hashtags: ['#Tunceli', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M580,260 L610,270 L600,300 L570,290 Z'
+    d: 'M550,280 L570,290 L560,310 L530,300 Z'
   },
   {
     id: 'usak',
     name: 'Uşak',
-    mainHashtag: '#uşak',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#uşak', '#ege', '#banaz'],
+    mainHashtag: '#Uşak',
+    sentiment: { positive: 46, neutral: 34, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Uşak', '#Ege'],
     region: 'Ege',
-    d: 'M320,280 L350,290 L340,320 L310,310 Z'
+    d: 'M300,320 L320,330 L310,350 L280,340 Z'
   },
   {
     id: 'van',
     name: 'Van',
-    mainHashtag: '#van',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#van', '#vangölü', '#doğu'],
+    mainHashtag: '#Van',
+    sentiment: { positive: 41, neutral: 39, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Van', '#DoğuAnadolu'],
     region: 'Doğu Anadolu',
-    d: 'M660,300 L700,310 L690,350 L650,340 Z'
+    d: 'M670,300 L690,310 L680,330 L650,320 Z'
   },
   {
     id: 'yalova',
     name: 'Yalova',
-    mainHashtag: '#yalova',
-    sentiment: { positive: 55, neutral: 30, negative: 15 },
-    inclination: 'Pozitif',
-    hashtags: ['#yalova', '#termal', '#marmara'],
+    mainHashtag: '#Yalova',
+    sentiment: { positive: 52, neutral: 30, negative: 18 },
+    inclination: 'Olumlu',
+    hashtags: ['#Yalova', '#Marmara'],
     region: 'Marmara',
-    d: 'M320,170 L340,180 L330,200 L310,190 Z'
+    d: 'M320,220 L340,230 L330,250 L300,240 Z'
   },
   {
     id: 'yozgat',
     name: 'Yozgat',
-    mainHashtag: '#yozgat',
-    sentiment: { positive: 45, neutral: 35, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#yozgat', '#iç anadolu', '#kızılırmak'],
+    mainHashtag: '#Yozgat',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Yozgat', '#İçAnadolu'],
     region: 'İç Anadolu',
-    d: 'M480,240 L520,250 L510,280 L470,270 Z'
+    d: 'M480,240 L500,250 L490,270 L460,260 Z'
   },
   {
     id: 'zonguldak',
     name: 'Zonguldak',
-    mainHashtag: '#zonguldak',
-    sentiment: { positive: 50, neutral: 30, negative: 20 },
-    inclination: 'Pozitif',
-    hashtags: ['#zonguldak', '#kömür', '#karadeniz'],
+    mainHashtag: '#Zonguldak',
+    sentiment: { positive: 44, neutral: 36, negative: 20 },
+    inclination: 'Olumlu',
+    hashtags: ['#Zonguldak', '#Kömür', '#Karadeniz'],
     region: 'Karadeniz',
-    d: 'M340,120 L380,130 L370,160 L330,150 Z'
+    d: 'M410,140 L430,150 L420,170 L390,160 Z'
+  },
+  {
+    id: 'ardahan',
+    name: 'Ardahan',
+    mainHashtag: '#Ardahan',
+    sentiment: { positive: 38, neutral: 42, negative: 20 },
+    inclination: 'Nötr',
+    hashtags: ['#Ardahan', '#DoğuAnadolu'],
+    region: 'Doğu Anadolu',
+    d: 'M660,220 L680,230 L670,250 L640,240 Z'
   }
 ];
