@@ -24,12 +24,12 @@ export const NationalSocialMediaComparison: React.FC<NationalSocialMediaComparis
 
   const nationalSocialData = nationalSocial || [
     {
-      platform: 'X (Twitter)',//
-      icon: <Twitter className="w-4 h-4" />, //
-      totalPosts: 127500,//
-      mainHashtag: 89.2,//
-      avgSentiment: 65,//
-      topRegion: 'İstanbul',//
+      platform: 'X (Twitter)',
+      icon: <Twitter className="w-4 h-4" />, 
+      totalPosts: 127500,
+      mainHashtag: 89.2,
+      avgSentiment: 65,
+      topRegion: 'İstanbul',
       weeklyGrowth: 12
     },
     {

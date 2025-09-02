@@ -13,7 +13,6 @@ export const PROVINCES_DATA: Province[] = [
     {
       id: 'adana',
       name: 'Adana',
-      coordinates: { x: 38.8, y: 50.2 },
       mainTopic: '#SıfırAtık',
       sentiment: { positive: 65, neutral: 25, negative: 10 },
       inclination: 'Çok Olumlu',
