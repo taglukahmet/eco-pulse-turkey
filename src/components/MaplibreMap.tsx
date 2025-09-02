@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 import { Province } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
+import turkeyGeoJSON from '../../tr-cities-utf8.json';
 
 interface MaplibreMapProps {
   onProvinceClick: (province: Province) => void;
@@ -18,89 +19,104 @@ interface MaplibreMapProps {
   };
 }
 
-// Turkey province boundaries GeoJSON data  
-const turkeyGeoJSON: GeoJSON.FeatureCollection = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": { "id": "adana", "name": "Adana" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [35.125, 36.875], [35.5, 37.0], [36.0, 37.25], [36.5, 37.0], 
-          [36.75, 36.75], [36.5, 36.5], [36.0, 36.25], [35.5, 36.25], [35.125, 36.875]
-        ]]
-      }
-    },
-    {
-      "type": "Feature", 
-      "properties": { "id": "adiyaman", "name": "Adıyaman" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [37.5, 37.5], [38.0, 37.75], [38.5, 37.5], [38.25, 37.25],
-          [38.0, 37.0], [37.5, 37.0], [37.25, 37.25], [37.5, 37.5]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "id": "afyonkarahisar", "name": "Afyonkarahisar" },
-      "geometry": {
-        "type": "Polygon", 
-        "coordinates": [[
-          [30.0, 38.5], [30.5, 38.75], [31.0, 38.5], [30.75, 38.25],
-          [30.5, 38.0], [30.0, 38.0], [29.75, 38.25], [30.0, 38.5]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "id": "agri", "name": "Ağrı" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [43.0, 39.5], [43.5, 39.75], [44.0, 39.5], [43.75, 39.25],
-          [43.5, 39.0], [43.0, 39.0], [42.75, 39.25], [43.0, 39.5]
-        ]]
-      }
-    },
-    {
-      "type": "Feature", 
-      "properties": { "id": "aksaray", "name": "Aksaray" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [34.0, 38.25], [34.5, 38.5], [35.0, 38.25], [34.75, 38.0],
-          [34.5, 37.75], [34.0, 37.75], [33.75, 38.0], [34.0, 38.25]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "id": "amasya", "name": "Amasya" },
-      "geometry": {
-        "type": "Polygon", 
-        "coordinates": [[
-          [35.5, 40.5], [36.0, 40.75], [36.5, 40.5], [36.25, 40.25],
-          [36.0, 40.0], [35.5, 40.0], [35.25, 40.25], [35.5, 40.5]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "id": "ankara", "name": "Ankara" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [32.0, 39.75], [32.5, 40.0], [33.0, 39.75], [32.75, 39.5],
-          [32.5, 39.25], [32.0, 39.25], [31.75, 39.5], [32.0, 39.75]
-        ]]
-      }
-    }
-  ]
+const getProvinceId = (name: string): string => {
+  const nameMap: Record<string, string> = {
+    'Adana': 'adana',
+    'Adıyaman': 'adiyaman', 
+    'Afyon': 'afyonkarahisar',
+    'Ağrı': 'agri',
+    'Aksaray': 'aksaray',
+    'Amasya': 'amasya',
+    'Ankara': 'ankara',
+    'Antalya': 'antalya',
+    'Artvin': 'artvin',
+    'Aydın': 'aydin',
+    'Balıkesir': 'balikesir',
+    'Bilecik': 'bilecik',
+    'Bingöl': 'bingol',
+    'Bitlis': 'bitlis',
+    'Bolu': 'bolu',
+    'Burdur': 'burdur',
+    'Bursa': 'bursa',
+    'Çanakkale': 'canakkale',
+    'Çankırı': 'cankiri',
+    'Çorum': 'corum',
+    'Denizli': 'denizli',
+    'Diyarbakır': 'diyarbakir',
+    'Edirne': 'edirne',
+    'Elazığ': 'elazig',
+    'Erzincan': 'erzincan',
+    'Erzurum': 'erzurum',
+    'Eskişehir': 'eskisehir',
+    'Gaziantep': 'gaziantep',
+    'Giresun': 'giresun',
+    'Gümüşhane': 'gumushane',
+    'Hakkari': 'hakkari',
+    'Hatay': 'hatay',
+    'Isparta': 'isparta',
+    'Mersin': 'mersin',
+    'İstanbul': 'istanbul',
+    'İzmir': 'izmir',
+    'Kars': 'kars',
+    'Kastamonu': 'kastamonu',
+    'Kayseri': 'kayseri',
+    'Kırklareli': 'kirklareli',
+    'Kırşehir': 'kirsehir',
+    'Kocaeli': 'kocaeli',
+    'Konya': 'konya',
+    'Kütahya': 'kutahya',
+    'Malatya': 'malatya',
+    'Manisa': 'manisa',
+    'Mardin': 'mardin',
+    'Muğla': 'mugla',
+    'Muş': 'mus',
+    'Nevşehir': 'nevsehir',
+    'Niğde': 'nigde',
+    'Ordu': 'ordu',
+    'Rize': 'rize',
+    'Sakarya': 'sakarya',
+    'Samsun': 'samsun',
+    'Siirt': 'siirt',
+    'Sinop': 'sinop',
+    'Sivas': 'sivas',
+    'Tekirdağ': 'tekirdag',
+    'Tokat': 'tokat',
+    'Trabzon': 'trabzon',
+    'Tunceli': 'tunceli',
+    'Şanlıurfa': 'sanliurfa',
+    'Uşak': 'usak',
+    'Van': 'van',
+    'Yozgat': 'yozgat',
+    'Zonguldak': 'zonguldak',
+    'Bayburt': 'bayburt',
+    'Karaman': 'karaman',
+    'Kırıkkale': 'kirikkale',
+    'Batman': 'batman',
+    'Şırnak': 'sirnak',
+    'Bartın': 'bartin',
+    'Ardahan': 'ardahan',
+    'Iğdır': 'igdir',
+    'Yalova': 'yalova',
+    'Karabük': 'karabuk',
+    'Kilis': 'kilis',
+    'Osmaniye': 'osmaniye',
+    'Düzce': 'duzce'
+  };
+  return nameMap[name] || name.toLowerCase().replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ /g, '');
 };
+
+// Add province IDs to the imported GeoJSON
+const processedGeoJSON = {
+  ...turkeyGeoJSON,
+  features: (turkeyGeoJSON as any).features.map((feature: any) => ({
+    ...feature,
+    type: "Feature" as const,
+    properties: {
+      ...feature.properties,
+      id: getProvinceId(feature.properties.name)
+    }
+  }))
+} as GeoJSON.FeatureCollection;
 
 export const MaplibreMap: React.FC<MaplibreMapProps> = ({
   onProvinceClick,
@@ -259,7 +275,7 @@ export const MaplibreMap: React.FC<MaplibreMapProps> = ({
       // Add Turkey provinces source
       map.current!.addSource('turkey-provinces', {
         type: 'geojson',
-        data: turkeyGeoJSON
+        data: processedGeoJSON
       });
 
       // Add provinces fill layer
@@ -334,7 +350,7 @@ export const MaplibreMap: React.FC<MaplibreMapProps> = ({
 
     const colors = ['match', ['get', 'id']];
     
-    turkeyGeoJSON.features.forEach(feature => {
+    processedGeoJSON.features.forEach(feature => {
       const provinceId = feature.properties.id;
       colors.push(provinceId, getProvinceColor(provinceId));
     });
