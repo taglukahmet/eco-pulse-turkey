@@ -17,10 +17,13 @@ export const useProvinces = () => {
 
 // Hook for fetching specific province data
 export const useProvinceData = (provinceId: string | null) => {
+  // Only make backend call if provinceId looks like a UUID (contains hyphens)
+  const isBackendId = provinceId && provinceId.includes('-');
+  
   return useQuery({
     queryKey: ['provinceData', provinceId],
     queryFn: () => provinceService.getProvinceData(provinceId!),
-    enabled: !!provinceId,
+    enabled: !!provinceId && isBackendId,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
@@ -39,10 +42,13 @@ export const useFilterProvinces = () => {
 
 // Hook for comparative data
 export const useComparativeData = (provinceIds: string[]) => {
+  // Only make backend call if provinceIds look like UUIDs (contain hyphens)
+  const backendIds = provinceIds.filter(id => id.includes('-'));
+  
   return useQuery({
-    queryKey: ['comparativeData', provinceIds],
-    queryFn: () => provinceService.getComparativeData(provinceIds),
-    enabled: provinceIds.length > 0,
+    queryKey: ['comparativeData', backendIds],
+    queryFn: () => provinceService.getComparativeData(backendIds),
+    enabled: backendIds.length > 0,
     staleTime: 3 * 60 * 1000, // 3 minutes
   });
 };

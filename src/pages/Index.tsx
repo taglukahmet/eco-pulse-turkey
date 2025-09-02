@@ -78,7 +78,7 @@ const Index = () => {
     if (selectedProvince && backendCityData) {
       setSelectedCityData(backendCityData);
     } else if (selectedProvince && !cityDataLoading) {
-      // Fallback to mock data if backend data not available
+      // Fallback to mock data if backend data not available or if using static ID
       const province = provinces.find(p => p.id === selectedProvince);
       if (province) {
         const mockData = generateCityData(province);
@@ -102,11 +102,18 @@ const Index = () => {
         setSelectedCitiesForComparison(prev => [...prev, cityData]);
       }
     } else {
-      // Normal mode - show city detail panel
-      setSelectedProvince(province.id); // This triggers useProvinceData hook
-      // The cityData will be set when backend data loads via useEffect
+      // Normal mode - show city detail panel  
+      // Only use backend ID if we have backend data, otherwise use static data
+      if (backendProvinces) {
+        // Find matching province in backend data by name
+        const backendProvince = backendProvinces.find(p => p.name === province.name);
+        setSelectedProvince(backendProvince?.id || province.id);
+      } else {
+        // Use static data ID when backend not available
+        setSelectedProvince(province.id);
+      }
     }
-  }, [comparisonMode, selectedCitiesForComparison]);
+  }, [comparisonMode, selectedCitiesForComparison, backendProvinces]);
 
   const handleCloseDetailPanel = useCallback(() => {
     setSelectedProvince(null);
