@@ -35,7 +35,7 @@ const generateCityData = (province: Province): CityData => ({
     { text: 'yeşil şehir', value: 25 }
   ],
   hashtags: [
-    province.mainTopic,
+    province.mainHashtag,
     '#ÇevreKoruması',
     '#YeşilŞehir',
     '#TemizEnerji',
@@ -246,7 +246,7 @@ const Index = () => {
         />
 
         <ComparisonView
-          selectedCities={selectedCitiesForComparison}
+          selectedCities={comparativeData}
           onClose={handleCloseComparison}
           isVisible={showComparisonView}
         />

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Tooltip } from 'recharts';
 import { cn } from '@/lib/utils';
 import NationalSocialMediaComparison from './NationalSocialMediaComparison';
+import { useNationalData, useRegionalPerformance, useWeeklyTrends } from '@/hooks/useBackendData';
 
 // TODO: Backend Integration - National agenda and trends
 // API Endpoints needed:
@@ -33,8 +34,7 @@ const SENTIMENT_COLORS = {
   negative: 'hsl(var(--sentiment-negative))'
 };
 
-// Mock national data
-const nationalData: NationalData = {
+const nationaLdata: NationalData = {
   sentiment: { positive: 64, neutral: 26, negative: 10 },
   topTopics: [
     { name: '#SıfırAtık', mentions: 12500, trend: 15 },
@@ -52,6 +52,13 @@ const nationalData: NationalData = {
   ]
 };
 
+const regionSData = [
+  { region: 'Marmara', percentage: 35, trend: '+5%' },
+  { region: 'Akdeniz', percentage: 18, trend: '+12%' },
+  { region: 'İç Anadolu', percentage: 15, trend: '+3%' },
+  { region: 'Ege', percentage: 12, trend: '-8%' },
+]
+
 // Weekly trend data
 const weeklyData = [
   { day: 'Pzt', volume: 3200 },
@@ -68,6 +75,14 @@ export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
   onClose
 }) => {
   if (!isVisible) return null;
+
+  const { data: nationaldata, isLoading: nationalLoading} = useNationalData();
+  const { data: nationalTrends, isLoading: trendsLoading} = useWeeklyTrends();
+  const { data: regionalData, isLoading: regionalLoading} = useRegionalPerformance();
+
+  const weeklyTrends = nationalTrends || weeklyData
+  const nationalData = nationaldata || nationaLdata
+  const regionalPerformance = regionalData || regionSData
 
   const sentimentData = [
     { name: 'Pozitif', value: nationalData.sentiment.positive, color: SENTIMENT_COLORS.positive },
@@ -231,7 +246,7 @@ export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
             <CardContent>
               <div className="h-40 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={weeklyData}>
+                  <LineChart data={weeklyTrends}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis 
                       dataKey="day" 
@@ -272,12 +287,7 @@ export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {[
-                  { region: 'Marmara', percentage: 35, trend: '+5%' },
-                  { region: 'Akdeniz', percentage: 18, trend: '+12%' },
-                  { region: 'İç Anadolu', percentage: 15, trend: '+3%' },
-                  { region: 'Ege', percentage: 12, trend: '+8%' },
-                ].map((item, index) => (
+                {regionalPerformance.map((item, index) => (
                   <div key={index} className="flex justify-between items-center p-2 hover:bg-background/50 rounded transition-colors">
                     <div className="font-medium text-foreground">{item.region}</div>
                     <div className="flex items-center space-x-3">
@@ -285,7 +295,7 @@ export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
                         <div className="bg-primary h-2 rounded-full" style={{ width: `${item.percentage}%` }}></div>
                       </div>
                       <div className="text-sm font-medium text-foreground w-8">{item.percentage}%</div>
-                      <div className="text-xs font-medium text-sentiment-positive w-8">{item.trend}</div>
+                      <div className={`text-xs font-medium text-sentiment-${"+" === item.trend.slice(0,1) ? 'positive': "-" === item.trend.slice(0,1) ? 'negative' : 'neutral'} w-8`}>{item.trend}</div>
                     </div>
                   </div>
                 ))}

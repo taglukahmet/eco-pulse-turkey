@@ -3,8 +3,8 @@ import api from './api';
 // TODO: Backend endpoints for social media data
 export const socialMediaService = {
   // Get social media data for a specific city
-  getCitySocialMediaData: async (cityName: string): Promise<any> => {
-    const response = await api.get(`/social-media/city/${encodeURIComponent(cityName)}`);
+  getCitySocialMediaData: async (cityId: string): Promise<any> => {
+    const response = await api.get(`/social-media/city/${cityId}/`);
     return response.data;
   },
 

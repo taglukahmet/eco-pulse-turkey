@@ -1,8 +1,7 @@
 export interface Province {
   id: string;
   name: string;
-  coordinates: { x: number; y: number };
-  mainTopic: string;
+  mainHashtag: string;
   sentiment: {
     positive: number;
     neutral: number;

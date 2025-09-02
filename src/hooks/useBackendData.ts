@@ -48,11 +48,11 @@ export const useComparativeData = (provinceIds: string[]) => {
 };
 
 // Hook for social media data
-export const useSocialMediaData = (cityName: string | null) => {
+export const useSocialMediaData = (cityID: string | null) => {
   return useQuery({
-    queryKey: ['socialMediaData', cityName],
-    queryFn: () => socialMediaService.getCitySocialMediaData(cityName!),
-    enabled: !!cityName,
+    queryKey: ['socialMediaData', cityID],
+    queryFn: () => socialMediaService.getCitySocialMediaData(cityID!),
+    enabled: !!cityID,
     staleTime: 1 * 60 * 1000, // 1 minute
   });
 };
@@ -62,6 +62,22 @@ export const useNationalData = () => {
   return useQuery({
     queryKey: ['nationalData'],
     queryFn: nationalAgendaService.getNationalData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useWeeklyTrends = () => {
+  return useQuery({
+    queryKey: ['nationalTrends'],
+    queryFn: nationalAgendaService.getWeeklyTrends,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useRegionalPerformance = () => {
+  return useQuery({
+    queryKey: ['regionalPerformance'],
+    queryFn: nationalAgendaService.getRegionalPerformance,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -6,10 +7,24 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { X, Hash, Heart, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
+import api from '../services/api';
 // TODO: Backend Integration - Dynamic filter options
 // API Endpoint: GET /api/filters/options
 // Should return available hashtags, sentiment options, and regions dynamically
+export const filterService = {
+  getFilterData: async (): Promise<string[]> => {
+    const response = await api.get('/filters/');
+    return response.data;
+  }
+}
+
+export const useFilters = () => {
+  return useQuery({
+    queryKey: ['filters'],
+    queryFn: filterService.getFilterData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
 
 export interface FilterCriteria {
   hashtags: string[];
@@ -22,20 +37,6 @@ interface FilterInterfaceProps {
   onClose: () => void;
   onFilterApply: (criteria: FilterCriteria) => void;
 }
-
-// All available hashtags from provinces - used for validation and suggestions
-const ALL_AVAILABLE_HASHTAGS = [
-  '#SıfırAtık', '#ÇevreKoruması', '#YeşilŞehir', '#GeriDönüşüm', '#SürdürülebilirŞehir',
-  '#YeşilSanayi', '#TemizEnerji', '#İklimDeğişikliği', '#ÇevreBilinci', '#DoğaDostu',
-  '#YeşilTeknoloji', '#EkolojikDenge', '#KarbonAyakİzi', '#TemizHava', '#SürdürülebilirTurizm',
-  '#TarımselSürdürülebilirlik', '#EnerjiVerimliliği', '#SularınKorunması', '#KaradenizEkolojisi', '#GölEkosistemleri'
-];
-
-const PREDEFINED_HASHTAGS = [
-  '#ÇevreKoruması', '#YeşilŞehir', '#TemizEnerji', '#SürdürülebilirŞehir',
-  '#SıfırAtık', '#İklimDeğişikliği', '#GeriDönüşüm', '#DoğaDostu',
-  '#YeşilTeknoloji', '#KarbonAyakİzi', '#ÇevreBilinci', '#EkolojikDenge'
-];
 
 const SENTIMENT_OPTIONS = [
   { value: 'positive', label: 'Pozitif', icon: '😊' },
@@ -54,11 +55,25 @@ const FilterInterface: React.FC<FilterInterfaceProps> = ({
   onClose,
   onFilterApply
 }) => {
+  const { data: ALL_HASHTAGS, isLoading: filtersLoading} = useFilters();
   const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
   const [selectedSentiments, setSelectedSentiments] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [customHashtag, setCustomHashtag] = useState('');
   const [hashtagSuggestions, setHashtagSuggestions] = useState<string[]>([]);
+
+  const ALL_AVAILABLE_HASHTAGS = !filtersLoading ? ALL_HASHTAGS : [
+    '#SıfırAtık', '#ÇevreKoruması', '#YeşilŞehir', '#GeriDönüşüm', '#SürdürülebilirŞehir',
+    '#YeşilSanayi', '#TemizEnerji', '#İklimDeğişikliği', '#ÇevreBilinci', '#DoğaDostu',
+    '#YeşilTeknoloji', '#EkolojikDenge', '#KarbonAyakİzi', '#Temiz33Hava', '#SürdürülebilirTurizm',
+    '#TarımselSürdürülebilirlik', '#EnerjiVerimliliği', '#Suları33nKorunması', '#KaradenizEkolojisi', '#GölEkosistemleri'
+  ];
+  
+  const PREDEFINED_HASHTAGS = !filtersLoading ? ALL_HASHTAGS.slice(0,10) : [
+    '#ÇevreKoruması', '#YeşilŞ55ehir', '#TemizEnerji', '#SürdürülebilirŞehir',
+    '#SıfırAtık', '#İklimDeğişikliği', '#GeriDönüşüm', '#DoğaDostu',
+    '#YeşilTeknoloji', '#KarbonAyakİzi', '#ÇevreBilinci', '#EkolojikDenge'
+  ];
 
   const handleHashtagAdd = (hashtag: string) => {
     if (selectedHashtags.length < 3 && !selectedHashtags.includes(hashtag)) {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Twitter, Instagram, Globe2 } from 'lucide-react';
+import { useSocialMediaData } from '@/hooks/useBackendData';
 
 // TODO: Backend Integration - Social media comparison data
 // API Endpoint: GET /api/cities/{cityId}/social-media
@@ -12,7 +13,7 @@ interface SocialMediaData {
   icon: React.ReactNode;
   impact: number;
   posts: number;
-  engagement: number;
+  mainHashtag: string;
   topTopic: string;
   sentiment: {
     positive: number;
@@ -22,6 +23,7 @@ interface SocialMediaData {
 }
 
 interface SocialMediaComparisonProps {
+  cityID?: string;
   cityName?: string;
 }
 
@@ -31,17 +33,19 @@ const SENTIMENT_COLORS = {
   negative: 'hsl(var(--sentiment-negative))'
 };
 
-export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ cityName }) => {
+export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({cityID, cityName}) => {
   // TODO: Backend integration - Fetch real social media data for the city
   // const { data: backendSocialData, isLoading } = useSocialMediaData(cityName || null);
+  const {data: citySocial, isLoading: cityLoading} = useSocialMediaData(cityID)
+  const citySocialComparison = !cityLoading && citySocial
   
-  const socialMediaData: SocialMediaData[] = [
+  const socialMediaData: SocialMediaData[] = citySocialComparison || [
     {
       platform: 'X (Twitter)',
       icon: <Twitter className="w-4 h-4" />,
       impact: 45,
       posts: 2847,
-      engagement: 78,
+      mainHashtag: '#SıfırAtık',
       topTopic: '#SıfırAtık',
       sentiment: { positive: 62, neutral: 28, negative: 10 }
     },
@@ -50,7 +54,7 @@ export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ ci
       icon: <Globe2 className="w-4 h-4" />,
       impact: 35,
       posts: 1523,
-      engagement: 85,
+      mainHashtag: '#SıfırAtık',
       topTopic: '#YeşilŞehir',
       sentiment: { positive: 71, neutral: 22, negative: 7 }
     },
@@ -59,7 +63,7 @@ export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ ci
       icon: <Instagram className="w-4 h-4" />,
       impact: 20,
       posts: 892,
-      engagement: 92,
+      mainHashtag: '#SıfırAtık',
       topTopic: '#DoğaDostu',
       sentiment: { positive: 80, neutral: 15, negative: 5 }
     }
@@ -75,7 +79,7 @@ export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ ci
   }));
 
   return (
-    <div className="fixed right-[28rem] top-0 h-full w-80 glass-panel panel-shadow z-45 overflow-y-auto">
+    <div className="fixed right-[28rem] top-12 h-full w-80 glass-panel panel-shadow z-45 overflow-y-auto">
       <div className="p-4 space-y-4">
         {/* Header */}
         <div className="pb-2 border-b border-border/50">
@@ -111,7 +115,11 @@ export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ ci
             <Card key={index} className="bg-card/30">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  {platform.icon}
+                  {(socialMediaData == citySocial)?
+                    (platform.icon === "twitter" ? <Twitter className="w-4 h-4" /> :
+                     platform.icon === "next" ? <Globe2 className="w-4 h-4" /> :
+                     <Instagram className="w-4 h-4" />
+                    ):platform.icon}
                   <span className="font-medium text-sm">{platform.platform}</span>
                 </div>
                 
@@ -123,7 +131,7 @@ export const SocialMediaComparison: React.FC<SocialMediaComparisonProps> = ({ ci
                   
                   <div className="flex justify-between text-xs">
                     <span className="text-muted-foreground">Etkileşim</span>
-                    <span className="font-medium">{platform.engagement}%</span>
+                    <span className="font-medium text-primary">{platform.mainHashtag}</span>
                   </div>
                   
                   <div className="flex justify-between text-xs">

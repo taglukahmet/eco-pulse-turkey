@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts';
 import { Twitter, Instagram, Globe2, TrendingUp } from 'lucide-react';
+import { useNationalPlatformComparison } from '@/hooks/useBackendData';
 
 interface NationalSocialMediaComparisonProps {
   isVisible: boolean;
@@ -16,21 +17,26 @@ const SENTIMENT_COLORS = {
 export const NationalSocialMediaComparison: React.FC<NationalSocialMediaComparisonProps> = ({ isVisible }) => {
   if (!isVisible) return null;
 
-  const nationalSocialData = [
+  const {data:nationalComparison, isLoading: nationalLoading} = useNationalPlatformComparison();
+
+  const nationalSocial = !nationalLoading && nationalComparison.nationalSocial
+  const weeklyComparison = !nationalLoading && nationalComparison.weeklyComparison
+
+  const nationalSocialData = nationalSocial || [
     {
-      platform: 'X (Twitter)',
-      icon: <Twitter className="w-4 h-4" />,
-      totalPosts: 127500,
-      totalEngagement: 89.2,
-      avgSentiment: 65,
-      topRegion: 'İstanbul',
+      platform: 'X (Twitter)',//
+      icon: <Twitter className="w-4 h-4" />, //
+      totalPosts: 127500,//
+      mainHashtag: 89.2,//
+      avgSentiment: 65,//
+      topRegion: 'İstanbul',//
       weeklyGrowth: 12
     },
     {
       platform: 'Next Sosyal',
       icon: <Globe2 className="w-4 h-4" />,
       totalPosts: 73200,
-      totalEngagement: 92.1,
+      mainHashtag: 92.1,
       avgSentiment: 72,
       topRegion: 'Ankara', 
       weeklyGrowth: 28
@@ -39,14 +45,14 @@ export const NationalSocialMediaComparison: React.FC<NationalSocialMediaComparis
       platform: 'Instagram',
       icon: <Instagram className="w-4 h-4" />,
       totalPosts: 45800,
-      totalEngagement: 94.7,
+      mainHashtag: 94.7,
       avgSentiment: 78,
       topRegion: 'İzmir',
       weeklyGrowth: 15
     }
   ];
 
-  const weeklyComparisonData = [
+  const weeklyComparisonData = weeklyComparison || [
     { day: 'Pzt', twitter: 18500, next: 12300, instagram: 7200 },
     { day: 'Sal', twitter: 21200, next: 13800, instagram: 8100 },
     { day: 'Çar', twitter: 24300, next: 15200, instagram: 9400 },
@@ -73,7 +79,11 @@ export const NationalSocialMediaComparison: React.FC<NationalSocialMediaComparis
             <Card key={index} className="bg-card/30">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  {platform.icon}
+                  {(nationalSocialData == nationalSocial)?
+                  (platform.icon === "twitter" ? <Twitter className="w-4 h-4" /> :
+                   platform.icon === "next" ? <Globe2 className="w-4 h-4" /> :
+                   <Instagram className="w-4 h-4" />
+                   ):platform.icon}
                   <span className="font-medium text-sm">{platform.platform}</span>
                 </div>
                 
@@ -84,7 +94,7 @@ export const NationalSocialMediaComparison: React.FC<NationalSocialMediaComparis
                   </div>
                   <div>
                     <span className="text-muted-foreground block">Etkileşim</span>
-                    <span className="font-semibold">{platform.totalEngagement}%</span>
+                    <span className="font-semibold">{platform.mainHashtag}%</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground block">Pozitif Duygu</span>

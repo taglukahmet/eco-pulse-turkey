@@ -68,9 +68,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     // Strict sentiment filtering - if sentiment filter is active, province MUST match
     if (activeFilters.sentiment.length > 0) {
-      const dominantSentiment = province.sentiment.positive > province.sentiment.negative ? 
-        (province.sentiment.positive > province.sentiment.neutral ? 'positive' : 'neutral') :
-        (province.sentiment.negative > province.sentiment.neutral ? 'negative' : 'neutral');
+      const dominantSentiment = 
+        province.inclination === "Çok Olumlu" ? 'positive':
+        province.inclination === "Olumlu" ? 'positive':
+        province.inclination === "Nötr" ? 'neutral' : 
+        province.inclination === "Olumsuz" ? 'negative' : 'negative'
       
       if (!activeFilters.sentiment.includes(dominantSentiment)) {
         return { score: 0, type: 'none' };
@@ -212,7 +214,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                     onClick={() => handleProvinceClick(province)}
                     id={province.id} 
                     data-name={province.name} 
-                    data-coordinates={province.coordinates}
                     data-sentiment={province.sentiment}
                     data-inclination={province.inclination}
                     data-hashtags={province.hashtags}
@@ -253,7 +254,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                     )}>{province.inclination}</span>
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Popüler: <span className="text-primary font-medium">{province.mainTopic}</span>
+                    Popüler: <span className="text-primary font-medium">{province.mainHashtag}</span>
                   </p>
                 </>
               );

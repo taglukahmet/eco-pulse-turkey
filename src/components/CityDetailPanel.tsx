@@ -52,7 +52,7 @@ export const CityDetailPanel: React.FC<CityDetailPanelProps> = ({
 
   return (
     <>
-      <SocialMediaComparison cityName={cityData.name} />
+      <SocialMediaComparison cityID={cityData.id} cityName={cityData.name} />
       <div className="fixed right-0 top-0 h-full w-[28rem] glass-panel panel-shadow slide-in-right z-50 overflow-y-auto">
         <div className="p-6 space-y-6">
           {/* Header */}
