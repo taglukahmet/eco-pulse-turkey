@@ -17,6 +17,8 @@ interface TurkeyMapProps {
     sentiment: string[];
     regions: string[];
   };
+  provinces?: Province[];
+  isLoading?: boolean;
 }
 
 export const TurkeyMap: React.FC<TurkeyMapProps> = (props) => {

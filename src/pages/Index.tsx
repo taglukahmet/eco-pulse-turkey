@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import Header from '@/components/Header';
@@ -9,6 +9,7 @@ import ComparisonView from '@/components/ComparisonView';
 import FilterInterface from '@/components/FilterInterface';
 import { Province, CityData, FilterCriteria } from '@/types';
 import { useProvinces, useProvinceData, useFilterProvinces, useComparativeData } from '@/hooks/useBackendData';
+import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 
 // TODO: Backend Integration - This component will need several API connections:
 // 1. Real-time province data updates: GET /api/provinces
@@ -63,15 +64,18 @@ const Index = () => {
   const [showFilterInterface, setShowFilterInterface] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterCriteria>({ hashtags: [], sentiment: [], regions: [] });
 
-  // TODO: Backend integration - React Query hooks for data fetching
+  // Backend integration hooks
   const { data: backendProvinces, isLoading: provincesLoading, error: provincesError } = useProvinces();
   const { data: backendCityData, isLoading: cityDataLoading } = useProvinceData(selectedProvince || null);
   const { data: comparativeData } = useComparativeData(selectedCitiesForComparison.map(city => city.id));
   const filterMutation = useFilterProvinces();
 
+  // Use backend data when available, fallback to static data
+  const provinces = backendProvinces || PROVINCES_DATA;
+
   const handleProvinceClick = useCallback((province: Province) => {
     if (comparisonMode) {
-      // TODO: Backend integration - This will use backendCityData from useProvinceData hook
+      // Use backend data when available, fallback to mock data
       const cityData = backendCityData || generateCityData(province);
       
       if (selectedCitiesForComparison.find(city => city.id === province.id)) {
@@ -85,7 +89,7 @@ const Index = () => {
       }
     } else {
       // Normal mode - show city detail panel
-      // TODO: Backend integration - This will use backendCityData from useProvinceData hook  
+      // Use backend data when available, fallback to mock data
       const cityData = backendCityData || generateCityData(province);
       setSelectedProvince(province.id);
       setSelectedCityData(cityData);
@@ -135,14 +139,22 @@ const Index = () => {
     setShowFilterInterface(!showFilterInterface);
   }, [showFilterInterface]);
 
-  const handleFilterApply = useCallback((criteria: FilterCriteria) => {
+  const handleFilterApply = useCallback(async (criteria: FilterCriteria) => {
     setActiveFilters(criteria);
     setShowFilterInterface(false);
     // Close other panels to focus on filtered results
     setSelectedProvince(null);
     setSelectedCityData(null);
     setShowNationalPanel(false);
-  }, []);
+    
+    // Apply filters through backend API
+    try {
+      await filterMutation.mutateAsync(criteria);
+      console.log('Applied filters via backend:', criteria);
+    } catch (error) {
+      console.error('Backend filter failed, using local filters:', error);
+    }
+  }, [filterMutation]);
 
   // Click outside handler
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -159,22 +171,21 @@ const Index = () => {
     }
   }, []);
 
-  // TODO: Backend integration - Update filteredProvinces when backend data is available
-  React.useEffect(() => {
+  // Backend data integration effects
+  useEffect(() => {
     if (backendProvinces && !provincesError) {
-      // Use backend data if available, fallback to local data
-      console.log('Using backend provinces data');
+      console.log('Using backend provinces data:', backendProvinces.length, 'provinces loaded');
     }
   }, [backendProvinces, provincesError]);
 
-  // TODO: Backend integration - Update cityData when backend data is available
-  React.useEffect(() => {
+  useEffect(() => {
     if (backendCityData) {
       setSelectedCityData(backendCityData);
+      console.log('Updated city data from backend:', backendCityData.name);
     }
   }, [backendCityData]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -206,6 +217,8 @@ const Index = () => {
               comparisonMode={comparisonMode}
               selectedProvinces={selectedCitiesForComparison.map(city => city.id)}
               activeFilters={activeFilters}
+              provinces={provinces}
+              isLoading={provincesLoading}
             />
           </div>
 
