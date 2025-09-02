@@ -195,12 +195,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                       "cursor-pointer transition-all duration-300 stroke-border stroke-[1.5] hover:stroke-[2]",
                       {
                         "drop-shadow-lg brightness-110": isHovered,
-                        "animate-[pulse_4s_ease-in-out_infinite]": hasActiveFilters && (
-                          matchResult.type === 'high' || 
-                          matchResult.type === 'medium' || 
-                          matchResult.type === 'low' || 
-                          matchResult.type === 'exists'
-                        ),
                       }
                     )}
                     style={{
