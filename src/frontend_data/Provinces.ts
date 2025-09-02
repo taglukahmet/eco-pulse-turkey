@@ -685,7 +685,7 @@ export const PROVINCES_DATA: Province[] = [
     inclination: 'Pozitif',
     hashtags: ['#şanlıurfa', '#abraham', '#güneydoğu'],
     region: 'Güneydoğu Anadolu',
-    d: 'S560,340 L600,350 L590,390 L550,380 Z'
+    d: 'M560,340 L600,350 L590,390 L550,380 Z'
   },
   {
     id: 'siirt',
