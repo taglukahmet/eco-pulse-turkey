@@ -219,11 +219,23 @@ const Index = () => {
           {/* Comparison Mode Instructions */}
           {comparisonMode && !showComparisonView && (
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 glass-panel rounded-lg px-6 py-4 panel-shadow">
-              <p className="text-center text-primary font-medium">
-                Karşılaştırmak için haritadan 2-3 şehir seçin
+              <p className="text-center text-primary font-medium mb-3">
+                Karşılaştırmak için haritadan 2-3 şehir seçin ({selectedCitiesForComparison.length}/3)
               </p>
+              
+              {/* Selected Cities Display */}
+              {selectedCitiesForComparison.length > 0 && (
+                <div className="flex flex-wrap gap-2 justify-center mb-3">
+                  {selectedCitiesForComparison.map((city) => (
+                    <div key={city.id} className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium">
+                      {city.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+              
               {selectedCitiesForComparison.length >= 2 && (
-                <div className="mt-3 text-center">
+                <div className="text-center">
                   <button
                     onClick={() => setShowComparisonView(true)}
                     className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
