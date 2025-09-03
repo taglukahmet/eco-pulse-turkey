@@ -104,8 +104,24 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
   const handleProvinceClick = useCallback((province: Province) => {
     console.log('Clicking province:', province.name, 'Backend ID:', province.id);
-    onProvinceClick(province);
-  }, [onProvinceClick]);
+    
+    if (comparisonMode) {
+      // In comparison mode, handle multi-selection
+      const isAlreadySelected = selectedProvinces.includes(province.id);
+      
+      if (isAlreadySelected) {
+        // Deselect the province - let parent handle the removal
+        onProvinceClick(province);
+      } else if (selectedProvinces.length < 3) {
+        // Add to selection if under limit
+        onProvinceClick(province);
+      }
+      // If already at 3 provinces and trying to select new one, ignore
+    } else {
+      // Normal single selection mode
+      onProvinceClick(province);
+    }
+  }, [onProvinceClick, comparisonMode, selectedProvinces]);
 
   // Function to check if a province matches the filter criteria
   const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
