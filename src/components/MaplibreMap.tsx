@@ -110,14 +110,20 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       // In comparison mode, handle multi-selection with separate layer
       const isAlreadySelected = selectedProvinces.includes(province.id);
       
+      // Always call parent first to update selectedProvinces state
+      onProvinceClick(province);
+      
+      // Then manage the visual layer
       if (isAlreadySelected) {
-        // Remove from selected features - call parent first to update selectedProvinces
-        onProvinceClick(province);
+        // Remove from selected features layer
+        console.log('Removing feature from selected layer for:', province.name);
+        setSelectedFeatures(prev => {
+          const updated = prev.filter(f => f.properties?.provinceId !== province.id);
+          console.log('Updated selected features after removal:', updated.length);
+          return updated;
+        });
       } else if (selectedProvinces.length < 3) {
-        // Add to selection - call parent first to update selectedProvinces  
-        onProvinceClick(province);
-        
-        // Find the feature in the original GeoJSON and add to selected features
+        // Add to selected features layer
         const originalFeatures = (turkeyGeoJSON as any).features;
         const feature = originalFeatures.find((f: any) => {
           const featureName = f.properties?.name;
@@ -137,7 +143,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           };
           setSelectedFeatures(prev => {
             const updated = [...prev, selectedFeature];
-            console.log('Updated selected features:', updated.length);
+            console.log('Updated selected features after addition:', updated.length);
             return updated;
           });
         } else {
