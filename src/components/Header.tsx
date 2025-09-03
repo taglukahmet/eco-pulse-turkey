@@ -87,14 +87,11 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            onClick={onComparisonToggle}
-            className={cn(
-              "transition-all duration-300",
-              comparisonMode && "bg-primary/20 text-primary hover:bg-primary/30"
-            )}
+            onClick={() => window.location.href = '/comparison'}
+            className="transition-all duration-300"
           >
             <BarChart3 className="w-4 h-4 mr-2" />
-            Karşılaştır
+            Karşılaştırma
           </Button>
 
           <Button
