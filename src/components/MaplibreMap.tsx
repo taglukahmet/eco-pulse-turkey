@@ -30,7 +30,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const map = useRef<maplibregl.Map | null>(null);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
+  
   
   // Use backend data if available, fallback to local data
   const { data: backendProvinces, isLoading } = useProvinces();
@@ -105,57 +105,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
   const handleProvinceClick = useCallback((province: Province) => {
     console.log('Clicking province:', province.name, 'Backend ID:', province.id);
-    
-    if (comparisonMode) {
-      // In comparison mode, handle multi-selection with separate layer
-      const isAlreadySelected = selectedProvinces.includes(province.id);
-      
-      // Always call parent first to update selectedProvinces state
-      onProvinceClick(province);
-      
-      // Then manage the visual layer
-      if (isAlreadySelected) {
-        // Remove from selected features layer
-        console.log('Removing feature from selected layer for:', province.name);
-        setSelectedFeatures(prev => {
-          const updated = prev.filter(f => f.properties?.provinceId !== province.id);
-          console.log('Updated selected features after removal:', updated.length);
-          return updated;
-        });
-      } else if (selectedProvinces.length < 3) {
-        // Add to selected features layer
-        const originalFeatures = (turkeyGeoJSON as any).features;
-        const feature = originalFeatures.find((f: any) => {
-          const featureName = f.properties?.name;
-          return featureName === province.name || 
-                 featureName?.toLowerCase() === province.name.toLowerCase() ||
-                 findProvinceByGeoJSONName(featureName)?.id === province.id;
-        });
-        
-        if (feature) {
-          console.log('Adding feature to selected layer for:', province.name);
-          const selectedFeature = {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              provinceId: province.id
-            }
-          };
-          setSelectedFeatures(prev => {
-            const updated = [...prev, selectedFeature];
-            console.log('Updated selected features after addition:', updated.length);
-            return updated;
-          });
-        } else {
-          console.warn('Feature not found in GeoJSON for province:', province.name);
-        }
-      }
-      // If already at 3 provinces and trying to select new one, ignore
-    } else {
-      // Normal single selection mode
-      onProvinceClick(province);
-    }
-  }, [onProvinceClick, comparisonMode, selectedProvinces, findProvinceByGeoJSONName]);
+    onProvinceClick(province);
+  }, [onProvinceClick]);
 
   // Function to check if a province matches the filter criteria
   const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
@@ -299,14 +250,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         data: turkeyGeoJSON as any
       });
 
-      // Add source for selected provinces in comparison mode
-      map.current.addSource('selected-provinces', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: []
-        }
-      });
 
       // Add fill layer
       map.current.addLayer({
@@ -326,16 +269,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         }
       });
 
-      // Add selected provinces layer (comparison mode)
-      map.current.addLayer({
-        id: 'selected-provinces-fill',
-        type: 'fill',
-        source: 'selected-provinces',
-        paint: {
-          'fill-color': '#dc2626',
-          'fill-opacity': 0.8
-        }
-      });
 
       // Add border layer
       map.current.addLayer({
@@ -348,16 +281,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         }
       });
 
-      // Add selected provinces border layer
-      map.current.addLayer({
-        id: 'selected-provinces-border',
-        type: 'line',
-        source: 'selected-provinces',
-        paint: {
-          'line-color': '#991b1b',
-          'line-width': 2
-        }
-      });
 
       // Update colors based on current state
       updateMapColors();
@@ -384,7 +307,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     };
 
     map.current.on('click', 'turkey-cities-fill', handleLayerClick);
-    map.current.on('click', 'selected-provinces-fill', handleLayerClick);
 
     // Hover handlers with improved province detection
     map.current.on('mouseenter', 'turkey-cities-fill', (e) => {
@@ -504,16 +426,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     }
   }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters, comparisonMode]);
 
-  // Update selected provinces layer when selectedFeatures changes
-  useEffect(() => {
-    if (map.current && map.current.getSource('selected-provinces')) {
-      const source = map.current.getSource('selected-provinces') as maplibregl.GeoJSONSource;
-      source.setData({
-        type: 'FeatureCollection',
-        features: selectedFeatures
-      });
-    }
-  }, [selectedFeatures]);
 
   // Update map colors when dependencies change
   useEffect(() => {
@@ -573,13 +485,26 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       )}
       
       {comparisonMode && (
-        <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg px-4 py-2 border">
-          <p className="text-sm font-medium text-primary">
+        <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg px-4 py-3 border min-w-[200px]">
+          <p className="text-sm font-medium text-primary mb-2">
             Comparison Mode: Select up to 3 cities
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground mb-2">
             {selectedProvinces.length}/3 selected
           </p>
+          {selectedProvinces.length > 0 && (
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-foreground">Selected:</p>
+              {selectedProvinces.map(provinceId => {
+                const province = displayProvinces.find(p => p.id === provinceId);
+                return province ? (
+                  <div key={provinceId} className="text-xs text-muted-foreground">
+                    • {province.name}
+                  </div>
+                ) : null;
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>
