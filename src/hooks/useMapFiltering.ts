@@ -25,22 +25,6 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
     staleTime: 30000, // Cache for 30 seconds
   });
 
-  const filterMatchResults = useMemo(() => {
-    if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
-      return new Map<string, FilterMatchResult>();
-    }
-
-    const results = new Map<string, FilterMatchResult>();
-    const scoreMap = new Map(hashtagScores?.scores.map(s => [s.provinceId, s.score]) || []);
-
-    provinces.forEach(province => {
-      const matchResult = getFilterMatchIntensity(province, activeFilters, scoreMap);
-      results.set(province.id, matchResult);
-    });
-
-    return results;
-  }, [provinces, activeFilters, hashtagScores]);
-
   const getFilterMatchIntensity = (
     province: Province, 
     filters: FilterCriteria, 
@@ -81,6 +65,22 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
 
     return { score, type, isVisible };
   };
+
+  const filterMatchResults = useMemo(() => {
+    if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
+      return new Map<string, FilterMatchResult>();
+    }
+
+    const results = new Map<string, FilterMatchResult>();
+    const scoreMap = new Map(hashtagScores?.scores.map(s => [s.provinceId, s.score]) || []);
+
+    provinces.forEach(province => {
+      const matchResult = getFilterMatchIntensity(province, activeFilters, scoreMap);
+      results.set(province.id, matchResult);
+    });
+
+    return results;
+  }, [provinces, activeFilters, hashtagScores]);
 
   return {
     filterMatchResults,
