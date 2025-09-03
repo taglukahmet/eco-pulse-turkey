@@ -25,7 +25,7 @@ export const useProvinceData = (provinceId: string | null) => {
       return provinceService.getProvinceData(provinceId);
     },
     enabled: !!provinceId,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 10 * 1000, // 2 minutes
   });
 };
 
