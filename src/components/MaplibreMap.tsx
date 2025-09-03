@@ -304,7 +304,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         if (feature.id && feature.properties?.name) {
           const province = displayProvinces.find(p => p.name === feature.properties.name);
           if (province) {
-            const isSelected = selectedProvinces.includes(province.id) || selectedProvince === province.id;
+            const isSelected = selectedProvinces.includes(province.id) || (selectedProvince === province.id && !comparisonMode);
             map.current!.setFeatureState(
               { source: 'turkey-cities', id: feature.id },
               { selected: isSelected }
@@ -313,7 +313,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         }
       });
     }
-  }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters]);
+  }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters, comparisonMode]);
 
   // Update map colors when dependencies change
   useEffect(() => {
