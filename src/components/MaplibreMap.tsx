@@ -330,7 +330,7 @@ export const MaplibreMap: React.FC<MaplibreMapProps> = ({
       // Add click handler
       map.current!.on('click', 'provinces-fill', (e) => {
         const feature = e.features?.[0];
-        if (feature?.properties?.id) {
+        if (feature?.properties?.id && displayProvinces && displayProvinces.length > 0) {
           const province = displayProvinces.find(p => p.id === feature.properties.id);
           if (province) {
             handleProvinceClick(province);
