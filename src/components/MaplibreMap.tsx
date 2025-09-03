@@ -211,13 +211,17 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       return 'rgba(229, 231, 235, 0.2)';
     }
 
-    if (selectedProvinces.includes(provinceId)) {
-      return '#6366f1'; // indigo
+    // Comparison mode - show selected provinces
+    if (comparisonMode && selectedProvinces.includes(provinceId)) {
+      return '#dc2626'; // red for selected in comparison mode
     }
-    if (selectedProvince === provinceId) {
-      return '#6366f1'; // indigo
+    
+    // Normal single selection mode
+    if (!comparisonMode && selectedProvince === provinceId) {
+      return '#6366f1'; // indigo for single selection
     }
-    return '#e5e7eb'; // gray
+    
+    return '#e5e7eb'; // gray for unselected
   };
 
   // Initialize map
