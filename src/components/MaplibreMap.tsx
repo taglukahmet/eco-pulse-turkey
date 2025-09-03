@@ -131,8 +131,37 @@ export const MaplibreMap: React.FC<MaplibreMapProps> = ({
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Use backend data if available, fallback to local data
-  const { data: backendProvinces } = useProvinces();
-  const displayProvinces = backendProvinces || PROVINCES_DATA;
+  const { data: backendProvinces, isLoading, error } = useProvinces();
+  
+  // Debug: Log the data structure to understand backend format
+  React.useEffect(() => {
+    if (backendProvinces) {
+      console.log('Backend data structure:', backendProvinces);
+      console.log('First backend province:', backendProvinces[0]);
+      console.log('Backend provinces count:', backendProvinces.length);
+    }
+    if (error) {
+      console.log('Backend error:', error);
+    }
+  }, [backendProvinces, error]);
+  
+  // Always use mock data if backend data is missing required fields
+  const displayProvinces: Province[] = React.useMemo(() => {
+    if (!backendProvinces || !Array.isArray(backendProvinces) || backendProvinces.length === 0) {
+      console.log('Using mock data - no backend data');
+      return PROVINCES_DATA;
+    }
+    
+    // Check if backend data has required structure
+    const firstProvince = backendProvinces[0];
+    if (!firstProvince || !firstProvince.id || !firstProvince.name || !firstProvince.d) {
+      console.log('Using mock data - backend data missing required fields');
+      return PROVINCES_DATA;
+    }
+    
+    console.log('Using backend data');
+    return backendProvinces as Province[];
+  }, [backendProvinces]);
 
   const handleProvinceClick = useCallback((province: Province) => {
     onProvinceClick(province);

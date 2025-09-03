@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { provinceService } from '@/services/provinceService';
 import { socialMediaService } from '@/services/socialMediaService';
@@ -8,11 +9,23 @@ import { FilterCriteria } from '@/types';
 
 // Hook for fetching all provinces
 export const useProvinces = () => {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['provinces'],
     queryFn: provinceService.getAllProvinces,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false, // Don't retry failed requests
   });
+  
+  React.useEffect(() => {
+    if (query.error) {
+      console.log('Backend provinces fetch failed:', query.error);
+    }
+    if (query.data) {
+      console.log('Backend provinces fetched successfully:', query.data);
+    }
+  }, [query.error, query.data]);
+  
+  return query;
 };
 
 // Hook for fetching specific province data
