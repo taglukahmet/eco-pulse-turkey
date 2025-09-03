@@ -288,6 +288,22 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     fillExpression.push('#e5e7eb'); // default color
 
     map.current.setPaintProperty('turkey-cities-fill', 'fill-color', fillExpression);
+    
+    // Update selected states for comparison mode
+    if (map.current.getSource('turkey-cities')) {
+      map.current.querySourceFeatures('turkey-cities').forEach(feature => {
+        if (feature.id && feature.properties?.name) {
+          const province = displayProvinces.find(p => p.name === feature.properties.name);
+          if (province) {
+            const isSelected = selectedProvinces.includes(province.id) || selectedProvince === province.id;
+            map.current!.setFeatureState(
+              { source: 'turkey-cities', id: feature.id },
+              { selected: isSelected }
+            );
+          }
+        }
+      });
+    }
   }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters]);
 
   // Update map colors when dependencies change
