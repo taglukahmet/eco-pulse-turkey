@@ -111,10 +111,12 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       const isAlreadySelected = selectedProvinces.includes(province.id);
       
       if (isAlreadySelected) {
-        // Remove from selected features
-        setSelectedFeatures(prev => prev.filter(f => f.properties?.provinceId !== province.id));
+        // Remove from selected features - call parent first to update selectedProvinces
         onProvinceClick(province);
       } else if (selectedProvinces.length < 3) {
+        // Add to selection - call parent first to update selectedProvinces  
+        onProvinceClick(province);
+        
         // Find the feature in the original GeoJSON and add to selected features
         const originalFeatures = (turkeyGeoJSON as any).features;
         const feature = originalFeatures.find((f: any) => {
@@ -125,6 +127,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         });
         
         if (feature) {
+          console.log('Adding feature to selected layer for:', province.name);
           const selectedFeature = {
             ...feature,
             properties: {
@@ -132,9 +135,14 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
               provinceId: province.id
             }
           };
-          setSelectedFeatures(prev => [...prev, selectedFeature]);
+          setSelectedFeatures(prev => {
+            const updated = [...prev, selectedFeature];
+            console.log('Updated selected features:', updated.length);
+            return updated;
+          });
+        } else {
+          console.warn('Feature not found in GeoJSON for province:', province.name);
         }
-        onProvinceClick(province);
       }
       // If already at 3 provinces and trying to select new one, ignore
     } else {
