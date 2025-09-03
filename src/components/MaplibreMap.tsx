@@ -287,17 +287,22 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       if (!e.features || e.features.length === 0) return;
       
       const feature = e.features[0];
-      const geoJsonProvinceName = feature.properties?.name;
+      const provinceName = feature.properties?.name;
       
-      if (geoJsonProvinceName) {
-        // Use the robust province mapping to find the correct province
-        const province = findProvinceByGeoJSONName(geoJsonProvinceName);
-        
+      if (provinceName) {
+        // Find province by matching name from GeoJSON to province data
+        const province = displayProvinces.find(p => 
+          p.name === provinceName || 
+          p.name.toLowerCase() === provinceName.toLowerCase() ||
+          // Handle potential name variations in the GeoJSON
+          provinceName.toLowerCase().includes(p.name.toLowerCase()) ||
+          p.name.toLowerCase().includes(provinceName.toLowerCase())
+        );
         if (province) {
           console.log('Clicking province:', province.name, 'Backend ID:', province.id);
           handleProvinceClick(province);
         } else {
-          console.warn('Province not found in backend data:', geoJsonProvinceName);
+          console.warn('Province not found in backend data:', provinceName);
         }
       }
     });
