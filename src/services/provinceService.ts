@@ -36,7 +36,9 @@ export const provinceService = {
   // Get hashtag-based scoring from backend
   getHashtagScores: async (hashtags: string[]): Promise<HashtagFilterResponse> => {
     const request: HashtagFilterRequest = { hashtags };
+    console.log('Sending hashtag request:', request);
     const response = await api.post('/provinces/hashtag-scores/', request);
+    console.log('Received response:', response.data);
     return response.data;
   },
 };
