@@ -132,6 +132,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
       const matchResult = getFilterMatch(provinceId);
       
+      // Debug logging for color application
+      if (matchResult.score > 0) {
+        console.log(`Applying color to ${province.name}: score=${matchResult.score}, visible=${matchResult.isVisible}, sentiment=${province.inclination}`);
+      }
+      
       if (matchResult.isVisible && matchResult.score > 0) {
         // Use sentiment-based colors with score-based alpha
         const alpha = Math.max(0.4, Math.min(matchResult.score, 1.0)); // Min 0.4 alpha for visibility

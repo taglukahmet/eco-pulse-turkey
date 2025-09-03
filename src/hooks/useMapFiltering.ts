@@ -41,8 +41,14 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
     let type: 'high' | 'medium' | 'low' | 'none' = 'none';
 
     // Frontend limiters: sentiment and region
-    if (filters.regions.length > 0 && !filters.regions.includes(province.region)) {
-      isVisible = false;
+    if (filters.regions.length > 0) {
+      // Handle region name mismatch: "Ege" vs "Ege Bölgesi" 
+      const matchesRegion = filters.regions.some(filterRegion => 
+        province.region.includes(filterRegion) || filterRegion.includes(province.region)
+      );
+      if (!matchesRegion) {
+        isVisible = false;
+      }
     }
 
     if (filters.sentiment.length > 0) {
@@ -86,6 +92,11 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
     provinces.forEach(province => {
       const matchResult = getFilterMatchIntensity(province, activeFilters, scoreMap);
       results.set(province.id, matchResult);
+      
+      // Debug logging
+      if (activeFilters.hashtags.length > 0 && matchResult.score > 0) {
+        console.log(`Province ${province.name}: score=${matchResult.score}, type=${matchResult.type}, visible=${matchResult.isVisible}`);
+      }
     });
 
     return results;
