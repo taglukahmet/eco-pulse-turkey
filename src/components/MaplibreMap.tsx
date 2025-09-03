@@ -30,6 +30,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const map = useRef<maplibregl.Map | null>(null);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
   
   // Use backend data if available, fallback to local data
   const { data: backendProvinces, isLoading } = useProvinces();
@@ -106,14 +107,33 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     console.log('Clicking province:', province.name, 'Backend ID:', province.id);
     
     if (comparisonMode) {
-      // In comparison mode, handle multi-selection
+      // In comparison mode, handle multi-selection with separate layer
       const isAlreadySelected = selectedProvinces.includes(province.id);
       
       if (isAlreadySelected) {
-        // Deselect the province - let parent handle the removal
+        // Remove from selected features
+        setSelectedFeatures(prev => prev.filter(f => f.properties?.provinceId !== province.id));
         onProvinceClick(province);
       } else if (selectedProvinces.length < 3) {
-        // Add to selection if under limit
+        // Find the feature in the original GeoJSON and add to selected features
+        const originalFeatures = (turkeyGeoJSON as any).features;
+        const feature = originalFeatures.find((f: any) => {
+          const featureName = f.properties?.name;
+          return featureName === province.name || 
+                 featureName?.toLowerCase() === province.name.toLowerCase() ||
+                 findProvinceByGeoJSONName(featureName)?.id === province.id;
+        });
+        
+        if (feature) {
+          const selectedFeature = {
+            ...feature,
+            properties: {
+              ...feature.properties,
+              provinceId: province.id
+            }
+          };
+          setSelectedFeatures(prev => [...prev, selectedFeature]);
+        }
         onProvinceClick(province);
       }
       // If already at 3 provinces and trying to select new one, ignore
@@ -121,7 +141,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       // Normal single selection mode
       onProvinceClick(province);
     }
-  }, [onProvinceClick, comparisonMode, selectedProvinces]);
+  }, [onProvinceClick, comparisonMode, selectedProvinces, findProvinceByGeoJSONName]);
 
   // Function to check if a province matches the filter criteria
   const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
@@ -265,6 +285,15 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         data: turkeyGeoJSON as any
       });
 
+      // Add source for selected provinces in comparison mode
+      map.current.addSource('selected-provinces', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
+      });
+
       // Add fill layer
       map.current.addLayer({
         id: 'turkey-cities-fill',
@@ -283,6 +312,17 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         }
       });
 
+      // Add selected provinces layer (comparison mode)
+      map.current.addLayer({
+        id: 'selected-provinces-fill',
+        type: 'fill',
+        source: 'selected-provinces',
+        paint: {
+          'fill-color': '#dc2626',
+          'fill-opacity': 0.8
+        }
+      });
+
       // Add border layer
       map.current.addLayer({
         id: 'turkey-cities-border',
@@ -291,6 +331,17 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         paint: {
           'line-color': '#374151',
           'line-width': 1
+        }
+      });
+
+      // Add selected provinces border layer
+      map.current.addLayer({
+        id: 'selected-provinces-border',
+        type: 'line',
+        source: 'selected-provinces',
+        paint: {
+          'line-color': '#991b1b',
+          'line-width': 2
         }
       });
 
@@ -440,6 +491,17 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       });
     }
   }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters, comparisonMode]);
+
+  // Update selected provinces layer when selectedFeatures changes
+  useEffect(() => {
+    if (map.current && map.current.getSource('selected-provinces')) {
+      const source = map.current.getSource('selected-provinces') as maplibregl.GeoJSONSource;
+      source.setData({
+        type: 'FeatureCollection',
+        features: selectedFeatures
+      });
+    }
+  }, [selectedFeatures]);
 
   // Update map colors when dependencies change
   useEffect(() => {
