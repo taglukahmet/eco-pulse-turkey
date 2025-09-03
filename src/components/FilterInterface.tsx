@@ -38,17 +38,7 @@ interface FilterInterfaceProps {
   onFilterApply: (criteria: FilterCriteria) => void;
 }
 
-const SENTIMENT_OPTIONS = [
-  { value: 'positive', label: 'Pozitif', icon: '😊', color: 'hsl(var(--sentiment-positive))' },
-  { value: 'neutral', label: 'Nötr', icon: '😐', color: 'hsl(var(--sentiment-neutral))' },
-  { value: 'negative', label: 'Negatif', icon: '😞', color: 'hsl(var(--sentiment-negative))' }
-];
-
-const REGION_OPTIONS = [
-  'Marmara Bölgesi', 'Ege Bölgesi', 'İç Anadolu Bölgesi', 
-  'Akdeniz Bölgesi', 'Karadeniz Bölgesi', 'Doğu Anadolu Bölgesi', 
-  'Güneydoğu Anadolu Bölgesi'
-];
+import { SENTIMENT_OPTIONS, REGION_OPTIONS } from '@/utils/constants';
 
 const FilterInterface: React.FC<FilterInterfaceProps> = ({
   isVisible,

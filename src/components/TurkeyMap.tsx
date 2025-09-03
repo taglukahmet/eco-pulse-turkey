@@ -3,6 +3,9 @@ import { cn } from '@/lib/utils';
 import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 import { Province } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
+import { useMapFiltering } from '@/hooks/useMapFiltering';
+import { MapTooltip } from '@/components/ui/MapTooltip';
+import { getProvinceFillColor, getProvinceStyles } from '@/utils/mapUtils';
 // TODO: Backend integration - Real-time updates via WebSocket can be added here
 
 // TODO: Backend Integration - Replace with API call to fetch provinces data from backend
@@ -55,102 +58,19 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     }
   }, [hoveredProvince]);
 
-  // Function to check if a province matches ALL filter criteria with strict matching
-  const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
-    if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
-      return { score: 0, type: 'none' };
-    }
-
-    // Strict region filtering - if region filter is active, province MUST match
-    if (activeFilters.regions.length > 0 && !activeFilters.regions.includes(province.region)) {
-      return { score: 0, type: 'none' };
-    }
-
-    // Strict sentiment filtering - if sentiment filter is active, province MUST match
-    if (activeFilters.sentiment.length > 0) {
-      const dominantSentiment = 
-        province.inclination === "Çok Olumlu" ? 'positive':
-        province.inclination === "Olumlu" ? 'positive':
-        province.inclination === "Nötr" ? 'neutral' : 
-        province.inclination === "Olumsuz" ? 'negative' : 'negative'
-      
-      if (!activeFilters.sentiment.includes(dominantSentiment)) {
-        return { score: 0, type: 'none' };
-      }
-    }
-
-    // Strict hashtag filtering - if hashtag filter is active, province MUST match
-    if (activeFilters.hashtags.length > 0) {
-      const topHashtagMatches = activeFilters.hashtags.filter(hashtag => 
-        province.hashtags.includes(hashtag)
-      ).length;
-      
-      // Check if hashtag exists in expanded list (not just top 5)
-      const expandedHashtags = [
-        ...province.hashtags,
-        '#EkolojikDenge', '#TemizHava', '#GeriDönüşüm', '#ÇevreBilinci', 
-        '#DoğaDostu', '#SürdürülebilirŞehir', '#KarbonAyakİzi', '#İklimDeğişikliği'
-      ];
-      
-      const existsButNotTop = activeFilters.hashtags.some(hashtag => 
-        expandedHashtags.includes(hashtag) && !province.hashtags.includes(hashtag)
-      );
-      
-      if (topHashtagMatches === 0 && !existsButNotTop) {
-        // No hashtag match found - return none for strict hashtag filtering
-        return { score: 0, type: 'none' };
-      }
-      
-      // Calculate match quality for provinces that passed all filters
-      if (topHashtagMatches > 0) {
-        const hashtagScore = topHashtagMatches / activeFilters.hashtags.length;
-        if (hashtagScore >= 0.8) return { score: hashtagScore, type: 'high' };
-        if (hashtagScore >= 0.5) return { score: hashtagScore, type: 'medium' };
-        return { score: hashtagScore, type: 'low' };
-      } else if (existsButNotTop) {
-        return { score: 0.2, type: 'exists' };
-      }
-    }
-
-    // If we reach here, province matches all active filters
-    // Return high quality match since all criteria passed
-    return { score: 1.0, type: 'high' };
-  };
+  // Use custom filtering hook
+  const { getFilterMatch } = useMapFiltering(displayProvinces, activeFilters);
 
   const getProvinceFill = (provinceId: string) => {
     const province = displayProvinces.find(p => p.id === provinceId);
     if (!province) return 'hsl(var(--muted))';
 
-    // Filter highlighting takes precedence
-    if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
-      const matchResult = getFilterMatchIntensity(province);
-      if (matchResult.type !== 'none') {
-        // Color coding based on match type
-        const alpha = 0.4 + (matchResult.score * 0.6); // 0.4 to 1.0 alpha
-        switch (matchResult.type) {
-          case 'high':
-            return `hsl(var(--sentiment-positive) / ${alpha})`;
-          case 'medium':
-            return `hsl(var(--sentiment-neutral) / ${alpha})`;
-          case 'low':
-            return `hsl(var(--primary) / ${alpha})`;
-          case 'exists':
-            return `hsl(220 91% 58% / 0.6)`; // Blue for existing hashtags
-          default:
-            return 'hsl(var(--muted) / 0.3)';
-        }
-      }
-      // Don't color non-matching provinces - return normal muted color
-      return 'hsl(var(--muted))';
-    }
+    const matchResult = getFilterMatch(provinceId);
+    const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0);
+    const isSelected = selectedProvince === provinceId;
+    const isInComparison = selectedProvinces.includes(provinceId);
 
-    if (selectedProvinces.includes(provinceId)) {
-      return 'hsl(var(--primary))';
-    }
-    if (selectedProvince === provinceId) {
-      return 'hsl(var(--primary))';
-    }
-    return 'hsl(var(--muted))';
+    return getProvinceFillColor(province, matchResult, !!hasActiveFilters, isSelected, isInComparison);
   };
 
   return (
@@ -168,7 +88,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             {displayProvinces.map((province) => {
               const isSelected = selectedProvince === province.id || selectedProvinces.includes(province.id);
               const isHovered = hoveredProvince === province.id;
-              const matchResult = getFilterMatchIntensity(province);
               const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0);
             
               return(
@@ -182,8 +101,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                     )}
                     style={{
                       fill: getProvinceFill(province.id),
-                      transform: isHovered ? 'translateY(-3px) scale(1.01)' : 'translateY(0) scale(1)',
-                      animationDelay: hasActiveFilters ? `${(province.id.charCodeAt(0) % 10) * 0.2}s` : '0s',
+                      ...getProvinceStyles(isHovered, !!hasActiveFilters, province.id)
                     }}
                     key={`${province.id}-${animationKey}`}
                     onMouseEnter={() => setHoveredProvince(province.id)}
@@ -204,42 +122,15 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       </div>
       
       {/* Tooltip */}
-      {hoveredProvince && (
-        <div
-          className="fixed z-50 bg-popover border border-border rounded-lg p-3 shadow-xl min-w-[200px] pointer-events-none"
-          style={{
-            left: mousePosition.x,
-            top: mousePosition.y - 120,
-            transform: 'translateX(-50%)',
-          }}
-        >
-          <div className="space-y-1">
-            {(() => {
-              const province = displayProvinces.find(p => p.id === hoveredProvince);
-              if (!province) return null;
-              
-              return (
-                <>
-                  <h4 className="font-semibold text-foreground">{province.name}</h4>
-                   <p className="text-sm text-muted-foreground">
-                     Eğilim: <span className={cn(
-                       "font-medium"
-                     )} style={{
-                       color: province.inclination === 'Çok Olumlu' ? 'hsl(var(--sentiment-positive))' :
-                              province.inclination === 'Olumlu' ? 'hsl(var(--sentiment-positive))' :
-                              province.inclination === 'Nötr' ? 'hsl(var(--sentiment-neutral))' :
-                              'hsl(var(--sentiment-negative))'
-                     }}>{province.inclination}</span>
-                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    Popüler: <span className="text-primary font-medium">{province.mainHashtag}</span>
-                  </p>
-                </>
-              );
-            })()}
-          </div>
-        </div>
-      )}
+      {hoveredProvince && (() => {
+        const province = displayProvinces.find(p => p.id === hoveredProvince);
+        return province ? (
+          <MapTooltip 
+            province={province} 
+            position={mousePosition}
+          />
+        ) : null;
+      })()}
       
       {comparisonMode && (
         <div className="absolute top-4 left-4 glass-panel rounded-lg px-4 py-2">

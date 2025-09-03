@@ -8,6 +8,9 @@ import { useProvinces, useComparativeData } from '@/hooks/useBackendData';
 import { Province, CityData } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
+import { getSentimentColor } from '@/utils/sentimentUtils';
+import { COMPARISON_LIMITS } from '@/utils/constants';
+
 const Comparison = () => {
   const navigate = useNavigate();
   const { data: provinces = [] } = useProvinces();
@@ -25,7 +28,7 @@ const Comparison = () => {
   );
 
   const handleProvinceSelect = (province: Province) => {
-    if (selectedProvinces.length < 3) {
+    if (selectedProvinces.length < COMPARISON_LIMITS.MAX_CITIES) {
       setSelectedProvinces(prev => [...prev, province]);
       setSearchTerm('');
     }
@@ -39,7 +42,7 @@ const Comparison = () => {
   };
 
   const handleCompare = () => {
-    if (selectedProvinces.length >= 2) {
+    if (selectedProvinces.length >= COMPARISON_LIMITS.MIN_CITIES) {
       setShowResults(true);
     }
   };
