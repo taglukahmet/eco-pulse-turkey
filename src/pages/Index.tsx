@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import Header from '@/components/Header';
-import TurkeyMap from '@/components/TurkeyMap';
+import TurkeyMap from '@/components/MaplibreMap';
 import CityDetailPanel from '@/components/CityDetailPanel';
 import NationalAgendaPanel from '@/components/NationalAgendaPanel';
 import ComparisonView from '@/components/ComparisonView';
