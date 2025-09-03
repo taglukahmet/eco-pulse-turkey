@@ -1,5 +1,5 @@
 import api from './api';
-import { Province, CityData, FilterCriteria } from '@/types';
+import { Province, CityData, FilterCriteria, HashtagFilterRequest, HashtagFilterResponse } from '@/types';
 
 // TODO: Backend endpoints - update these to match your backend API
 export const provinceService = {
@@ -30,6 +30,13 @@ export const provinceService = {
   // Get real-time updates for a province
   getRealtimeUpdates: async (provinceId: string): Promise<any> => {
     const response = await api.get(`/provinces/${provinceId}/realtime/`);
+    return response.data;
+  },
+
+  // Get hashtag-based scoring from backend
+  getHashtagScores: async (hashtags: string[]): Promise<HashtagFilterResponse> => {
+    const request: HashtagFilterRequest = { hashtags };
+    const response = await api.post('/provinces/hashtag-scores/', request);
     return response.data;
   },
 };

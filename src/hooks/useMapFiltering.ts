@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { Province } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import { Province, ProvinceScore } from '@/types';
 import { getSentimentType } from '@/utils/sentimentUtils';
-import { EXPANDED_HASHTAGS } from '@/utils/constants';
+import { provinceService } from '@/services/provinceService';
 
 interface FilterCriteria {
   hashtags: string[];
@@ -11,72 +12,78 @@ interface FilterCriteria {
 
 interface FilterMatchResult {
   score: number;
-  type: 'high' | 'medium' | 'low' | 'exists' | 'none';
+  type: 'high' | 'medium' | 'low' | 'none';
+  isVisible: boolean;
 }
 
 export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCriteria) => {
+  // Backend query for hashtag scores
+  const { data: hashtagScores } = useQuery({
+    queryKey: ['hashtag-scores', activeFilters?.hashtags],
+    queryFn: () => provinceService.getHashtagScores(activeFilters?.hashtags || []),
+    enabled: !!(activeFilters?.hashtags && activeFilters.hashtags.length > 0),
+    staleTime: 30000, // Cache for 30 seconds
+  });
+
   const filterMatchResults = useMemo(() => {
     if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
       return new Map<string, FilterMatchResult>();
     }
 
     const results = new Map<string, FilterMatchResult>();
+    const scoreMap = new Map(hashtagScores?.scores.map(s => [s.provinceId, s.score]) || []);
 
     provinces.forEach(province => {
-      const matchResult = getFilterMatchIntensity(province, activeFilters);
+      const matchResult = getFilterMatchIntensity(province, activeFilters, scoreMap);
       results.set(province.id, matchResult);
     });
 
     return results;
-  }, [provinces, activeFilters]);
+  }, [provinces, activeFilters, hashtagScores]);
 
-  const getFilterMatchIntensity = (province: Province, filters: FilterCriteria): FilterMatchResult => {
-    // Strict region filtering - if region filter is active, province MUST match
+  const getFilterMatchIntensity = (
+    province: Province, 
+    filters: FilterCriteria, 
+    backendScores: Map<string, number>
+  ): FilterMatchResult => {
+    let isVisible = true;
+    let score = 0;
+    let type: 'high' | 'medium' | 'low' | 'none' = 'none';
+
+    // Frontend limiters: sentiment and region
     if (filters.regions.length > 0 && !filters.regions.includes(province.region)) {
-      return { score: 0, type: 'none' };
+      isVisible = false;
     }
 
-    // Strict sentiment filtering - if sentiment filter is active, province MUST match
     if (filters.sentiment.length > 0) {
       const dominantSentiment = getSentimentType(province.inclination);
       if (!filters.sentiment.includes(dominantSentiment)) {
-        return { score: 0, type: 'none' };
+        isVisible = false;
       }
     }
 
-    // Strict hashtag filtering - if hashtag filter is active, province MUST match
+    // Hashtag scoring from backend
     if (filters.hashtags.length > 0) {
-      const topHashtagMatches = filters.hashtags.filter(hashtag => 
-        province.hashtags.includes(hashtag)
-      ).length;
-      
-      // Check if hashtag exists in expanded list (not just top 5)
-      const expandedHashtags = [...province.hashtags, ...EXPANDED_HASHTAGS];
-      const existsButNotTop = filters.hashtags.some(hashtag => 
-        expandedHashtags.includes(hashtag) && !province.hashtags.includes(hashtag)
-      );
-      
-      if (topHashtagMatches === 0 && !existsButNotTop) {
-        return { score: 0, type: 'none' };
+      const backendScore = backendScores.get(province.id);
+      if (backendScore !== undefined && backendScore > 0) {
+        score = backendScore;
+        if (score >= 0.8) type = 'high';
+        else if (score >= 0.4) type = 'medium';
+        else type = 'low';
+      } else {
+        isVisible = false;
       }
-      
-      // Calculate match quality for provinces that passed all filters
-      if (topHashtagMatches > 0) {
-        const hashtagScore = topHashtagMatches / filters.hashtags.length;
-        if (hashtagScore >= 0.8) return { score: hashtagScore, type: 'high' };
-        if (hashtagScore >= 0.5) return { score: hashtagScore, type: 'medium' };
-        return { score: hashtagScore, type: 'low' };
-      } else if (existsButNotTop) {
-        return { score: 0.2, type: 'exists' };
-      }
+    } else if (isVisible) {
+      // No hashtag filters, but passes other limiters
+      score = 1.0;
+      type = 'high';
     }
 
-    // If we reach here, province matches all active filters
-    return { score: 1.0, type: 'high' };
+    return { score, type, isVisible };
   };
 
   return {
     filterMatchResults,
-    getFilterMatch: (provinceId: string) => filterMatchResults.get(provinceId) || { score: 0, type: 'none' as const }
+    getFilterMatch: (provinceId: string) => filterMatchResults.get(provinceId) || { score: 0, type: 'none' as const, isVisible: false }
   };
 };

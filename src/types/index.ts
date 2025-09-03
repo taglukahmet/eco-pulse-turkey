@@ -31,3 +31,16 @@ export interface FilterCriteria {
   sentiment: string[];
   regions: string[];
 }
+
+export interface ProvinceScore {
+  provinceId: string;
+  score: number;
+}
+
+export interface HashtagFilterRequest {
+  hashtags: string[];
+}
+
+export interface HashtagFilterResponse {
+  scores: ProvinceScore[];
+}
