@@ -349,30 +349,28 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       updateMapColors();
     });
 
-    // Click handler
-    map.current.on('click', 'turkey-cities-fill', (e) => {
+    // Click handler for main layer
+    const handleLayerClick = (e: any) => {
       if (!e.features || e.features.length === 0) return;
       
       const feature = e.features[0];
       const provinceName = feature.properties?.name;
       
       if (provinceName) {
-        // Find province by matching name from GeoJSON to province data
-        const province = displayProvinces.find(p => 
-          p.name === provinceName || 
-          p.name.toLowerCase() === provinceName.toLowerCase() ||
-          // Handle potential name variations in the GeoJSON
-          provinceName.toLowerCase().includes(p.name.toLowerCase()) ||
-          p.name.toLowerCase().includes(provinceName.toLowerCase())
-        );
+        console.log('Layer clicked, province name:', provinceName);
+        // Use robust province finding
+        const province = findProvinceByGeoJSONName(provinceName);
         if (province) {
-          console.log('Clicking province:', province.name, 'Backend ID:', province.id);
+          console.log('Found province:', province.name, 'Backend ID:', province.id);
           handleProvinceClick(province);
         } else {
           console.warn('Province not found in backend data:', provinceName);
         }
       }
-    });
+    };
+
+    map.current.on('click', 'turkey-cities-fill', handleLayerClick);
+    map.current.on('click', 'selected-provinces-fill', handleLayerClick);
 
     // Hover handlers with improved province detection
     map.current.on('mouseenter', 'turkey-cities-fill', (e) => {
