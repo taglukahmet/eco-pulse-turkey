@@ -303,22 +303,27 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       }
     });
 
-    // Hover handlers
+    // Hover handlers with improved province detection
     map.current.on('mouseenter', 'turkey-cities-fill', (e) => {
       if (!map.current || !e.features || e.features.length === 0) return;
       
       const feature = e.features[0];
-      const provinceName = feature.properties?.name;
+      const geoJsonProvinceName = feature.properties?.name;
       
-      if (provinceName) {
-        setHoveredProvince(provinceName);
-        map.current.getCanvas().style.cursor = 'pointer';
+      if (geoJsonProvinceName) {
+        // Use the robust province mapping to find the correct province
+        const province = findProvinceByGeoJSONName(geoJsonProvinceName);
         
-        if (feature.id) {
-          map.current.setFeatureState(
-            { source: 'turkey-cities', id: feature.id },
-            { hovered: true }
-          );
+        if (province) {
+          setHoveredProvince(province.name);
+          map.current.getCanvas().style.cursor = 'pointer';
+          
+          if (feature.id) {
+            map.current.setFeatureState(
+              { source: 'turkey-cities', id: feature.id },
+              { hovered: true }
+            );
+          }
         }
       }
     });
@@ -338,6 +343,39 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           );
         }
       });
+    });
+
+    // Add mousemove handler to detect province changes while hovering
+    map.current.on('mousemove', 'turkey-cities-fill', (e) => {
+      if (!map.current || !e.features || e.features.length === 0) return;
+      
+      const feature = e.features[0];
+      const geoJsonProvinceName = feature.properties?.name;
+      
+      if (geoJsonProvinceName) {
+        const province = findProvinceByGeoJSONName(geoJsonProvinceName);
+        
+        if (province && hoveredProvince !== province.name) {
+          // Clear previous hover state
+          map.current.querySourceFeatures('turkey-cities').forEach(f => {
+            if (f.id) {
+              map.current!.setFeatureState(
+                { source: 'turkey-cities', id: f.id },
+                { hovered: false }
+              );
+            }
+          });
+          
+          // Set new hover state
+          setHoveredProvince(province.name);
+          if (feature.id) {
+            map.current.setFeatureState(
+              { source: 'turkey-cities', id: feature.id },
+              { hovered: true }
+            );
+          }
+        }
+      }
     });
 
     // Track mouse position for tooltip
