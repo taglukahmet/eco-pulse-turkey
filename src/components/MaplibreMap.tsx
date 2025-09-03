@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 import { Province } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
+import { useMapFiltering } from '@/hooks/useMapFiltering';
 import turkeyGeoJSON from '@/frontend_data/tr-cities-utf8.json';
 
 const SENTIMENT_COLORS = {
@@ -40,6 +41,9 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   // Use backend data if available, fallback to local data
   const { data: backendProvinces, isLoading } = useProvinces();
   const displayProvinces = backendProvinces || PROVINCES_DATA;
+  
+  // Use the new filtering system
+  const { getFilterMatch } = useMapFiltering(displayProvinces, activeFilters);
 
   // Create a robust mapping between GeoJSON province names and backend province IDs
   const createProvinceNameMapping = useCallback(() => {
@@ -113,84 +117,6 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     onProvinceClick(province);
   }, [onProvinceClick]);
 
-  // Function to check if a province matches the filter criteria
-  const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
-    if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
-      return { score: 0, type: 'none' };
-    }
-
-    // Strict region filtering - if region filter is active, province MUST match
-    if (activeFilters.regions.length > 0 && !activeFilters.regions.includes(province.region)) {
-      return { score: 0, type: 'none' };
-    }
-
-    // Strict sentiment filtering - if sentiment filter is active, province MUST match
-    if (activeFilters.sentiment.length > 0) {
-      const dominantSentiment = 
-        province.inclination === "Çok Olumlu" ? 'positive':
-        province.inclination === "Olumlu" ? 'positive':
-        province.inclination === "Nötr" ? 'neutral' : 
-        province.inclination === "Olumsuz" ? 'negative' : 'negative'
-      
-      if (!activeFilters.sentiment.includes(dominantSentiment)) {
-        return { score: 0, type: 'none' };
-      }
-    }
-
-    let matchScore = 0;
-    let totalCriteria = 0;
-    let hasExistingHashtag = false;
-
-    // Check hashtag matches (only if hashtag filter is active)
-    if (activeFilters.hashtags.length > 0) {
-      totalCriteria += 1;
-      const topHashtagMatches = activeFilters.hashtags.filter(hashtag => 
-        province.hashtags.includes(hashtag)
-      ).length;
-      
-      // Check if hashtag exists in expanded list (not just top 5)
-      const expandedHashtags = [
-        ...province.hashtags,
-        '#EkolojikDenge', '#TemizHava', '#GeriDönüşüm', '#ÇevreBilinci', 
-        '#DoğaDostu', '#SürdürülebilirŞehir', '#KarbonAyakİzi', '#İklimDeğişikliği'
-      ];
-      
-      const existsButNotTop = activeFilters.hashtags.some(hashtag => 
-        expandedHashtags.includes(hashtag) && !province.hashtags.includes(hashtag)
-      );
-      
-      if (topHashtagMatches > 0) {
-        const hashtagScore = topHashtagMatches / activeFilters.hashtags.length;
-        matchScore += hashtagScore;
-      } else if (existsButNotTop) {
-        hasExistingHashtag = true;
-      } else {
-        return { score: 0, type: 'none' };
-      }
-    }
-
-    // Add points for sentiment match
-    if (activeFilters.sentiment.length > 0) {
-      totalCriteria += 1;
-      matchScore += 1;
-    }
-
-    // Add points for region match
-    if (activeFilters.regions.length > 0) {
-      totalCriteria += 1;
-      matchScore += 1;
-    }
-
-    const finalScore = totalCriteria > 0 ? matchScore / totalCriteria : 0;
-    
-    // Return type based on match quality
-    if (finalScore >= 0.8) return { score: finalScore, type: 'high' };
-    if (finalScore >= 0.5) return { score: finalScore, type: 'medium' };
-    if (finalScore > 0) return { score: finalScore, type: 'low' };
-    if (hasExistingHashtag) return { score: 0.2, type: 'exists' };
-    
-    return { score: 0, type: 'none' };
-  };
 
   const getProvinceFillColor = (provinceId: string) => {
     const province = displayProvinces.find(p => p.id === provinceId);
@@ -198,8 +124,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     // Filter highlighting takes precedence
     if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
-      const matchResult = getFilterMatchIntensity(province);
-      if (matchResult.type !== 'none') {
+      const matchResult = getFilterMatch(provinceId);
+      if (matchResult.isVisible && matchResult.score > 0) {
         const alpha = 0.4 + (matchResult.score * 0.6);
         switch (matchResult.type) {
           case 'high':
@@ -208,13 +134,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             return `rgba(59, 130, 246, ${alpha})`; // blue
           case 'low':
             return `rgba(99, 102, 241, ${alpha})`; // indigo
-          case 'exists':
-            return 'rgba(59, 130, 246, 0.6)'; // blue
           default:
-            return 'rgba(229, 231, 235, 0.3)';
+            return `rgba(229, 231, 235, 0.3)`;
         }
       }
-      return 'rgba(229, 231, 235, 0.2)';
+      return '#e5e7eb'; // normal gray for non-matching provinces
     }
 
     if (selectedProvinces.includes(provinceId)) {
@@ -425,7 +349,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         }
       });
     }
-  }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters, comparisonMode]);
+  }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters, comparisonMode, getFilterMatch]);
 
   // Update map colors when dependencies change
   useEffect(() => {
