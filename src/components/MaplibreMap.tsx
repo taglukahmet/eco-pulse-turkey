@@ -6,6 +6,7 @@ import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 import { Province } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
 import { useMapFiltering } from '@/hooks/useMapFiltering';
+import { getSentimentColorWithAlpha } from '@/utils/sentimentUtils';
 import turkeyGeoJSON from '@/frontend_data/tr-cities-utf8.json';
 
 const SENTIMENT_COLORS = {
@@ -120,34 +121,29 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
   const getProvinceFillColor = (provinceId: string) => {
     const province = displayProvinces.find(p => p.id === provinceId);
-    if (!province) return '#e5e7eb';
+    if (!province) return 'hsl(var(--muted))';
 
-    // Filter highlighting takes precedence
+    // Selection states take precedence
+    if (selectedProvinces.includes(provinceId) || selectedProvince === provinceId) {
+      return 'hsl(var(--primary))';
+    }
+
+    // Filter highlighting
     if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
       const matchResult = getFilterMatch(provinceId);
+      
       if (matchResult.isVisible && matchResult.score > 0) {
-        const alpha = 0.4 + (matchResult.score * 0.6);
-        switch (matchResult.type) {
-          case 'high':
-            return `rgba(34, 197, 94, ${alpha})`; // green
-          case 'medium':
-            return `rgba(59, 130, 246, ${alpha})`; // blue
-          case 'low':
-            return `rgba(99, 102, 241, ${alpha})`; // indigo
-          default:
-            return `rgba(229, 231, 235, 0.3)`;
-        }
+        // Use sentiment-based colors with score-based alpha
+        const alpha = Math.max(0.4, Math.min(matchResult.score, 1.0)); // Min 0.4 alpha for visibility
+        return getSentimentColorWithAlpha(province.inclination, alpha);
       }
-      return '#e5e7eb'; // normal gray for non-matching provinces
+      
+      // Hide non-matching provinces when filters are active
+      return 'hsl(var(--muted) / 0.3)';
     }
 
-    if (selectedProvinces.includes(provinceId)) {
-      return '#6366f1'; // indigo
-    }
-    if (selectedProvince === provinceId) {
-      return '#6366f1'; // indigo
-    }
-    return '#e5e7eb'; // gray
+    // Default state - use muted color
+    return 'hsl(var(--muted))';
   };
 
   // Initialize map
