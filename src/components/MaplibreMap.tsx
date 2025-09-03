@@ -6,7 +6,7 @@ import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 import { Province } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
 import { useMapFiltering } from '@/hooks/useMapFiltering';
-import { getSentimentColorWithAlpha } from '@/utils/sentimentUtils';
+import { getSentimentColorWithAlpha, getSentimentType } from '@/utils/sentimentUtils';
 import turkeyGeoJSON from '@/frontend_data/tr-cities-utf8.json';
 
 const SENTIMENT_COLORS = {
@@ -121,11 +121,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
   const getProvinceFillColor = (provinceId: string) => {
     const province = displayProvinces.find(p => p.id === provinceId);
-    if (!province) return 'hsl(var(--muted))';
+    if (!province) return 'hsl(220, 15%, 20%)'; // --muted
 
     // Selection states take precedence
     if (selectedProvinces.includes(provinceId) || selectedProvince === provinceId) {
-      return 'hsl(var(--primary))';
+      return 'hsl(195, 85%, 35%)'; // --primary
     }
 
     // Filter highlighting
@@ -135,15 +135,27 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       if (matchResult.isVisible && matchResult.score > 0) {
         // Use sentiment-based colors with score-based alpha
         const alpha = Math.max(0.4, Math.min(matchResult.score, 1.0)); // Min 0.4 alpha for visibility
-        return getSentimentColorWithAlpha(province.inclination, alpha);
+        const sentimentType = getSentimentType(province.inclination);
+        
+        // Convert sentiment to actual HSL values MapLibre can parse
+        switch (sentimentType) {
+          case 'positive':
+            return `hsla(142, 70%, 50%, ${alpha})`;
+          case 'neutral':
+            return `hsla(45, 85%, 55%, ${alpha})`;
+          case 'negative':
+            return `hsla(0, 75%, 55%, ${alpha})`;
+          default:
+            return `hsla(220, 15%, 20%, ${alpha})`;
+        }
       }
       
       // Hide non-matching provinces when filters are active
-      return 'hsl(var(--muted) / 0.3)';
+      return 'hsla(220, 15%, 20%, 0.3)'; // --muted with alpha
     }
 
     // Default state - use muted color
-    return 'hsl(var(--muted))';
+    return 'hsl(220, 15%, 20%)'; // --muted
   };
 
   // Initialize map
