@@ -19,7 +19,11 @@ export const useProvinces = () => {
 export const useProvinceData = (provinceId: string | null) => {
   return useQuery({
     queryKey: ['provinceData', provinceId],
-    queryFn: () => provinceService.getProvinceData(provinceId!),
+    queryFn: () => {
+      if (!provinceId) return null;
+      console.log('Fetching province data for ID:', provinceId);
+      return provinceService.getProvinceData(provinceId);
+    },
     enabled: !!provinceId,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });

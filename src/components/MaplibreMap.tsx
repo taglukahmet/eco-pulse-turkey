@@ -158,21 +158,9 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: {
-        version: 8,
-        sources: {},
-        layers: [
-          {
-            id: 'background',
-            type: 'background',
-            paint: {
-              'background-color': '#f8fafc'
-            }
-          }
-        ]
-      },
+      style: 'https://demotiles.maplibre.org/style.json', // OpenStreetMap style
       center: [35.2433, 38.9637], // Turkey center
-      zoom: 5.5,
+      zoom: 6.2, // Better zoom for Turkey
       maxBounds: [
         [25.0, 35.0], // Southwest coordinates
         [45.0, 43.0]  // Northeast coordinates
@@ -230,8 +218,9 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       const provinceName = feature.properties?.name;
       
       if (provinceName) {
-        const province = displayProvinces.find(p => p.name === provinceName);
+        const province = displayProvinces.find(p => p.name === provinceName || p.name.toLowerCase() === provinceName.toLowerCase());
         if (province) {
+          console.log('Clicking province:', province.name, 'ID:', province.id);
           handleProvinceClick(province);
         }
       }
