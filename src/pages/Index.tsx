@@ -70,8 +70,13 @@ const Index = () => {
   const filterMutation = useFilterProvinces();
 
   const handleProvinceClick = useCallback((province: Province) => {
+    console.log('Province clicked in Index:', province.name, 'ID:', province.id);
+    
     if (comparisonMode) {
-      // TODO: Backend integration - This will use backendCityData from useProvinceData hook
+      // Set the selected province first to trigger data fetch
+      setSelectedProvince(province.id);
+      
+      // Use backend data if available, fallback to generated data
       const cityData = backendCityData || generateCityData(province);
       
       if (selectedCitiesForComparison.find(city => city.id === province.id)) {
@@ -85,9 +90,11 @@ const Index = () => {
       }
     } else {
       // Normal mode - show city detail panel
-      // TODO: Backend integration - This will use backendCityData from useProvinceData hook  
-      const cityData = backendCityData || generateCityData(province);
+      console.log('Setting selected province ID:', province.id);
       setSelectedProvince(province.id);
+      
+      // Use backend data if available, fallback to generated data
+      const cityData = backendCityData || generateCityData(province);
       setSelectedCityData(cityData);
     }
   }, [comparisonMode, selectedCitiesForComparison, backendCityData]);

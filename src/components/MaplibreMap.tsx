@@ -218,10 +218,19 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       const provinceName = feature.properties?.name;
       
       if (provinceName) {
-        const province = displayProvinces.find(p => p.name === provinceName || p.name.toLowerCase() === provinceName.toLowerCase());
+        // Find province by matching name from GeoJSON to province data
+        const province = displayProvinces.find(p => 
+          p.name === provinceName || 
+          p.name.toLowerCase() === provinceName.toLowerCase() ||
+          // Handle potential name variations in the GeoJSON
+          provinceName.toLowerCase().includes(p.name.toLowerCase()) ||
+          p.name.toLowerCase().includes(provinceName.toLowerCase())
+        );
         if (province) {
-          console.log('Clicking province:', province.name, 'ID:', province.id);
+          console.log('Clicking province:', province.name, 'Backend ID:', province.id);
           handleProvinceClick(province);
+        } else {
+          console.warn('Province not found in backend data:', provinceName);
         }
       }
     });

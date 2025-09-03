@@ -55,7 +55,11 @@ export const useComparativeData = (provinceIds: string[]) => {
 export const useSocialMediaData = (cityID: string | null) => {
   return useQuery({
     queryKey: ['socialMediaData', cityID],
-    queryFn: () => socialMediaService.getCitySocialMediaData(cityID!),
+    queryFn: () => {
+      if (!cityID) return null;
+      console.log('Fetching social media data for city ID:', cityID);
+      return socialMediaService.getCitySocialMediaData(cityID);
+    },
     enabled: !!cityID,
     staleTime: 1 * 60 * 1000, // 1 minute
   });
