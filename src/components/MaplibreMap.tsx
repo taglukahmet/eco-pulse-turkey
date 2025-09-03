@@ -44,7 +44,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const displayProvinces = backendProvinces || PROVINCES_DATA;
   
   // Use the new filtering system
-  const { getFilterMatch } = useMapFiltering(displayProvinces, activeFilters);
+  const { getFilterMatch, isLoadingHashtagData } = useMapFiltering(displayProvinces, activeFilters);
 
   // Create a robust mapping between GeoJSON province names and backend province IDs
   const createProvinceNameMapping = useCallback(() => {
@@ -130,6 +130,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     // Filter highlighting
     if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
+      // Don't apply filter colors if hashtag data is still loading
+      if (isLoadingHashtagData) {
+        return 'hsl(220, 15%, 20%)'; // Default muted color while loading
+      }
+      
       const matchResult = getFilterMatch(provinceId);
       
       // Debug logging for color application
@@ -362,7 +367,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         }
       });
     }
-  }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters, comparisonMode, getFilterMatch]);
+  }, [displayProvinces, selectedProvince, selectedProvinces, activeFilters, comparisonMode, getFilterMatch, isLoadingHashtagData]);
 
   // Update map colors when dependencies change
   useEffect(() => {
