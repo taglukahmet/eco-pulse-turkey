@@ -67,15 +67,15 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
       const backendScore = backendScores.get(province.id);
       if (backendScore !== undefined && backendScore > 0) {
         score = backendScore;
-        if (score >= 0.8) type = 'high';
-        else if (score >= 0.4) type = 'medium';
-        else type = 'low';
+        if (score >= 1.2) type = 'high';
+        else if (score >= 0.8) type = 'medium';
+        else if (score >= 0.4) type = 'low';
       } else {
         isVisible = false;
       }
     } else if (isVisible) {
       // No hashtag filters, but passes other limiters
-      score = 1.0;
+      score = 1.5;
       type = 'high';
     }
 

@@ -7,6 +7,12 @@ import { Province } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
 import turkeyGeoJSON from '@/frontend_data/tr-cities-utf8.json';
 
+const SENTIMENT_COLORS = {
+  positive: 'text-[hsl(var(--sentiment-positive))]',
+  neutral: 'text-[hsl(var(--sentiment-neutral))]',
+  negative: 'text-[hsl(var(--sentiment-negative))]'
+};
+
 interface TurkeyMapProps {
   onProvinceClick: (province: Province) => void;
   selectedProvince?: string | null;
@@ -462,10 +468,10 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
                   <p className="text-sm text-muted-foreground">
                     Eğilim: <span className={cn(
                       "font-medium",
-                      province.inclination === 'Çok Olumlu' ? 'text-green-600' :
-                      province.inclination === 'Olumlu' ? 'text-green-600' :
-                      province.inclination === 'Nötr' ? 'text-blue-600' :
-                      'text-red-600'
+                      province.inclination === 'Çok Olumlu' ?  SENTIMENT_COLORS.positive:
+                      province.inclination === 'Olumlu' ? SENTIMENT_COLORS.positive :
+                      province.inclination === 'Nötr' ? SENTIMENT_COLORS.neutral :
+                      SENTIMENT_COLORS.negative
                     )}>{province.inclination}</span>
                   </p>
                   <p className="text-sm text-muted-foreground">
