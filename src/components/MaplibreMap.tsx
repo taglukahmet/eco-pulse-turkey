@@ -35,7 +35,75 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const { data: backendProvinces, isLoading } = useProvinces();
   const displayProvinces = backendProvinces || PROVINCES_DATA;
 
+  // Create a robust mapping between GeoJSON province names and backend province IDs
+  const createProvinceNameMapping = useCallback(() => {
+    const nameToIdMap = new Map<string, string>();
+    
+    displayProvinces.forEach(province => {
+      // Add direct name mapping
+      nameToIdMap.set(province.name, province.id);
+      nameToIdMap.set(province.name.toLowerCase(), province.id);
+      
+      // Add normalized versions (remove Turkish characters)
+      const normalized = province.name
+        .replace(/ğ/g, 'g')
+        .replace(/ü/g, 'u')
+        .replace(/ş/g, 's')
+        .replace(/ı/g, 'i')
+        .replace(/ö/g, 'o')
+        .replace(/ç/g, 'c')
+        .replace(/Ğ/g, 'G')
+        .replace(/Ü/g, 'U')
+        .replace(/Ş/g, 'S')
+        .replace(/İ/g, 'I')
+        .replace(/Ö/g, 'O')
+        .replace(/Ç/g, 'C');
+      
+      nameToIdMap.set(normalized, province.id);
+      nameToIdMap.set(normalized.toLowerCase(), province.id);
+      
+      // Handle specific problematic names
+      if (province.name === 'Gümüşhane') {
+        nameToIdMap.set('Gumushane', province.id);
+        nameToIdMap.set('gumushane', province.id);
+      }
+      if (province.name === 'Afyonkarahisar') {
+        nameToIdMap.set('Afyon', province.id);
+        nameToIdMap.set('afyon', province.id);
+      }
+    });
+    
+    return nameToIdMap;
+  }, [displayProvinces]);
+
+  // Function to find province by GeoJSON name
+  const findProvinceByGeoJSONName = useCallback((geoJSONName: string): Province | null => {
+    const nameMapping = createProvinceNameMapping();
+    
+    // Try exact match first
+    let provinceId = nameMapping.get(geoJSONName);
+    if (provinceId) {
+      return displayProvinces.find(p => p.id === provinceId) || null;
+    }
+    
+    // Try lowercase match
+    provinceId = nameMapping.get(geoJSONName.toLowerCase());
+    if (provinceId) {
+      return displayProvinces.find(p => p.id === provinceId) || null;
+    }
+    
+    // Try partial matches for complex names
+    for (const [mappedName, id] of nameMapping.entries()) {
+      if (mappedName.includes(geoJSONName.toLowerCase()) || geoJSONName.toLowerCase().includes(mappedName)) {
+        return displayProvinces.find(p => p.id === id) || null;
+      }
+    }
+    
+    return null;
+  }, [displayProvinces, createProvinceNameMapping]);
+
   const handleProvinceClick = useCallback((province: Province) => {
+    console.log('Clicking province:', province.name, 'Backend ID:', province.id);
     onProvinceClick(province);
   }, [onProvinceClick]);
 
