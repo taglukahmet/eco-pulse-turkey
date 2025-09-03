@@ -158,7 +158,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             return 'hsl(var(--muted) / 0.3)';
         }
       }
-      return 'hsl(var(--muted) / 0.2)'; // More faded for non-matching provinces
+      // Don't color non-matching provinces - return normal muted color
+      return 'hsl(var(--muted))';
     }
 
     if (selectedProvinces.includes(provinceId)) {

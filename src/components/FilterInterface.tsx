@@ -39,9 +39,9 @@ interface FilterInterfaceProps {
 }
 
 const SENTIMENT_OPTIONS = [
-  { value: 'positive', label: 'Pozitif', icon: '😊' },
-  { value: 'neutral', label: 'Nötr', icon: '😐' },
-  { value: 'negative', label: 'Negatif', icon: '😞' }
+  { value: 'positive', label: 'Pozitif', icon: '😊', color: 'hsl(var(--sentiment-positive))' },
+  { value: 'neutral', label: 'Nötr', icon: '😐', color: 'hsl(var(--sentiment-neutral))' },
+  { value: 'negative', label: 'Negatif', icon: '😞', color: 'hsl(var(--sentiment-negative))' }
 ];
 
 const REGION_OPTIONS = [
@@ -262,6 +262,11 @@ const FilterInterface: React.FC<FilterInterfaceProps> = ({
                 variant={selectedSentiments.includes(option.value) ? "default" : "outline"}
                 onClick={() => handleSentimentToggle(option.value)}
                 className="flex items-center gap-2"
+                style={selectedSentiments.includes(option.value) ? { 
+                  backgroundColor: option.color, 
+                  color: 'hsl(var(--primary-foreground))',
+                  borderColor: option.color
+                } : {}}
               >
                 <span>{option.icon}</span>
                 {option.label}

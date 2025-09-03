@@ -45,6 +45,11 @@ const Comparison = () => {
   };
 
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--secondary))'];
+  const SENTIMENT_COLORS = {
+    positive: 'hsl(var(--sentiment-positive))',
+    neutral: 'hsl(var(--sentiment-neutral))',
+    negative: 'hsl(var(--sentiment-negative))'
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -149,7 +154,7 @@ const Comparison = () => {
                     placeholder="Şehir adı yazın..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-input"
                   />
                   <div className="max-h-60 overflow-y-auto space-y-2">
                     {filteredProvinces.slice(0, 10).map((province) => (
@@ -236,10 +241,17 @@ const Comparison = () => {
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="name" />
                           <YAxis />
-                          <Tooltip />
-                          <Bar dataKey="sentiment.positive" fill="hsl(var(--chart-1))" name="Pozitif" />
-                          <Bar dataKey="sentiment.neutral" fill="hsl(var(--chart-2))" name="Nötr" />
-                          <Bar dataKey="sentiment.negative" fill="hsl(var(--chart-3))" name="Negatif" />
+                           <Tooltip 
+                            contentStyle={{
+                              backgroundColor: 'hsl(var(--popover))',
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px',
+                              color: 'hsl(var(--popover-foreground))'
+                            }}
+                          />
+                          <Bar dataKey="sentiment.positive" fill={SENTIMENT_COLORS.positive} name="Pozitif" />
+                          <Bar dataKey="sentiment.neutral" fill={SENTIMENT_COLORS.neutral} name="Nötr" />
+                          <Bar dataKey="sentiment.negative" fill={SENTIMENT_COLORS.negative} name="Negatif" />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
