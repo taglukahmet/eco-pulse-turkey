@@ -55,7 +55,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     }
   }, [hoveredProvince]);
 
-  // Function to check if a province matches the filter criteria with strict matching
+  // Function to check if a province matches ALL filter criteria with strict matching
   const getFilterMatchIntensity = (province: Province): { score: number; type: 'high' | 'medium' | 'low' | 'exists' | 'none' } => {
     if (!activeFilters || (activeFilters.hashtags.length === 0 && activeFilters.sentiment.length === 0 && activeFilters.regions.length === 0)) {
       return { score: 0, type: 'none' };
@@ -79,13 +79,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       }
     }
 
-    let matchScore = 0;
-    let totalCriteria = 0;
-    let hasExistingHashtag = false;
-
-    // Check hashtag matches (only if hashtag filter is active)
+    // Strict hashtag filtering - if hashtag filter is active, province MUST match
     if (activeFilters.hashtags.length > 0) {
-      totalCriteria += 1;
       const topHashtagMatches = activeFilters.hashtags.filter(hashtag => 
         province.hashtags.includes(hashtag)
       ).length;
@@ -101,38 +96,25 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         expandedHashtags.includes(hashtag) && !province.hashtags.includes(hashtag)
       );
       
-      if (topHashtagMatches > 0) {
-        const hashtagScore = topHashtagMatches / activeFilters.hashtags.length;
-        matchScore += hashtagScore;
-      } else if (existsButNotTop) {
-        hasExistingHashtag = true;
-      } else {
+      if (topHashtagMatches === 0 && !existsButNotTop) {
         // No hashtag match found - return none for strict hashtag filtering
         return { score: 0, type: 'none' };
       }
+      
+      // Calculate match quality for provinces that passed all filters
+      if (topHashtagMatches > 0) {
+        const hashtagScore = topHashtagMatches / activeFilters.hashtags.length;
+        if (hashtagScore >= 0.8) return { score: hashtagScore, type: 'high' };
+        if (hashtagScore >= 0.5) return { score: hashtagScore, type: 'medium' };
+        return { score: hashtagScore, type: 'low' };
+      } else if (existsButNotTop) {
+        return { score: 0.2, type: 'exists' };
+      }
     }
 
-    // Add points for sentiment match (already verified above if filter is active)
-    if (activeFilters.sentiment.length > 0) {
-      totalCriteria += 1;
-      matchScore += 1;
-    }
-
-    // Add points for region match (already verified above if filter is active)
-    if (activeFilters.regions.length > 0) {
-      totalCriteria += 1;
-      matchScore += 1;
-    }
-
-    const finalScore = totalCriteria > 0 ? matchScore / totalCriteria : 0;
-    
-    // Return type based on match quality
-    if (finalScore >= 0.8) return { score: finalScore, type: 'high' };
-    if (finalScore >= 0.5) return { score: finalScore, type: 'medium' };
-    if (finalScore > 0) return { score: finalScore, type: 'low' };
-    if (hasExistingHashtag) return { score: 0.2, type: 'exists' };
-    
-    return { score: 0, type: 'none' };
+    // If we reach here, province matches all active filters
+    // Return high quality match since all criteria passed
+    return { score: 1.0, type: 'high' };
   };
 
   const getProvinceFill = (provinceId: string) => {
@@ -239,15 +221,16 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
               return (
                 <>
                   <h4 className="font-semibold text-foreground">{province.name}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Eğilim: <span className={cn(
-                      "font-medium",
-                      province.inclination === 'Çok Olumlu' ? 'text-sentiment-positive' :
-                      province.inclination === 'Olumlu' ? 'text-sentiment-positive' :
-                      province.inclination === 'Nötr' ? 'text-sentiment-neutral' :
-                      'text-sentiment-negative'
-                    )}>{province.inclination}</span>
-                  </p>
+                   <p className="text-sm text-muted-foreground">
+                     Eğilim: <span className={cn(
+                       "font-medium"
+                     )} style={{
+                       color: province.inclination === 'Çok Olumlu' ? 'hsl(var(--sentiment-positive))' :
+                              province.inclination === 'Olumlu' ? 'hsl(var(--sentiment-positive))' :
+                              province.inclination === 'Nötr' ? 'hsl(var(--sentiment-neutral))' :
+                              'hsl(var(--sentiment-negative))'
+                     }}>{province.inclination}</span>
+                   </p>
                   <p className="text-sm text-muted-foreground">
                     Popüler: <span className="text-primary font-medium">{province.mainHashtag}</span>
                   </p>
