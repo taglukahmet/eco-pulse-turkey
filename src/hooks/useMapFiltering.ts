@@ -18,12 +18,18 @@ interface FilterMatchResult {
 
 export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCriteria) => {
   // Backend query for hashtag scores
-  const { data: hashtagScores } = useQuery({
+  const { data: hashtagScores, error, isError } = useQuery({
     queryKey: ['hashtag-scores', activeFilters?.hashtags],
     queryFn: () => provinceService.getHashtagScores(activeFilters?.hashtags || []),
     enabled: !!(activeFilters?.hashtags && activeFilters.hashtags.length > 0),
     staleTime: 30000, // Cache for 30 seconds
   });
+
+  // Add debugging logs
+  if (activeFilters?.hashtags && activeFilters.hashtags.length > 0) {
+    console.log('Hashtag scores data:', hashtagScores);
+    console.log('Is error:', isError, error);
+  }
 
   const getFilterMatchIntensity = (
     province: Province, 
@@ -72,7 +78,10 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
     }
 
     const results = new Map<string, FilterMatchResult>();
-    const scoreMap = new Map(hashtagScores?.scores.map(s => [s.provinceId, s.score]) || []);
+    // Safe access to hashtag scores with proper null checking
+    const scoreMap = new Map(
+      hashtagScores?.scores?.map(s => [s.provinceId, s.score]) || []
+    );
 
     provinces.forEach(province => {
       const matchResult = getFilterMatchIntensity(province, activeFilters, scoreMap);
