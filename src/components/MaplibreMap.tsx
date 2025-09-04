@@ -193,7 +193,14 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       container: mapContainer.current,
       style: {
         version: 8,
-        sources: {},
+        sources: {
+          'osm': {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors'
+          }
+        },
         layers: [
           {
             id: 'background',
@@ -201,9 +208,21 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             paint: {
               'background-color': '#ffffff'
             }
+          },
+          {
+            id: 'osm-tiles',
+            type: 'raster',
+            source: 'osm',
+            paint: {
+              'raster-opacity': 0.3,
+              'raster-saturation': -1,
+              'raster-contrast': -0.5,
+              'raster-brightness-min': 0.8,
+              'raster-brightness-max': 1.2
+            }
           }
         ]
-      }, // Simple white background style
+      }, // Minimal desaturated map style
       center: [35.2433, 38.9637], // Turkey center
       zoom: 6.2, // Better zoom for Turkey
       maxBounds: [
