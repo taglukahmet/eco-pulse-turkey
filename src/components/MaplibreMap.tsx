@@ -168,7 +168,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
       if (hasActiveHashtagFilter) {
         // If a hashtag filter is on, apply the thematic blue shade based on score.
-        const lightness = 40 + (40 * matchResult.score);
+        const lightness = 40 + (40 * (1-matchResult.score));
         return `hsl(220, 80%, ${lightness}%)`;
       } else {
         // If it's visible but only due to region/sentiment filters,
