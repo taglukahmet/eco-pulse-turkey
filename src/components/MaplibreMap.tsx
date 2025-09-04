@@ -191,7 +191,19 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://demotiles.maplibre.org/style.json', // OpenStreetMap style
+      style: {
+        version: 8,
+        sources: {},
+        layers: [
+          {
+            id: 'background',
+            type: 'background',
+            paint: {
+              'background-color': '#ffffff'
+            }
+          }
+        ]
+      }, // Simple white background style
       center: [35.2433, 38.9637], // Turkey center
       zoom: 6.2, // Better zoom for Turkey
       maxBounds: [
