@@ -38,6 +38,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const map = useRef<maplibregl.Map | null>(null);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const resolvedColors = useRef<{ primary: string; muted: string }>({ primary: '', muted: '' });
   
   // Use backend data if available, fallback to local data
   const { data: backendProvinces, isLoading } = useProvinces();
@@ -118,37 +119,54 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     onProvinceClick(province);
   }, [onProvinceClick]);
 
-
   const getProvinceFillColor = (provinceId: string) => {
+    const primaryColor = `hsl(${resolvedColors.current.primary})`;
+    const mutedColor = `hsl(${resolvedColors.current.muted})`;
+
     const province = displayProvinces.find(p => p.id === provinceId);
-    if (!province) return 'hsl(var(--muted))';
+    if (!province) return mutedColor;
 
-    // Selection states take precedence
+    // Selection states still have the highest priority.
     if (selectedProvinces.includes(provinceId) || selectedProvince === provinceId) {
-      return 'hsl(var(--primary))';
+      return primaryColor;
     }
-
-    // Filter highlighting
-    if (activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0)) {
+    
+    // Check if any filters are active at all.
+    const hasActiveFilters = activeFilters && (activeFilters.hashtags.length > 0 || activeFilters.sentiment.length > 0 || activeFilters.regions.length > 0);
+  
+    if (hasActiveFilters) {
       const matchResult = getFilterMatch(provinceId);
-      
-      if (matchResult.isVisible && matchResult.score > 0) {
-        // Use sentiment-based colors with score-based alpha
-        const alpha = Math.max(0.4, Math.min(matchResult.score, 1.0)); // Min 0.4 alpha for visibility
-        return getSentimentColorWithAlpha(province.inclination, alpha);
-      }
-      
-      // Hide non-matching provinces when filters are active
-      return 'hsl(var(--muted) / 0.3)';
-    }
 
-    // Default state - use muted color
-    return 'hsl(var(--muted))';
+      // If a province doesn't match the restrictive filters, hide it.
+      if (!matchResult.isVisible) {
+        return 'hsla(100, 0%, 95%, 1)';
+      }
+
+      // ✅ SOLUTION: Check specifically for an active HASHTAG filter
+      const hasActiveHashtagFilter = activeFilters.hashtags.length > 0;
+
+      if (hasActiveHashtagFilter) {
+        // If a hashtag filter is on, apply the thematic blue shade based on score.
+        const lightness = 40 + (40 * matchResult.score);
+        return `hsl(220, 80%, ${lightness}%)`;
+      } else {
+        // If it's visible but only due to region/sentiment filters,
+        // use a solid highlight color.
+        return primaryColor;
+      }
+    }
+  
+    // If no filters are active at all, return the default muted color.
+    return 'hsla(100, 0%, 95%, 1)';
   };
 
   // Initialize map
   useEffect(() => {
     if (!mapContainer.current) return;
+
+    const rootStyles = getComputedStyle(document.documentElement);
+    resolvedColors.current.primary = rootStyles.getPropertyValue('--primary').trim();
+    resolvedColors.current.muted = rootStyles.getPropertyValue('--muted').trim();
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
@@ -185,7 +203,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             '#8b5cf6',
             '#e5e7eb'
           ],
-          'fill-opacity': 0.2
+          'fill-opacity': 1
         }
       });
 
@@ -197,6 +215,24 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         paint: {
           'line-color': '#374151',
           'line-width': 1
+        }
+      });
+      
+      map.current.addLayer({
+        id: 'polygon-label',
+        type: 'symbol',
+        source: 'turkey-cities',
+        filter: ['==', ['geometry-type'], 'Polygon'],
+        layout: {
+          'text-allow-overlap': false,
+          'text-field': ['get', 'name'],
+          'text-size': 15,
+          'text-anchor': 'center'
+        },
+        paint: {
+          'text-color': '#000',
+          'text-halo-color': '#fff',
+          'text-halo-width': 1.5
         }
       });
 

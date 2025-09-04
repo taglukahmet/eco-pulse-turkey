@@ -47,10 +47,10 @@ const Comparison = () => {
     }
   };
 
-  const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--secondary))'];
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--accent)/0.8)'];
   const SENTIMENT_COLORS = {
     positive: 'hsl(var(--sentiment-positive))',
-    neutral: 'hsl(var(--sentiment-neutral))',
+    neutral: 'hsl(var(--primary)/0.8)',
     negative: 'hsl(var(--sentiment-negative))'
   };
 

@@ -288,9 +288,9 @@ export const NationalAgendaPanel: React.FC<NationalAgendaPanelProps> = ({
             <CardContent>
               <div className="space-y-3">
                 {regionalPerformance.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 hover:bg-background/50 rounded transition-colors">
+                  <div key={index} className="flex justify-between items-center p-2 pl-1 hover:bg-background/50 rounded transition-colors">
                     <div className="font-medium text-foreground">{item.region}</div>
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-7">
                       <div className="w-16 bg-background rounded-full h-2">
                         <div className="bg-primary h-2 rounded-full" style={{ width: `${item.percentage}%` }}></div>
                       </div>

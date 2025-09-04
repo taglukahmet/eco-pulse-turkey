@@ -41,6 +41,4 @@ export interface HashtagFilterRequest {
   hashtags: string[];
 }
 
-export interface HashtagFilterResponse {
-  scores: ProvinceScore[];
-}
+export type HashtagFilterResponse = ProvinceScore[];

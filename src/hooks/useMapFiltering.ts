@@ -80,7 +80,7 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
     const results = new Map<string, FilterMatchResult>();
     // Safe access to hashtag scores with proper null checking
     const scoreMap = new Map(
-      hashtagScores?.scores?.map(s => [s.provinceId, s.score]) || []
+      hashtagScores?.map(s => [s.provinceId, s.score]) || []
     );
 
     provinces.forEach(province => {
