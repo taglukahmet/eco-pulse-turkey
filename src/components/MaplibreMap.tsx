@@ -143,20 +143,37 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
       }
       
       if (matchResult.isVisible && matchResult.score > 0) {
-        // Use sentiment-based colors with score-based alpha
-        const alpha = Math.max(0.4, Math.min(matchResult.score, 1.0)); // Min 0.4 alpha for visibility
-        const sentimentType = getSentimentType(province.inclination);
-        
-        // Convert sentiment to actual HSL values MapLibre can parse
-        switch (sentimentType) {
-          case 'positive':
-            return `hsla(142, 70%, 50%, ${alpha})`;
-          case 'neutral':
-            return `hsla(45, 85%, 55%, ${alpha})`;
-          case 'negative':
-            return `hsla(0, 75%, 55%, ${alpha})`;
-          default:
-            return `hsla(220, 15%, 20%, ${alpha})`;
+        // When hashtag filters are active, use blue filter colors based on score
+        if (activeFilters.hashtags.length > 0) {
+          const alpha = Math.max(0.4, Math.min(matchResult.score, 1.0));
+          
+          // Use filter colors based on match type/score
+          switch (matchResult.type) {
+            case 'high':
+              return `hsla(210, 100%, 65%, ${alpha})`;
+            case 'medium':
+              return `hsla(210, 80%, 50%, ${alpha})`;
+            case 'low':
+              return `hsla(210, 60%, 35%, ${alpha})`;
+            default:
+              return `hsla(210, 60%, 35%, ${alpha})`;
+          }
+        } else {
+          // Use sentiment-based colors for non-hashtag filters
+          const alpha = Math.max(0.4, Math.min(matchResult.score, 1.0));
+          const sentimentType = getSentimentType(province.inclination);
+          
+          // Convert sentiment to actual HSL values MapLibre can parse
+          switch (sentimentType) {
+            case 'positive':
+              return `hsla(142, 70%, 50%, ${alpha})`;
+            case 'neutral':
+              return `hsla(45, 85%, 55%, ${alpha})`;
+            case 'negative':
+              return `hsla(0, 75%, 55%, ${alpha})`;
+            default:
+              return `hsla(220, 15%, 20%, ${alpha})`;
+          }
         }
       }
       

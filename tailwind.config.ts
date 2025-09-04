@@ -58,6 +58,11 @@ export default {
 					neutral: 'hsl(var(--sentiment-neutral))',
 					negative: 'hsl(var(--sentiment-negative))'
 				},
+				filter: {
+					high: 'hsl(var(--filter-high))',
+					medium: 'hsl(var(--filter-medium))',
+					low: 'hsl(var(--filter-low))'
+				},
 				hover: 'hsl(var(--hover))',
 				active: 'hsl(var(--active))'
 			},

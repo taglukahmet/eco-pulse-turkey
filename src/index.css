@@ -36,10 +36,15 @@
     --accent: 180 75% 40%;
     --accent-foreground: 210 30% 98%;
 
-    /* Status Colors for Hashtag Filtering - Blue Shades */
-    --sentiment-positive: 210 100% 65%;
-    --sentiment-neutral: 210 80% 50%;
-    --sentiment-negative: 210 60% 35%;
+    /* Status Colors for Sentiment Analysis */
+    --sentiment-positive: 142 70% 50%;
+    --sentiment-neutral: 45 85% 55%;
+    --sentiment-negative: 0 75% 55%;
+
+    /* Hashtag Filter Colors - Blue Shades */
+    --filter-high: 210 100% 65%;
+    --filter-medium: 210 80% 50%;
+    --filter-low: 210 60% 35%;
 
     /* Interactive States */
     --hover: 195 75% 45%;
