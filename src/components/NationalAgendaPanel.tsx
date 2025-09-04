@@ -30,7 +30,7 @@ interface NationalAgendaPanelProps {
 
 const SENTIMENT_COLORS = {
   positive: 'hsl(var(--sentiment-positive))',
-  neutral: 'hsl(var(--sentiment-neutral))',
+  neutral: 'hsl(var(--primary)/0.8)',
   negative: 'hsl(var(--sentiment-negative))'
 };
 

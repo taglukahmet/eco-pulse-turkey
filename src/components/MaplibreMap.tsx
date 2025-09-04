@@ -11,7 +11,7 @@ import turkeyGeoJSON from '@/frontend_data/tr-cities-utf8.json';
 
 const SENTIMENT_COLORS = {
   positive: 'text-[hsl(var(--sentiment-positive))]',
-  neutral: 'text-[hsl(var(--sentiment-neutral))]',
+  neutral: 'text-[hsl(var(--primary)/0.8)]',
   negative: 'text-[hsl(var(--sentiment-negative))]'
 };
 
@@ -44,7 +44,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const map = useRef<maplibregl.Map | null>(null);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const resolvedColors = useRef<{ primary: string; muted: string }>({ primary: '', muted: '' });
+  const resolvedColors = useRef<{ primary: string; glow: string }>({ primary: '', glow: '' });
   
   // Use backend data if available, fallback to local data
   const displayProvinces = provinces
@@ -126,14 +126,14 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
   const getProvinceFillColor = (provinceId: string) => {
     const primaryColor = `hsl(${resolvedColors.current.primary})`;
-    const mutedColor = `hsl(${resolvedColors.current.muted})`;
+    const glow = `hsl(${resolvedColors.current.glow})`;
 
     const province = displayProvinces.find(p => p.id === provinceId);
-    if (!province) return mutedColor;
+    if (!province) return glow;
 
     // Selection states still have the highest priority.
     if (selectedProvinces.includes(provinceId) || selectedProvince === provinceId) {
-      return mutedColor;
+      return glow;
     }
     
     // Check if any filters are active at all.
@@ -171,11 +171,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     const rootStyles = getComputedStyle(document.documentElement);
     resolvedColors.current.primary = rootStyles.getPropertyValue('--primary').trim();
-    resolvedColors.current.muted = rootStyles.getPropertyValue('--muted').trim();
+    resolvedColors.current.glow = rootStyles.getPropertyValue('--primary-glow').trim();
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://api.maptiler.com/maps/bright/style.json?key=oxUMfywHNA57ioYervjR', // OpenStreetMap style
+      style: 'https://api.maptiler.com/maps/dataviz-dark/style.json?key=oxUMfywHNA57ioYervjR', // OpenStreetMap style
       center: [35.2433, 38.9637], // Turkey center
       zoom: 6.2, // Better zoom for Turkey
       maxBounds: [
