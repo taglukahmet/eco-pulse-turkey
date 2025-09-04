@@ -8,7 +8,7 @@ import NationalAgendaPanel from '@/components/NationalAgendaPanel';
 import ComparisonView from '@/components/ComparisonView';
 import FilterInterface from '@/components/FilterInterface';
 import { Province, CityData, FilterCriteria } from '@/types';
-import { useProvinces, useProvinceData, useFilterProvinces, useComparativeData } from '@/hooks/useBackendData';
+import { useProvinces, useProvinceData, useFilterProvinces, useComparativeData, useHashtagScoresMutation } from '@/hooks/useBackendData';
 
 // TODO: Backend Integration - This component will need several API connections:
 // 1. Real-time province data updates: GET /api/provinces
@@ -62,7 +62,7 @@ const Index = () => {
   const [showComparisonView, setShowComparisonView] = useState(false);
   const [showFilterInterface, setShowFilterInterface] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterCriteria>({ hashtags: [], sentiment: [], regions: [] });
-
+  const hashtagScoresMutation = useHashtagScoresMutation();
   // TODO: Backend integration - React Query hooks for data fetching
   const { data: backendProvinces, isLoading: provincesLoading, error: provincesError } = useProvinces();
   const { data: backendCityData, isLoading: cityDataLoading } = useProvinceData(selectedProvince || null);
@@ -146,10 +146,12 @@ const Index = () => {
     setActiveFilters(criteria);
     setShowFilterInterface(false);
     // Close other panels to focus on filtered results
+    hashtagScoresMutation.mutate(criteria.hashtags);
+    setShowFilterInterface(false);
     setSelectedProvince(null);
     setSelectedCityData(null);
     setShowNationalPanel(false);
-  }, []);
+  }, [hashtagScoresMutation]);
 
   // Click outside handler
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -188,6 +190,26 @@ const Index = () => {
     };
   }, [handleClickOutside]);
 
+  if (provincesLoading) {
+    return (
+      <div className="min-h-screen dashboard-gradient flex items-center justify-center">
+        <p className="text-2xl text-primary-foreground animate-pulse">
+          Harita verileri yükleniyor...
+        </p>
+      </div>
+    );
+  }
+
+  if (provincesError) {
+    return (
+      <div className="min-h-screen dashboard-gradient flex items-center justify-center">
+        <p className="text-2xl text-red-400">
+          Veri yüklenirken bir hata oluştu.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen dashboard-gradient relative overflow-hidden">
       {/* Header */}
@@ -206,16 +228,25 @@ const Index = () => {
           "blur-sm": (selectedCityData && !comparisonMode) || showNationalPanel
         })}>
           {/* Turkey Map */}
-          <div className="h-full p-8">
+          <div className="h-full p-8 relative"> {/* Add relative positioning */}
+            {/* ✅ SOLUTION: Add a loading overlay for the filtering action */}
+            {hashtagScoresMutation.isPending && (
+              <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10">
+                <p className="text-lg text-primary-foreground animate-pulse">Filtreler uygulanıyor...</p>
+              </div>
+            )}
             <TurkeyMap
               onProvinceClick={handleProvinceClick}
               selectedProvince={selectedProvince}
               comparisonMode={comparisonMode}
               selectedProvinces={selectedCitiesForComparison.map(city => city.id)}
               activeFilters={activeFilters}
+              provinces={backendProvinces || []}
+              // Pass the mutation's result and loading state down to the map
+              hashtagScores={hashtagScoresMutation.data || []}
+              isFiltering={hashtagScoresMutation.isPending}
             />
-          </div>
-
+        </div>
           {/* Comparison Mode Instructions */}
           {comparisonMode && !showComparisonView && (
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 glass-panel rounded-lg px-6 py-4 panel-shadow">

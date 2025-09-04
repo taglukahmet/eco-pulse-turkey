@@ -3,7 +3,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { cn } from '@/lib/utils';
 import { PROVINCES_DATA } from '@/frontend_data/Provinces';
-import { Province } from '@/types';
+import { Province, ProvinceScore } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
 import { useMapFiltering } from '@/hooks/useMapFiltering';
 import { getSentimentColorWithAlpha } from '@/utils/sentimentUtils';
@@ -25,6 +25,9 @@ interface TurkeyMapProps {
     sentiment: string[];
     regions: string[];
   };
+  provinces: Province[];
+  hashtagScores: ProvinceScore[];
+  isFiltering: boolean;
 }
 
 export const TurkeyMap: React.FC<TurkeyMapProps> = ({
@@ -32,7 +35,10 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   selectedProvince,
   comparisonMode,
   selectedProvinces,
-  activeFilters
+  activeFilters,
+  provinces,
+  hashtagScores,
+  isFiltering,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
@@ -41,11 +47,10 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const resolvedColors = useRef<{ primary: string; muted: string }>({ primary: '', muted: '' });
   
   // Use backend data if available, fallback to local data
-  const { data: backendProvinces, isLoading } = useProvinces();
-  const displayProvinces = backendProvinces || PROVINCES_DATA;
+  const displayProvinces = provinces
   
   // Use the new filtering system
-  const { getFilterMatch } = useMapFiltering(displayProvinces, activeFilters);
+  const { getFilterMatch } = useMapFiltering(displayProvinces, hashtagScores, activeFilters);
 
   // Create a robust mapping between GeoJSON province names and backend province IDs
   const createProvinceNameMapping = useCallback(() => {
@@ -128,7 +133,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     // Selection states still have the highest priority.
     if (selectedProvinces.includes(provinceId) || selectedProvince === provinceId) {
-      return primaryColor;
+      return mutedColor;
     }
     
     // Check if any filters are active at all.
@@ -358,8 +363,11 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     const fillExpression: any[] = ['case'];
     
     displayProvinces.forEach(province => {
-      const color = getProvinceFillColor(province.id);
-      fillExpression.push(['==', ['get', 'name'], province.name], color);
+      // ✅ SOLUTION: Add a check to make sure province and province.id exist.
+      if (province && province.id) {
+        const color = getProvinceFillColor(province.id);
+        fillExpression.push(['==', ['get', 'name'], province.name], color);
+      }
     });
     
     fillExpression.push('#e5e7eb'); // default color

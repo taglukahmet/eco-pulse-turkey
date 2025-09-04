@@ -16,20 +16,7 @@ interface FilterMatchResult {
   isVisible: boolean;
 }
 
-export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCriteria) => {
-  // Backend query for hashtag scores
-  const { data: hashtagScores, error, isError } = useQuery({
-    queryKey: ['hashtag-scores', activeFilters?.hashtags],
-    queryFn: () => provinceService.getHashtagScores(activeFilters?.hashtags || []),
-    enabled: !!(activeFilters?.hashtags && activeFilters.hashtags.length > 0),
-    staleTime: 30000, // Cache for 30 seconds
-  });
-
-  // Add debugging logs
-  if (activeFilters?.hashtags && activeFilters.hashtags.length > 0) {
-    console.log('Hashtag scores data:', hashtagScores);
-    console.log('Is error:', isError, error);
-  }
+export const useMapFiltering = (provinces: Province[], hashtagScores: ProvinceScore[], activeFilters?: FilterCriteria) => {
 
   const getFilterMatchIntensity = (
     province: Province, 

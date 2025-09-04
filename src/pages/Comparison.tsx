@@ -13,14 +13,15 @@ import { COMPARISON_LIMITS } from '@/utils/constants';
 
 const Comparison = () => {
   const navigate = useNavigate();
-  const { data: provinces = [] } = useProvinces();
+  const { data: provinces = [], isLoading: provincesLoading, error: provincesError } = useProvinces();
   const [selectedProvinces, setSelectedProvinces] = useState<Province[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showResults, setShowResults] = useState(false);
 
   // Fetch comparative data when we have selected provinces
   const provinceIds = selectedProvinces.map(p => p.id);
-  const { data: comparisonData, isLoading, error } = useComparativeData(provinceIds);
+  const { data: comparisonData, isLoading: comparisonLoading, error: comparisonError } = useComparativeData(provinceIds);
+
 
   const filteredProvinces = provinces.filter(province =>
     province.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -53,6 +54,22 @@ const Comparison = () => {
     neutral: 'hsl(var(--primary)/0.8)',
     negative: 'hsl(var(--sentiment-negative))'
   };
+
+  if (provincesLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-xl text-muted-foreground animate-pulse">Loading province list...</p>
+      </div>
+    );
+  }
+
+  if (provincesError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-xl text-destructive">Could not load province data.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -213,14 +230,14 @@ const Comparison = () => {
               </Button>
             </div>
 
-            {isLoading && (
+            {comparisonLoading && (
               <div className="text-center py-12">
                 <div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
                 <p className="text-muted-foreground">Veriler yükleniyor...</p>
               </div>
             )}
 
-            {error && (
+            {comparisonError && (
               <Card className="border-destructive">
                 <CardContent className="py-6">
                   <p className="text-destructive text-center">
@@ -230,7 +247,7 @@ const Comparison = () => {
               </Card>
             )}
 
-            {comparisonData && !isLoading && (
+            {comparisonData && !comparisonLoading && (
               <div className="grid gap-8">
                 {/* Sentiment Comparison */}
                 <Card>

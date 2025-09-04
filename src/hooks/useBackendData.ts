@@ -41,6 +41,14 @@ export const useFilterProvinces = () => {
   });
 };
 
+// Add this new hook for handling the filter action
+export const useHashtagScoresMutation = () => {
+  return useMutation({
+    // The mutation function will call your existing service
+    mutationFn: (hashtags: string[]) => provinceService.getHashtagScores(hashtags),
+  });
+};
+
 // Hook for comparative data
 export const useComparativeData = (provinceIds: string[]) => {
   return useQuery({
