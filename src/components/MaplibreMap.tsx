@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { cn } from '@/lib/utils';
-import { PROVINCES_DATA } from '@/frontend_data/Provinces';
 import { Province, ProvinceScore } from '@/types';
 import { useProvinces } from '@/hooks/useBackendData';
 import { useMapFiltering } from '@/hooks/useMapFiltering';
@@ -44,13 +43,25 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
   const map = useRef<maplibregl.Map | null>(null);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const resolvedColors = useRef<{ primary: string; glow: string }>({ primary: '', glow: '' });
+  const resolvedColors = useRef<{ primary: string; glow: string; foreground: string; background: string; border: string; }>({ primary: '', glow: '', foreground: '', background: '', border: '' });
   
   // Use backend data if available, fallback to local data
   const displayProvinces = provinces
   
   // Use the new filtering system
   const { getFilterMatch } = useMapFiltering(displayProvinces, hashtagScores, activeFilters);
+
+  const [currentTheme, setCurrentTheme] = useState(
+    document.documentElement.classList.contains('light') ? 'light' : 'dark'
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setCurrentTheme(document.documentElement.classList.contains('light') ? 'light' : 'dark');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   // Create a robust mapping between GeoJSON province names and backend province IDs
   const createProvinceNameMapping = useCallback(() => {
@@ -123,10 +134,15 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     console.log('Clicking province:', province.name, 'Backend ID:', province.id);
     onProvinceClick(province);
   }, [onProvinceClick]);
+  
+  const defaultFillColor = currentTheme === 'light' ? 'hsla(100, 0%, 95%, 1)' : 'hsla(220, 15%, 20%, 1)';
+  const defaultBorderColor = currentTheme !== 'light' ? 'hsla(100, 0%, 95%, 1)' : 'hsla(220, 15%, 20%, 1)';
 
   const getProvinceFillColor = (provinceId: string) => {
     const primaryColor = `hsl(${resolvedColors.current.primary})`;
     const glow = `hsl(${resolvedColors.current.glow})`;
+    
+    // ✅ Use a dynamic muted color
 
     const province = displayProvinces.find(p => p.id === provinceId);
     if (!province) return glow;
@@ -144,7 +160,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
       // If a province doesn't match the restrictive filters, hide it.
       if (!matchResult.isVisible) {
-        return 'hsla(100, 0%, 95%, 1)';
+        return defaultFillColor;
       }
 
       // ✅ SOLUTION: Check specifically for an active HASHTAG filter
@@ -162,25 +178,37 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     }
   
     // If no filters are active at all, return the default muted color.
-    return 'hsla(100, 0%, 95%, 1)';
+    return defaultFillColor;
   };
 
   // Initialize map
+
   useEffect(() => {
     if (!mapContainer.current) return;
 
     const rootStyles = getComputedStyle(document.documentElement);
     resolvedColors.current.primary = rootStyles.getPropertyValue('--primary').trim();
     resolvedColors.current.glow = rootStyles.getPropertyValue('--primary-glow').trim();
+    // ✅ Read additional theme colors from CSS variables
+    resolvedColors.current.foreground = rootStyles.getPropertyValue('--foreground').trim();
+    resolvedColors.current.background = rootStyles.getPropertyValue('--background').trim();
+    resolvedColors.current.border = rootStyles.getPropertyValue('--border').trim();
+    
+    // ✅ Choose the map style URL based on the current theme
+    const mapStyle = currentTheme === 'light' 
+      ? 'https://api.maptiler.com/maps/bright/style.json?key=oxUMfywHNA57ioYervjR'
+      : 'https://api.maptiler.com/maps/dataviz-dark/style.json?key=oxUMfywHNA57ioYervjR';
+
+ 
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://api.maptiler.com/maps/dataviz-dark/style.json?key=oxUMfywHNA57ioYervjR', // OpenStreetMap style
+      style: mapStyle, // OpenStreetMap style
       center: [35.2433, 38.9637], // Turkey center
       zoom: 6.2, // Better zoom for Turkey
       maxBounds: [
-        [22.0, 32.0], // Southwest coordinates
-        [48.0, 46.0]  // Northeast coordinates
+        [24.35, 34.0], // Southwest coordinates
+        [46.0, 42.8]  // Northeast coordinates
       ]
     });
 
@@ -218,7 +246,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
         type: 'line',
         source: 'turkey-cities',
         paint: {
-          'line-color': '#374151',
+          'line-color': defaultBorderColor,
           'line-width': 1
         }
       });
@@ -235,8 +263,8 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
           'text-anchor': 'center'
         },
         paint: {
-          'text-color': '#000',
-          'text-halo-color': '#fff',
+          'text-color': `hsl(${resolvedColors.current.foreground})`,
+          'text-halo-color': `hsl(${resolvedColors.current.background})`,
           'text-halo-width': 1.5
         }
       });
@@ -353,7 +381,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
     return () => {
       map.current?.remove();
     };
-  }, []);
+  }, [currentTheme]);
 
   // Function to update map colors
   const updateMapColors = useCallback(() => {

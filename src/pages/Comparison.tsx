@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useProvinces, useComparativeData } from '@/hooks/useBackendData';
 import { Province, CityData } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import Header from '@/components/Header';
 
 import { getSentimentColor } from '@/utils/sentimentUtils';
 import { COMPARISON_LIMITS } from '@/utils/constants';
@@ -74,26 +75,21 @@ const Comparison = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/')}
-              className="hover:bg-muted"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-primary">Şehir Karşılaştırması</h1>
-              <p className="text-sm text-muted-foreground">Şehirler arası detaylı analiz</p>
-            </div>
-          </div>
+      <header className="glass-panel border-b border-border/50">
+        <div className="container mx-auto px-6 h-16 flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/')}
+            className="hover:bg-muted"
+          >
+          <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-xl font-bold text-primary">Karşılaştır</h1>
         </div>
       </header>
 
-      <div className="container py-8">
+      <div className="container pt-8 pb-8">
         {!showResults ? (
           /* Selection Interface */
           <div className="max-w-4xl mx-auto space-y-8">

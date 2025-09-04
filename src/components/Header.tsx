@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Globe, BarChart3, Info, Moon, Sun, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onNationalAgendaClick: () => void;
@@ -21,26 +22,24 @@ export const Header: React.FC<HeaderProps> = ({
   showNationalPanel,
   onFilterToggle
 }) => {
-  const [isDark, setIsDark] = useState(true);
+  const navigate = useNavigate();
+  const [isDark, setIsDark] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme ? savedTheme === 'light' : true;
+  });
 
   useEffect(() => {
-    // Check if dark mode is already set
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setIsDark(savedTheme === 'dark');
+    if (isDark) {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
     }
-  }, []);
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }, [isDark]);
+
 
   const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-    
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    setIsDark(prevIsDark => !prevIsDark);
   };
 
   return (
@@ -65,13 +64,13 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-4">
           {/* Theme Switch */}
           <div className="flex items-center gap-2">
-            <Sun className="h-4 w-4 text-muted-foreground" />
+            <Moon className="h-4 w-4 text-muted-foreground" />
             <Switch
               checked={isDark}
               onCheckedChange={toggleTheme}
               className="data-[state=checked]:bg-primary"
             />
-            <Moon className="h-4 w-4 text-muted-foreground" />
+            <Sun className="h-4 w-4 text-muted-foreground" />
           </div>
 
           <Button
@@ -87,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => window.location.href = '/comparison'}
+            onClick={() => navigate('/comparison')}
             className="transition-all duration-300"
           >
             <BarChart3 className="w-4 h-4 mr-2" />
