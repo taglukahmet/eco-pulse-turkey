@@ -85,7 +85,7 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
     }
 
     // Don't process if hashtag data is still loading
-    if (activeFilters.hashtags.length > 0 && isLoading) {
+    if (activeFilters.hashtags.length > 0 && (isLoading || false)) {
       return new Map<string, FilterMatchResult>();
     }
 
@@ -110,7 +110,7 @@ export const useMapFiltering = (provinces: Province[], activeFilters?: FilterCri
 
   return {
     filterMatchResults,
-    isLoadingHashtagData: activeFilters?.hashtags && activeFilters.hashtags.length > 0 ? isLoading : false,
+    isLoadingHashtagData: activeFilters?.hashtags && activeFilters.hashtags.length > 0 ? (isLoading || false) : false,
     getFilterMatch: (provinceId: string) => filterMatchResults.get(provinceId) || { score: 0, type: 'none' as const, isVisible: false }
   };
 };
