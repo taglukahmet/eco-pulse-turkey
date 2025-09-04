@@ -24,13 +24,13 @@ export const SENTIMENT_OPTIONS = [
 ] as const;
 
 export const REGION_OPTIONS = [
-  'Marmara',
-  'Ege',
-  'Akdeniz',
-  'İç Anadolu',
-  'Karadeniz',
-  'Doğu Anadolu',
-  'Güneydoğu Anadolu'
+  'Marmara Bölgesi',
+  'Ege Bölgesi',
+  'Akdeniz Bölgesi',
+  'İç Anadolu Bölgesi',
+  'Karadeniz Bölgesi',
+  'Doğu Anadolu Bölgesi',
+  'Güneydoğu Anadolu Bölgesi'
 ] as const;
 
 export const EXPANDED_HASHTAGS = [

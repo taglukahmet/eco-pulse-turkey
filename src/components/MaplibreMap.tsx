@@ -152,12 +152,12 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://demotiles.maplibre.org/style.json', // OpenStreetMap style
+      style: 'https://api.maptiler.com/maps/bright/style.json?key=oxUMfywHNA57ioYervjR', // OpenStreetMap style
       center: [35.2433, 38.9637], // Turkey center
       zoom: 6.2, // Better zoom for Turkey
       maxBounds: [
-        [25.0, 35.0], // Southwest coordinates
-        [45.0, 43.0]  // Northeast coordinates
+        [22.0, 32.0], // Southwest coordinates
+        [48.0, 46.0]  // Northeast coordinates
       ]
     });
 

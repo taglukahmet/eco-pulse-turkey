@@ -93,8 +93,8 @@ export const NationalSocialMediaComparison: React.FC<NationalSocialMediaComparis
                     <span className="font-semibold">{platform.totalPosts.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground block">Etkileşim</span>
-                    <span className="font-semibold">{platform.mainHashtag}%</span>
+                    <span className="text-muted-foreground block">En Popüler</span>
+                    <span className="font-semibold">{platform.mainHashtag}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground block">Pozitif Duygu</span>
