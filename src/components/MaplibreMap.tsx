@@ -185,7 +185,7 @@ export const TurkeyMap: React.FC<TurkeyMapProps> = ({
             '#8b5cf6',
             '#e5e7eb'
           ],
-          'fill-opacity': 0.8
+          'fill-opacity': 0.2
         }
       });
 
